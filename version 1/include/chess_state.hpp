@@ -1,8 +1,10 @@
 
-#ifndef CHESS_STATE_H
-#define CHESS_STATE_H
+#ifndef CHESS_STATE_HPP
+#define CHESS_STATE_HPP
 
 #include "bitboard.hpp"
+
+using namespace std;
 
 class ChessState {
 private:
@@ -12,13 +14,18 @@ private:
 	Bitboard wR;
 	Bitboard wQ;
 	Bitboard wK;
+	Bitboard wAll;
+	vector<Bitboard*> wBitboards;	// References to all white bit boards
+
 	Bitboard bP;
 	Bitboard bN;
 	Bitboard bB;
 	Bitboard bR;
 	Bitboard bQ;
 	Bitboard bK;
-	
+	Bitboard bAll;
+	vector<Bitboard*> bBitboards;
+
 	bool turn;	// True for white; false for black
 	
 	bool wKCastle;	// Castle perms
@@ -33,10 +40,17 @@ private:
 	// TODO: add Threefold repetition
 	// https://en.wikipedia.org/wiki/Threefold_repetition
 
+	bool isLegalMove();
+	void mapBoardToChar(Bitboard b, char arr[65], char target);
+
 public:
 	ChessState();
 	~ChessState();
 	void reset();
+	void move(short start, short end);
+	void move(short start, short end, char promotion);
+	void show();
+	void show(bool show_coords);
 
 };
 

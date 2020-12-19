@@ -1,15 +1,24 @@
 
-#ifndef BITBOARD_H
-#define BITBOARD_H
+#ifndef BITBOARD_HPP
+#define BITBOARD_HPP
+
+#include <vector>
+
+using namespace std;
 
 class Bitboard {
 public:
 	Bitboard();
 	~Bitboard();
+
 	const static short show_order[64];
 	unsigned long long int board;
+
+	void setPos(short pos, bool value);
+	bool getPos(short pos);
+	vector<short> getPosVector();
+
 	void show();
-	void setPos(bool value, short pos);
 };
 
 #endif
