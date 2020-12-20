@@ -10,6 +10,7 @@ using namespace std;
 class ChessState {
 private:
 	void mapBoardToChar(Bitboard b, char arr[65], char target);
+	void updateAllBitboard(bool turn);
 
 public:
 	enum colour {
@@ -23,8 +24,9 @@ public:
 		rook,
 		queen,
 		king,
+		all_pieces,
 	};
-	
+
 	Bitboard* pieces[2][7];	// Indexed as ordered below
 
 	Bitboard wP;

@@ -34,14 +34,14 @@ void ChessState::reset() {
 		be at the beginning of a game.	*/
 
 	// Initial piece setup
-	//wP.setPos(8, true);	// White pawns
-	//wP.setPos(9, true);
-	//wP.setPos(10, true);
-	//wP.setPos(11, true);
-	//wP.setPos(12, true);
-	//wP.setPos(13, true);
-	//wP.setPos(14, true);
-	//wP.setPos(15, true);
+	wP.setPos(8, true);	// White pawns
+	wP.setPos(9, true);
+	wP.setPos(10, true);
+	wP.setPos(11, true);
+	wP.setPos(12, true);
+	wP.setPos(13, true);
+	wP.setPos(14, true);
+	wP.setPos(15, true);
 
 	//wN.setPos(1, true);	// White knights
 	//wN.setPos(6, true);
@@ -55,14 +55,14 @@ void ChessState::reset() {
 	//wQ.setPos(3, true);	// White queen and king
 	wK.setPos(4, true);
 
-	//bP.setPos(48, true); // Black pawns
-	//bP.setPos(49, true);
-	//bP.setPos(50, true);
-	//bP.setPos(51, true);
-	//bP.setPos(52, true);
-	//bP.setPos(53, true);
-	//bP.setPos(54, true);
-	//bP.setPos(55, true);
+	bP.setPos(48, true); // Black pawns
+	bP.setPos(49, true);
+	bP.setPos(50, true);
+	bP.setPos(51, true);
+	bP.setPos(52, true);
+	bP.setPos(53, true);
+	bP.setPos(54, true);
+	bP.setPos(55, true);
 
 	//bN.setPos(57, true);	// Black knights
 	//bN.setPos(62, true);
@@ -110,6 +110,16 @@ void ChessState::move(short start, short end) {
 			break;
 		}
 	}
+
+	this->updateAllBitboard(turn);
+}
+
+void ChessState::updateAllBitboard(bool turn) {
+	if (turn) {
+		bAll = bP.board | bN.board | bB.board | bR.board | bQ.board | bK.board;
+	} else {
+		wAll = wP.board | wN.board | wB.board | wR.board | wQ.board | wK.board;
+	}		
 }
 
 /* ----- Output Functions -----*/

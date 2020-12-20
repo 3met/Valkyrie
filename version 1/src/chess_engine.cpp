@@ -34,10 +34,16 @@ vector<Move> ChessEngine::genKMoves(ChessState c){
 
 	vector<Move> m;
 	vector<short> start;
+	Bitboard target_board;
 	vector<short> targets;
 	
 	start = c.pieces[c.turn][c.king]->getPosVector(1);
-	targets = kMoveDB.find(c.pieces[c.turn][c.king]->board)->second.getPosVector();
+	// Get surrounding squares
+	target_board = kMoveDB.find(c.pieces[c.turn][c.king]->board)->second;
+	// Remove squares with same coloured pieces
+	target_board.board = target_board.board & (~c.pieces[c.turn][c.all_pieces]->board);	
+
+	targets = target_board.getPosVector();
 
 	for (short i=0; i<targets.size(); ++i) {
 		m.push_back(Move(c.piece_names[c.turn][c.king], start[0], targets[i]));
@@ -56,4 +62,3 @@ Move ChessEngine::bestMove(ChessState c) {
 
 	return validMoves[1];
 }
-
