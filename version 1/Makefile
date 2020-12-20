@@ -13,8 +13,7 @@ EXECUTABLE  := main
 all: $(BIN)/$(EXECUTABLE)
 
 run: clean all
-	cls
-	./$(BIN)/$(EXECUTABLE)
+	cd BIN && cls && $(EXECUTABLE)
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)

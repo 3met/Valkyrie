@@ -4,9 +4,9 @@
 
 class Move {
 public:
-	Move(char piece, int start, int end);
-	Move(char piece, int start, int end, char killed);
-	Move(char piece, int start, int end, char killed, char promoted);
+	Move(char piece, short start, short end);
+	Move(char piece, short start, short end, char killed);
+	Move(char piece, short start, short end, char killed, char promoted);
 	~Move();
 	
 	short start;

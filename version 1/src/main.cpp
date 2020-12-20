@@ -16,35 +16,56 @@
  */
 
 #include <iostream>
+#include "..\include\bitboard.hpp"
 #include "..\include\chess_engine.hpp"
 #include "..\include\chess_state.hpp"
-#include "..\include\bitboard.hpp"
+#include "..\include\move.hpp"
 
 using namespace std;
 
 int main() {
-	cout << "start" << endl;
+	cout << "----- Chess Engine -----" << endl;
 
 	// Bitboard size check
 	if (sizeof(unsigned long long int) != 8) {
 		cout << "Warning: Bitboard has incorrect number of bits" << endl;
 	}
 
-	ChessState chessState;
-	chessState.show();
+	bool turn = true;
+	int nums[5] = {1, 2, 3, 4, 5};
 
-	chessState.move(12, 28);
-	chessState.show();
+	ChessState cs;
+	cs.show();
 
-	chessState.move(52, 36);
-	chessState.show();
+	/*
+	cs.move(12, 28);
+	cs.show();
+
+	cs.move(52, 36);
+	cs.show();
+	*/
 
 	ChessEngine ce;
 
-	Bitboard b;
+	Move m = ce.bestMove(cs);
+	cs.move(m.start, m.end);
+	cout << m.start << " to " << m.end << endl;
+	cs.show();
+	
+	m = ce.bestMove(cs);
+	cs.move(m.start, m.end);
+	cout << m.start << " to " << m.end << endl;
+	cs.show();
 
-	b.board = 50463488;
-	b.show();
+	m = ce.bestMove(cs);
+	cs.move(m.start, m.end);
+	cout << m.start << " to " << m.end << endl;
+	cs.show();
+
+	m = ce.bestMove(cs);
+	cs.move(m.start, m.end);
+	cout << m.start << " to " << m.end << endl;
+	cs.show();
 
 	return 0;
 }

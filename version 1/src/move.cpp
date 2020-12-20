@@ -1,5 +1,13 @@
 
+#include <iostream>
 #include "../include/move.hpp"
 
-Move::Move(char piece, int start, int end) {};
-Move::~Move() {};
+Move::Move(char p, short s, short e) {
+	piece = p;
+	start = s;
+	end = e;
+};
+
+Move::~Move() {
+	//std::cout << "DELETED" << std::endl;	
+};

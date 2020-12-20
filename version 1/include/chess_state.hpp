@@ -3,11 +3,30 @@
 #define CHESS_STATE_HPP
 
 #include "bitboard.hpp"
+#include "move.hpp"
 
 using namespace std;
 
 class ChessState {
 private:
+	void mapBoardToChar(Bitboard b, char arr[65], char target);
+
+public:
+	enum colour {
+		white = 0,	// White must remain 0 for turn indexing to work
+		black = 1,
+	};
+	enum piece_type {
+		pawn = 0,
+		knight,
+		bishop,
+		rook,
+		queen,
+		king,
+	};
+	
+	Bitboard* pieces[2][7];	// Indexed as ordered below
+
 	Bitboard wP;
 	Bitboard wN;
 	Bitboard wB;
@@ -15,7 +34,6 @@ private:
 	Bitboard wQ;
 	Bitboard wK;
 	Bitboard wAll;
-	vector<Bitboard*> wBitboards;	// References to all white bit boards
 
 	Bitboard bP;
 	Bitboard bN;
@@ -24,7 +42,8 @@ private:
 	Bitboard bQ;
 	Bitboard bK;
 	Bitboard bAll;
-	vector<Bitboard*> bBitboards;
+
+	static const char piece_names[2][6];	// Note: must match piece indexing
 
 	bool turn;	// True for white; false for black
 	
@@ -40,18 +59,15 @@ private:
 	// TODO: add Threefold repetition
 	// https://en.wikipedia.org/wiki/Threefold_repetition
 
-	bool isLegalMove();
-	void mapBoardToChar(Bitboard b, char arr[65], char target);
-
-public:
 	ChessState();
 	~ChessState();
+	bool isLegalMove();
 	void reset();
+	void move(Move m);
 	void move(short start, short end);
 	void move(short start, short end, char promotion);
 	void show();
 	void show(bool show_coords);
-
 };
 
 #endif

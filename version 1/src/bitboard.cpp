@@ -9,6 +9,10 @@ Bitboard::Bitboard() {
 	board = 0;
 }
 
+Bitboard::Bitboard(unsigned long long int b) {
+	board = b;
+}
+
 Bitboard::~Bitboard() {};
 
 const short Bitboard::show_order[64] = {
@@ -64,6 +68,24 @@ vector<short> Bitboard::getPosVector() {
 	for (short i=0; i<64; ++i) {
 		if (this->getPos(i)) {
 			v.push_back(i);
+		}
+	}
+
+	return v;
+}
+
+vector<short> Bitboard::getPosVector(short limit) {
+	/* Returns the all positions with a positive value */
+
+	vector<short> v;
+
+	for (short i=0; i<64; ++i) {
+		if (this->getPos(i)) {
+			v.push_back(i);
+
+			if (v.size() == limit) {
+				break;
+			}
 		}
 	}
 
