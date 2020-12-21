@@ -43,8 +43,8 @@ void ChessState::reset() {
 	wP.setPos(14, true);
 	wP.setPos(15, true);
 
-	//wN.setPos(1, true);	// White knights
-	//wN.setPos(6, true);
+	wN.setPos(1, true);	// White knights
+	wN.setPos(6, true);
 
 	//wB.setPos(2, true);	// White bishops
 	//wB.setPos(5, true);
@@ -64,8 +64,8 @@ void ChessState::reset() {
 	bP.setPos(54, true);
 	bP.setPos(55, true);
 
-	//bN.setPos(57, true);	// Black knights
-	//bN.setPos(62, true);
+	bN.setPos(57, true);	// Black knights
+	bN.setPos(62, true);
 
 	//bB.setPos(58, true);	// Black bishops
 	//bB.setPos(61, true);
@@ -94,32 +94,73 @@ void ChessState::reset() {
 	en_passant[0] = '-';	// Square behind pawn else "-"
 	en_passant[1] = '\0';	// Square behind pawn else "\0"
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
-	moveNumber = 1;	// Game turn number
+	turnNumber = 1;	// Game turn number
 }
 
 /* ----- Play Functions ----- */
-void ChessState::move(short start, short end) {
+void ChessState::move(Move m) {
 	/* 	Moves a piece on the board.
 		Assumes move is valid.	*/
 
-	for (short i=0; i<6; ++i){
-		if (pieces[turn][i]->getPos(start)) {
-			pieces[turn][i]->setPos(start, false);
-			pieces[turn][i]->setPos(end, true);
-			turn = !turn;
-			break;
+	short i;
+
+	// Removes potential killed piece from bitboard
+	if (m.killed != -1) {
+		for (i=0; i<6; ++i) {
+			if (pieces[!turn][i]->getPos(m.end)) {
+				pieces[!turn][i]->setPos(m.end, false);
+				break;
+			}
 		}
 	}
 
+	// Updates piece location on bitboard
+	pieces[turn][m.piece]->setPos(m.start, false);
+	pieces[turn][m.piece]->setPos(m.end, true);
+
 	this->updateAllBitboard(turn);
+
+	if (turn) {	// If black completed turn
+		turnNumber += 1;
+	}
+
+	turn = !turn;
 }
 
-void ChessState::updateAllBitboard(bool turn) {
+void ChessState::reverseMove(Move m) {
+	/* 	Reverses a moves.
+		Assumes move is valid.	*/
+
+	short i;
+
+	turn = !turn;	// Swaps turn
+
+	if (!turn) {	// If reversing white turn
+		turnNumber -= 1;
+	}
+
+	// Updates piece location on bitboard
+	pieces[turn][m.piece]->setPos(m.start, true);
+	pieces[turn][m.piece]->setPos(m.end, false);
+
+	// Adds previously killed piece to bitboard
+	if (m.killed != -1) {
+		pieces[!turn][m.killed]->setPos(m.end, true);
+	}
+
+	// Update both universal bitboards
+	this->updateAllBitboard(turn);
+	this->updateAllBitboard(!turn);
+
+};
+
+/* ----- Update State Functions ----- */
+void ChessState::updateAllBitboard(bool side) {
 	if (turn) {
 		bAll = bP.board | bN.board | bB.board | bR.board | bQ.board | bK.board;
 	} else {
 		wAll = wP.board | wN.board | wB.board | wR.board | wQ.board | wK.board;
-	}		
+	}
 }
 
 /* ----- Output Functions -----*/

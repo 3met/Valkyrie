@@ -25,47 +25,28 @@ using namespace std;
 
 int main() {
 	cout << "----- Chess Engine -----" << endl;
+	cout << "By Emet Behrendt" << endl << endl;
 
 	// Bitboard size check
 	if (sizeof(unsigned long long int) != 8) {
 		cout << "Warning: Bitboard has incorrect number of bits" << endl;
+		return 1;
 	}
 
-	bool turn = true;
-	int nums[5] = {1, 2, 3, 4, 5};
-
 	ChessState cs;
+	ChessEngine engine;
+	pair<Move, float> m;
 	cs.show();
 
-	/*
-	cs.move(12, 28);
-	cs.show();
-
-	cs.move(52, 36);
-	cs.show();
-	*/
-
-	ChessEngine ce;
-
-	Move m = ce.bestMove(cs);
-	cs.move(m.start, m.end);
-	cout << m.start << " to " << m.end << endl;
-	cs.show();
-	
-	m = ce.bestMove(cs);
-	cs.move(m.start, m.end);
-	cout << m.start << " to " << m.end << endl;
-	cs.show();
-
-	m = ce.bestMove(cs);
-	cs.move(m.start, m.end);
-	cout << m.start << " to " << m.end << endl;
-	cs.show();
-
-	m = ce.bestMove(cs);
-	cs.move(m.start, m.end);
-	cout << m.start << " to " << m.end << endl;
-	cs.show();
+	for (short i=0; i<50; ++i) {
+		cout << "===============" << endl;
+		m = engine.bestMove(cs, 6);
+		cs.move(m.first);
+		cout << "Move: " << m.first.start << " to " << m.first.end << endl;
+		cout << "Rating: " << m.second << endl;
+		cs.show();
+		cout << "===============" << endl;
+	}
 
 	return 0;
 }
@@ -74,6 +55,7 @@ int main() {
 For Consideration:
 
  - Instead of calculating all moves everytime, somehow reuse?
-
+ - For rook move generation, remove non-horizontal pieces from board before calculation
+ - Add engine settings class for things like material scoring system
 
 */

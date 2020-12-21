@@ -56,18 +56,23 @@ public:
 	
 	char en_passant[3];	// Square behind pawn else "-"
 	short halfmoveClock;	// # of halfmoves since last capture or pawn move
-	short moveNumber;	// Game turn number
+	short turnNumber;	// Game turn number
 
 	// TODO: add Threefold repetition
 	// https://en.wikipedia.org/wiki/Threefold_repetition
 
 	ChessState();
 	~ChessState();
+	
 	bool isLegalMove();
+
 	void reset();
+
+	// Playing Functions
 	void move(Move m);
-	void move(short start, short end);
-	void move(short start, short end, char promotion);
+	void reverseMove(Move m);
+
+	// Output Functions
 	void show();
 	void show(bool show_coords);
 };

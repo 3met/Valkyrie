@@ -26,18 +26,7 @@ const short Bitboard::show_order[64] = {
 	0,	1,	2,	3,	4,	5,	6,	7,
 };
 
-void Bitboard::show() {
-	/* Displays Bitboard on Console */
-
-	for (int i=0; i<64; ++i) {
-		cout << ((board >> show_order[i]) & 1) << ' ';
-
-		if ((i+1) % 8 == 0) {
-			cout << endl;
-		}
-	}
-}
-
+// |~| ----- Get and Set Methods -----
 void Bitboard::setPos(short pos, bool value) {
 	/* Set the given position to the given value */
 
@@ -90,4 +79,17 @@ vector<short> Bitboard::getPosVector(short limit) {
 	}
 
 	return v;
+}
+
+// ----- Output Methods -----
+void Bitboard::show() {
+	/* Displays Bitboard on Console */
+
+	for (int i=0; i<64; ++i) {
+		cout << ((board >> show_order[i]) & 1) << ' ';
+
+		if ((i+1) % 8 == 0) {
+			cout << endl;
+		}
+	}
 }
