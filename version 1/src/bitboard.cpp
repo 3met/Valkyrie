@@ -81,7 +81,7 @@ vector<short> Bitboard::getPosVector(short limit) {
 	return v;
 }
 
-// ----- Output Methods -----
+// |~| ----- Output Methods -----
 void Bitboard::show() {
 	/* Displays Bitboard on Console */
 

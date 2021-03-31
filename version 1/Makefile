@@ -1,6 +1,7 @@
 
 CXX       := g++
 CXX_FLAGS := -std=c++17 -ggdb
+DEBUG_FLAGS	:= -std=c++17 -ggdb -g
 
 BIN     := bin
 SRC     := src
@@ -8,15 +9,25 @@ INCLUDE := include
 
 LIBRARIES   :=
 EXECUTABLE  := main
+DEBUG_EXECUTABLE 	:= debug_main
 
-
-all: $(BIN)/$(EXECUTABLE)
-
-run: clean all
+run: clean compile
 	cd BIN && cls && $(EXECUTABLE)
 
-$(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
-	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
+debug: clean compile_debug
+	cd BIN && cls && $(DEBUG_EXECUTABLE) && gdb a.out
 
 clean:
 	-del $(BIN)/*
+
+compile: $(BIN)/$(EXECUTABLE)
+
+# Compile Normally
+$(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
+	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
+
+compile_debug: $(BIN)/$(DEBUG_EXECUTABLE)
+
+# Compile with Debug
+$(BIN)/$(DEBUG_EXECUTABLE): $(SRC)/*.cpp
+	$(CXX) $(DEBUG_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)

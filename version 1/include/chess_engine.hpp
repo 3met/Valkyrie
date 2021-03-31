@@ -19,14 +19,6 @@ private:
 	const static float materialValsLK[2][6];
 	const static float materialValsHB[2][6];
 
-	// Generating Moves
-	vector<Move> genPMoves(ChessState cs);
-	vector<Move> genNMoves(ChessState cs);
-	vector<Move> genBMoves(ChessState cs);
-	vector<Move> genRMoves(ChessState cs);
-	vector<Move> genQMoves(ChessState cs);
-	vector<Move> genKMoves(ChessState cs);
-
 	// Scoring Game State
 	float scoreMaterialSTD(ChessState cs);
 	float scoreMaterialLK(ChessState cs);
@@ -39,6 +31,14 @@ private:
 public:
 	ChessEngine();
 	~ChessEngine();
+
+	// Generating Moves
+	vector<Move> genPMoves(ChessState cs);
+	vector<Move> genNMoves(ChessState cs);
+	vector<Move> genBMoves(ChessState cs);
+	vector<Move> genRMoves(ChessState cs);
+	vector<Move> genQMoves(ChessState cs);
+	vector<Move> genKMoves(ChessState cs);
 
 	float rate(ChessState cs);
 	pair<Move, float> bestMove(ChessState cs, short depth);

@@ -53,6 +53,7 @@ ChessEngine::~ChessEngine() {}
 vector<Move> ChessEngine::genNMoves(ChessState cs){
 	/* Generates all legal knight moves */
 
+	short i, j, k;
 	vector<Move> validMoves;
 	vector<short> start;
 	Bitboard target_board;
@@ -62,36 +63,38 @@ vector<Move> ChessEngine::genNMoves(ChessState cs){
 	// Get all knight locations
 	start = cs.pieces[cs.turn][cs.knight]->getPosVector();
 
-	if (start.size() > 2) {
-		cout << "TOO MANY KNIGHTS" << endl;
-	}
-
-	for (short i=0; i<start.size(); ++i) {
+	for (i=0; i<start.size(); ++i) {
 		// Get potential squares
 		target_board = NMoveDB.find(start[i])->second;
 		// Remove squares with same coloured pieces
-		target_board.board &= (~cs.pieces[cs.turn][cs.all_pieces]->board);	
+		target_board.board &= ~(cs.pieces[cs.turn][cs.all_pieces]->board);	
 		// Positions of all targets
 		targets = target_board.getPosVector();
 
-		// Check for killing a piece
-		killed = -1;	// Default
-		if (cs.pieces[!cs.turn][cs.all_pieces]->getPos(targets[i])) {
-			for (short k=0; k<targets.size(); ++k) {
-				if (cs.pieces[!cs.turn][k]->getPos(targets[i])) {
-					killed = k;
-				}
-			}
-		}
+		// TODO: Make sure king is safe after move
 
 		// Add moves to vector
-		for (short j=0; j<targets.size(); ++j) {
-			validMoves.push_back(Move(cs.knight, start[i], targets[j]));
-		}
-	}
+		for (j=0; j<targets.size(); ++j) {
+			// Check for killing a piece
+			if (cs.pieces[!cs.turn][cs.all_pieces]->getPos(targets[j])) {
+				killed = cs.getPieceType(!cs.turn, targets[j]);
 
-	if (validMoves.size() > 16) {
-		cout << "N" << validMoves.size() << "S" << endl; 
+				if (killed < 0 || killed > 5) {
+					//cout << killed << endl;
+					//cout << targets[j] << endl;
+					//cout << cs.pieces[!cs.turn][cs.all_pieces]->getPos(targets[j]) << endl; 
+					//cout << cs.pieces[!cs.turn][cs.all_pieces]->getPos(targets[j]) << endl; 
+					//cs.pieces[!cs.turn][cs.all_pieces]->show();
+					//cout << endl;
+					//cs.pieces[!cs.turn][5]->show();
+				}
+			} else {
+				killed = -1;	// Default
+			}
+
+			// Store as Move object
+			validMoves.push_back(Move(cs.knight, start[i], targets[j], killed));
+		}
 	}
 
 	return validMoves;
@@ -104,6 +107,7 @@ vector<Move> ChessEngine::genQMoves(ChessState cs){
 vector<Move> ChessEngine::genKMoves(ChessState cs){
 	/* Generates all legal king moves */
 
+	short i, j, k;
 	vector<Move> validMoves;
 	vector<short> start;
 	Bitboard target_board;
@@ -113,12 +117,9 @@ vector<Move> ChessEngine::genKMoves(ChessState cs){
 	// Start position of the king
 	start = cs.pieces[cs.turn][cs.king]->getPosVector(1);
 
-	if (start.size() > 1) {
-		cout << "TOO MANY KINGS" << endl;
-	}
-
 	// For each king (there should only be one)
-	for (short i=0; i<start.size(); ++i) {
+	for (i=0; i<start.size(); ++i) {
+
 		// Get surrounding squares
 		target_board = KMoveDB.find(start[i])->second;
 		// Remove squares with same coloured pieces
@@ -129,17 +130,12 @@ vector<Move> ChessEngine::genKMoves(ChessState cs){
 		targets = target_board.getPosVector();
 
 		// Add moves to vector
-		for (short j=0; j<targets.size(); ++j) {
-			killed = -1;	// Default
+		for (j=0; j<targets.size(); ++j) {
 			// Check for killing a piece
-			if (cs.pieces[!cs.turn][cs.all_pieces]->getPos(targets[i])) {
-				// Find what piece is killed
-				for (short k=0; k<targets.size(); ++k) {
-					if (cs.pieces[!cs.turn][k]->getPos(targets[i])) {
-						killed = k;
-						break;
-					}
-				}
+			if (cs.pieces[!cs.turn][cs.all_pieces]->getPos(targets[j])) {
+				killed = cs.getPieceType(!cs.turn, targets[j]);
+			} else {
+				killed = -1;	// Default
 			}
 
 			// Add to list of valid moves
@@ -147,9 +143,9 @@ vector<Move> ChessEngine::genKMoves(ChessState cs){
 		}
 	}
 
-	if (validMoves.size() > 8) {
-		cout << "K" << validMoves.size() << "S" << endl; 
-	}
+	cs.pieces[cs.turn][cs.all_pieces]->show();
+	cs.bK.show();
+	cout << "King Moves: " << validMoves.size() << endl;
 
 	return validMoves;
 }
@@ -172,7 +168,7 @@ float ChessEngine::scoreMaterialSTD(ChessState cs) {
 		total += cs.pieces[1][i]->getPosVector().size() * materialValsSTD[1][i];
 	}
 
-	return total; 
+	return total;
 }
 
 // Larry Kaufman's material valuation
@@ -207,12 +203,13 @@ float ChessEngine::rate(ChessState cs) {
 }
 
 pair<Move, float> ChessEngine::bestMove(ChessState cs, short depth) {
+
 	short i;
 	vector<Move> validMoves;
 	vector<Move> m;	// Buffer vector
 	vector<pair<Move, float>> ratedMoves;
 
-	// -- Generate all Moves --
+	// --- Generate Valid Moves ---
 	m = genKMoves(cs);
 	validMoves.insert(validMoves.end(), m.begin(), m.end());
 
@@ -221,40 +218,51 @@ pair<Move, float> ChessEngine::bestMove(ChessState cs, short depth) {
 
 	// Check if valid moves were generated
 	if (validMoves.size() == 0) {
-		cout << "No valid moves found" << endl;
-		throw "No valid moves found.";
+		throw ChessState::NoMoves();
 	}
 
-	// Recursively calculate best move
+	// --- Recursively Calculate Best Move ---
 	if (depth <= 1) {
 		// Create a vector of ratings paired with moves
 		for (i=0; i<validMoves.size(); ++i) {
+			cs.move(validMoves[i]);
 			ratedMoves.push_back(make_pair(validMoves[i], this->rate(cs)));
+			cs.reverseMove(validMoves[i]);
 		}
 	} else {
 		// Make each move then recursively calculate its rating
 		// before reversing the move. 
 		for (i=0; i<validMoves.size(); ++i) {
+			//cout << "Parent: ";
+			//validMoves[i].print();
 			cs.move(validMoves[i]);
 			try {
 				ratedMoves.push_back(
 					make_pair(validMoves[i], this->bestMove(cs, depth-1).second));
-			} catch (...) {}
+			} catch (ChessState::NoMoves& e) {
+				ratedMoves.push_back(
+					make_pair(validMoves[i], 0));
+			}
 			cs.reverseMove(validMoves[i]);
 		}
-	}
-
-	if (ratedMoves.size() > 24) {
-		cout << "r" << ratedMoves.size() << "l" << endl;
 	}
 
 	// Return the best move for the current player
 	sort(ratedMoves.begin(), ratedMoves.end(), this->sortRatedMove);
 
+	/*
+	cout << "===== START SET =====" << endl;
+	for (i=0; i<ratedMoves.size(); ++i) {
+		cout << "===> Move " << i << endl;
+		ratedMoves[i].first.print();
+		cout << "Rating: " << ratedMoves[i].second << endl;
+	}
+	*/
+
 	if (cs.turn) {	// Highest rating for white, lowest for black
-		return ratedMoves[ratedMoves.size() - 1];
-	} else {
 		return ratedMoves[0];
+	} else {
+		return ratedMoves[ratedMoves.size() - 1];
 	}
 
 }

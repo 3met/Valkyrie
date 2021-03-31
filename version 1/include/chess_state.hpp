@@ -2,6 +2,8 @@
 #ifndef CHESS_STATE_HPP
 #define CHESS_STATE_HPP
 
+#include <exception>
+#include <string>
 #include "bitboard.hpp"
 #include "move.hpp"
 
@@ -9,8 +11,8 @@ using namespace std;
 
 class ChessState {
 private:
-	void mapBoardToChar(Bitboard b, char arr[65], char target);
-	void updateAllBitboard(bool turn);
+	void mapBoardToChar(Bitboard b, char arr[64], char target);
+	void updateAllBitboard(bool colour);
 
 public:
 	enum colour {
@@ -61,18 +63,31 @@ public:
 	// TODO: add Threefold repetition
 	// https://en.wikipedia.org/wiki/Threefold_repetition
 
+	// --- Custom Exceptions ---
+	struct NoMoves : public exception {
+		const char * what () const throw () {
+			return "There are no legal moves.";
+		}
+	};
+
 	ChessState();
 	~ChessState();
 	
+	// Query Methods
 	bool isLegalMove();
+	short getPieceType(bool colour, short pos);
 
+	// Setup Methods
 	void reset();
+	void clear();
+	void place(short colour, short piece, short pos);
+	void loadFEN(string FEN);
 
-	// Playing Functions
+	// Playing Methods
 	void move(Move m);
 	void reverseMove(Move m);
 
-	// Output Functions
+	// Output Methods
 	void show();
 	void show(bool show_coords);
 };

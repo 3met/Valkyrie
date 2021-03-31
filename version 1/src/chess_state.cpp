@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <string>
 #include "../include/chess_state.hpp"
 
 ChessState::ChessState() {
@@ -29,6 +30,20 @@ const char ChessState::piece_names[2][6] = {	// Note: must match piece indexing
 	{'p', 'n', 'b', 'r', 'q', 'k'},
 };
 
+short ChessState::getPieceType(bool colour, short pos) {
+	/* Returns the type of piece at the given position */
+
+	for (short i=0; i<6; ++i) {
+		if (pieces[colour][i]->getPos(pos)) {
+			return i;
+		}
+	}
+
+	//cout << "Warning: No piece found." << endl;
+	return -1;
+}
+
+// |~| ----- SETUP METHODS -----
 void ChessState::reset() {
 	/*	Resets chess board state to as it should
 		be at the beginning of a game.	*/
@@ -77,12 +92,8 @@ void ChessState::reset() {
 	bK.setPos(60, true);
 
 	// Set universal bitboards
-	wAll.board = 0;
-	bAll.board = 0;
-	for (short i=0; i<6; ++i) {
-		wAll.board |= pieces[0][i]->board;
-		bAll.board |= pieces[1][i]->board;
-	}
+	this->updateAllBitboard(white);
+	this->updateAllBitboard(black);
 
 	turn = false;	// False for white; true for black
 	
@@ -97,7 +108,46 @@ void ChessState::reset() {
 	turnNumber = 1;	// Game turn number
 }
 
-/* ----- Play Functions ----- */
+void ChessState::clear() {
+	/* Clears the board and resets game data */
+
+	for (short i=0; i<2; ++i) {
+		for (short j=0; j<6; ++j) {
+			pieces[i][j]->board = 0;
+		}
+	}
+
+	// Set universal bitboards
+	this->updateAllBitboard(white);
+	this->updateAllBitboard(black);
+
+	turn = false;	// False for white; true for black
+	
+	wKCastle = true;	// Castle perms
+	wQCcastle = true;
+	bKCastle = true;
+	bQCastle = true;
+
+	en_passant[0] = '-';	// Square behind pawn else "-"
+	en_passant[1] = '\0';	// Square behind pawn else "\0"
+	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
+	turnNumber = 1;	// Game turn number
+}
+
+void ChessState::place(short colour, short piece, short pos) {
+	/* Place piece on the board */
+
+	pieces[colour][piece]->setPos(pos, true);
+	this->updateAllBitboard(colour);
+}
+
+void ChessState::loadFEN(string FEN) {
+	/* Loads FEN econding into chess state */
+
+}
+
+
+/* ----- Playing Functions ----- */
 void ChessState::move(Move m) {
 	/* 	Moves a piece on the board.
 		Assumes move is valid.	*/
@@ -117,8 +167,21 @@ void ChessState::move(Move m) {
 	// Updates piece location on bitboard
 	pieces[turn][m.piece]->setPos(m.start, false);
 	pieces[turn][m.piece]->setPos(m.end, true);
+	/*
+	if (m.start == 61) {
+		cout << "61 SHOULD BE FALSE!!!!!!!!!!!!!!!" << endl;
+		cout << "Piece: " << m.piece << endl;
+		cout << "Turn: " << turn << endl;
+		pieces[turn][m.piece]->show();
+		cout << endl;
+	}*/
 
 	this->updateAllBitboard(turn);
+
+	// Update other side if a piece was killed
+	if (m.killed != -1) {
+		this->updateAllBitboard(!turn);
+	}	
 
 	if (turn) {	// If black completed turn
 		turnNumber += 1;
@@ -140,8 +203,8 @@ void ChessState::reverseMove(Move m) {
 	}
 
 	// Updates piece location on bitboard
-	pieces[turn][m.piece]->setPos(m.start, true);
 	pieces[turn][m.piece]->setPos(m.end, false);
+	pieces[turn][m.piece]->setPos(m.start, true);
 
 	// Adds previously killed piece to bitboard
 	if (m.killed != -1) {
@@ -151,20 +214,21 @@ void ChessState::reverseMove(Move m) {
 	// Update both universal bitboards
 	this->updateAllBitboard(turn);
 	this->updateAllBitboard(!turn);
-
 };
 
 /* ----- Update State Functions ----- */
-void ChessState::updateAllBitboard(bool side) {
-	if (turn) {
-		bAll = bP.board | bN.board | bB.board | bR.board | bQ.board | bK.board;
+void ChessState::updateAllBitboard(bool colour) {
+	if (colour) {
+		//cout << "updated b" << endl;
+		bAll.board = (bP.board | bN.board | bB.board | bR.board | bQ.board | bK.board);
 	} else {
-		wAll = wP.board | wN.board | wB.board | wR.board | wQ.board | wK.board;
+		//cout << "updated w" << endl;
+		wAll.board = (wP.board | wN.board | wB.board | wR.board | wQ.board | wK.board);
 	}
 }
 
 /* ----- Output Functions -----*/
-void ChessState::mapBoardToChar(Bitboard b, char arr[65], char target) {
+void ChessState::mapBoardToChar(Bitboard b, char arr[64], char target) {
 	vector v = b.getPosVector();
 	for (short i=0; i<v.size(); ++i) {
 		arr[v[i]] = target;
@@ -176,10 +240,10 @@ void ChessState::show() {
 }
 
 void ChessState::show(bool show_coords) {
-	char board[65];
+	char board[64];
 	short i;
 
-	for (i=0; i<65; ++i) {
+	for (i=0; i<64; ++i) {
 		board[i] = '.';
 	}
 
