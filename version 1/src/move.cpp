@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "../include/move.hpp"
+#include "move.hpp"
 
 using namespace std;
 

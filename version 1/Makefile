@@ -11,7 +11,10 @@ LIBRARIES   :=
 EXECUTABLE  := main
 DEBUG_EXECUTABLE 	:= debug_main
 
-run: clean compile
+run:
+	cd BIN && cls && $(EXECUTABLE)
+
+compile_run: clean compile
 	cd BIN && cls && $(EXECUTABLE)
 
 debug: clean compile_debug

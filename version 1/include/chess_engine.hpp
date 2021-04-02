@@ -4,17 +4,20 @@
 
 #include <map>
 #include <vector>
-#include "../include/bitboard.hpp"
-#include "../include/chess_state.hpp"
-#include "../include/move.hpp"
+#include "bitboard.hpp"
+#include "chess_state.hpp"
+#include "move.hpp"
+#include "state_tree.hpp"
+#include "U64.hpp"
 
 using namespace std;
 
 class ChessEngine {
 private:
-	map<unsigned long long int, Bitboard> KMoveDB;
-	map<unsigned long long int, Bitboard> NMoveDB;
+	map<U64, Bitboard> KMoveDB;
+	map<U64, Bitboard> NMoveDB;
 	
+	// Material value systems
 	const static float materialValsSTD[2][6];
 	const static float materialValsLK[2][6];
 	const static float materialValsHB[2][6];
@@ -42,6 +45,8 @@ public:
 
 	float rate(ChessState cs);
 	pair<Move, float> bestMove(ChessState cs, short depth);
+
+	StateTree stateTree;
 };
 
 #endif

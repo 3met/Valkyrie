@@ -1,7 +1,7 @@
 
 #include <iostream>
 #include <string>
-#include "../include/chess_state.hpp"
+#include "chess_state.hpp"
 
 ChessState::ChessState() {
 	pieces[0][0] = &wP;

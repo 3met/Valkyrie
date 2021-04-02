@@ -29,6 +29,11 @@ public:
 		all_pieces,
 	};
 
+	// Sort chess state by turn
+	friend bool operator<(const ChessState& a, const ChessState& b) {
+		return a.turn < b.turn;
+	}
+
 	Bitboard* pieces[2][7];	// Indexed as ordered below
 
 	Bitboard wP;

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "bitboard.hpp"
+#include "U64.hpp"
 
 using namespace std;
 
@@ -9,7 +10,7 @@ Bitboard::Bitboard() {
 	board = 0;
 }
 
-Bitboard::Bitboard(unsigned long long int b) {
+Bitboard::Bitboard(U64 b) {
 	board = b;
 }
 
@@ -44,7 +45,7 @@ void Bitboard::setPos(short pos, bool value) {
 bool Bitboard::getPos(short pos) {
 	/* Returns the value of the bit position */
 
-	unsigned long long int n = pos;
+	U64 n = pos;
 
 	return bool((board >> n) & 1);
 }

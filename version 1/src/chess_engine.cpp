@@ -1,4 +1,10 @@
 
+/* --- In this File ---
+ * 1. ChessEngine Constructor
+ * 2. Calculating Psudo-legal piece moves
+ * 3. Calculating material value and advantages
+ * 4. Calculate the best move from a given game state */
+
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -6,10 +12,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <utility>
-#include "../include/bitboard.hpp"
-#include "../include/chess_engine.hpp"
-#include "../include/chess_state.hpp"
-#include "../include/move.hpp"
+#include "bitboard.hpp"
+#include "chess_engine.hpp"
+#include "chess_state.hpp"
+#include "move.hpp"
+#include "U64.hpp"
 
 using namespace std;
 
@@ -25,7 +32,7 @@ ChessEngine::ChessEngine() {
 		cout << "Fatal Error: Unable to read king moves file" << endl;
 		return;
 	} else {
-		unsigned long long int a, b;
+		U64 a, b;
 		for (short i=0; i<64; ++i) {	
 			db_file >> a >> b;
 			KMoveDB[i] = Bitboard(b);
@@ -38,7 +45,7 @@ ChessEngine::ChessEngine() {
 		cout << "Fatal Error: Unable to read knight moves file" << endl;
 		return;
 	} else {
-		unsigned long long int a, b;
+		U64 a, b;
 		for (short i=0; i<64; ++i) {
 			db_file >> a >> b;
 			NMoveDB[i] = Bitboard(b);
@@ -78,16 +85,6 @@ vector<Move> ChessEngine::genNMoves(ChessState cs){
 			// Check for killing a piece
 			if (cs.pieces[!cs.turn][cs.all_pieces]->getPos(targets[j])) {
 				killed = cs.getPieceType(!cs.turn, targets[j]);
-
-				if (killed < 0 || killed > 5) {
-					//cout << killed << endl;
-					//cout << targets[j] << endl;
-					//cout << cs.pieces[!cs.turn][cs.all_pieces]->getPos(targets[j]) << endl; 
-					//cout << cs.pieces[!cs.turn][cs.all_pieces]->getPos(targets[j]) << endl; 
-					//cs.pieces[!cs.turn][cs.all_pieces]->show();
-					//cout << endl;
-					//cs.pieces[!cs.turn][5]->show();
-				}
 			} else {
 				killed = -1;	// Default
 			}
@@ -143,10 +140,6 @@ vector<Move> ChessEngine::genKMoves(ChessState cs){
 		}
 	}
 
-	cs.pieces[cs.turn][cs.all_pieces]->show();
-	cs.bK.show();
-	cout << "King Moves: " << validMoves.size() << endl;
-
 	return validMoves;
 }
 
@@ -181,6 +174,8 @@ float ChessEngine::scoreMaterialLK(ChessState cs) {
 	/*	Provides a score based on the material on the board
 	 * 	using the Larry Kaufman's system
 	 *	https://web.archive.org/web/20160314214435/http://www.danheisman.com/Articles/evaluation_of_material_imbalance.htm */
+
+	return 0;
 }
 
 // Hans Berliner's material valuation
@@ -193,6 +188,7 @@ float ChessEngine::scoreMaterialHB(ChessState cs) {
 	/*	Provides a score based on the material on the board
 	 * 	using the Hans Berliner's system
 	 *	https://en.wikipedia.org/wiki/Chess_piece_relative_value#Hans_Berliner's_system */
+	return 0;
 }
 
 // ----- Primary Operations -----
@@ -233,8 +229,6 @@ pair<Move, float> ChessEngine::bestMove(ChessState cs, short depth) {
 		// Make each move then recursively calculate its rating
 		// before reversing the move. 
 		for (i=0; i<validMoves.size(); ++i) {
-			//cout << "Parent: ";
-			//validMoves[i].print();
 			cs.move(validMoves[i]);
 			try {
 				ratedMoves.push_back(
@@ -250,19 +244,11 @@ pair<Move, float> ChessEngine::bestMove(ChessState cs, short depth) {
 	// Return the best move for the current player
 	sort(ratedMoves.begin(), ratedMoves.end(), this->sortRatedMove);
 
-	/*
-	cout << "===== START SET =====" << endl;
-	for (i=0; i<ratedMoves.size(); ++i) {
-		cout << "===> Move " << i << endl;
-		ratedMoves[i].first.print();
-		cout << "Rating: " << ratedMoves[i].second << endl;
-	}
-	*/
-
 	if (cs.turn) {	// Highest rating for white, lowest for black
+		stateTree.add(cs, ratedMoves[0].first);
 		return ratedMoves[0];
 	} else {
+		stateTree.add(cs, ratedMoves[ratedMoves.size() - 1].first);
 		return ratedMoves[ratedMoves.size() - 1];
 	}
-
 }
