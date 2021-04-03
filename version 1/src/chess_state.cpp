@@ -4,24 +4,53 @@
 #include "chess_state.hpp"
 
 ChessState::ChessState() {
-	pieces[0][0] = &wP;
-	pieces[0][1] = &wN;
-	pieces[0][2] = &wB;
-	pieces[0][3] = &wR;
-	pieces[0][4] = &wQ;
-	pieces[0][5] = &wK;
-	pieces[0][6] = &wAll;
+	// pieces[0][0] = &wP;
+	// pieces[0][1] = &wN;
+	// pieces[0][2] = &wB;
+	// pieces[0][3] = &wR;
+	// pieces[0][4] = &wQ;
+	// pieces[0][5] = &wK;
+	// pieces[0][6] = &wAll;
 
-	pieces[1][0] = &bP;
-	pieces[1][1] = &bN;
-	pieces[1][2] = &bB;
-	pieces[1][3] = &bR;
-	pieces[1][4] = &bQ;
-	pieces[1][5] = &bK;
-	pieces[1][6] = &bAll;
+	// pieces[1][0] = &bP;
+	// pieces[1][1] = &bN;
+	// pieces[1][2] = &bB;
+	// pieces[1][3] = &bR;
+	// pieces[1][4] = &bQ;
+	// pieces[1][5] = &bK;
+	// pieces[1][6] = &bAll;
 
 	this->reset();
 };
+
+ChessState::ChessState(const ChessState* cs) {
+	wP.board = cs->wP.board;
+	wN.board = cs->wN.board;
+	wB.board = cs->wB.board;
+	wR.board = cs->wR.board;
+	wQ.board = cs->wQ.board;
+	wK.board = cs->wK.board;
+	wAll.board = cs->wAll.board;
+
+	bP.board = cs->bP.board;
+	bN.board = cs->bN.board;
+	bB.board = cs->bB.board;
+	bR.board = cs->bR.board;
+	bQ.board = cs->bQ.board;
+	bK.board = cs->bK.board;
+	bAll.board = cs->bAll.board;
+
+	turn = cs->turn;
+	
+	wKCastle = cs->wKCastle;	// Castle perms
+	wQCcastle = cs->wQCcastle;
+	bKCastle = cs->bKCastle;
+	bQCastle = cs->bQCastle;
+	
+	// en_passant[3] = cs.;
+	halfmoveClock = cs->halfmoveClock;
+	turnNumber = cs->turnNumber;
+}
 
 ChessState::~ChessState() {};
 
@@ -64,8 +93,8 @@ void ChessState::reset() {
 	//wB.setPos(2, true);	// White bishops
 	//wB.setPos(5, true);
 
-	//wR.setPos(0, true);	// White rooks
-	//wR.setPos(7, true);
+	wR.setPos(0, true);	// White rooks
+	wR.setPos(7, true);
 
 	//wQ.setPos(3, true);	// White queen and king
 	wK.setPos(4, true);
@@ -85,8 +114,8 @@ void ChessState::reset() {
 	//bB.setPos(58, true);	// Black bishops
 	//bB.setPos(61, true);
 
-	//bR.setPos(56, true);	// Black rooks
-	//bR.setPos(63, true);
+	bR.setPos(56, true);	// Black rooks
+	bR.setPos(63, true);
 
 	//bQ.setPos(59, true);	// Black queen and king
 	bK.setPos(60, true);
@@ -156,6 +185,7 @@ void ChessState::move(Move m) {
 
 	// Removes potential killed piece from bitboard
 	if (m.killed != -1) {
+		// cout << "REMOVE" << m.killed << endl;
 		for (i=0; i<6; ++i) {
 			if (pieces[!turn][i]->getPos(m.end)) {
 				pieces[!turn][i]->setPos(m.end, false);
@@ -167,14 +197,6 @@ void ChessState::move(Move m) {
 	// Updates piece location on bitboard
 	pieces[turn][m.piece]->setPos(m.start, false);
 	pieces[turn][m.piece]->setPos(m.end, true);
-	/*
-	if (m.start == 61) {
-		cout << "61 SHOULD BE FALSE!!!!!!!!!!!!!!!" << endl;
-		cout << "Piece: " << m.piece << endl;
-		cout << "Turn: " << turn << endl;
-		pieces[turn][m.piece]->show();
-		cout << endl;
-	}*/
 
 	this->updateAllBitboard(turn);
 
@@ -219,10 +241,8 @@ void ChessState::reverseMove(Move m) {
 /* ----- Update State Functions ----- */
 void ChessState::updateAllBitboard(bool colour) {
 	if (colour) {
-		//cout << "updated b" << endl;
 		bAll.board = (bP.board | bN.board | bB.board | bR.board | bQ.board | bK.board);
 	} else {
-		//cout << "updated w" << endl;
 		wAll.board = (wP.board | wN.board | wB.board | wR.board | wQ.board | wK.board);
 	}
 }

@@ -44,7 +44,7 @@ public:
 	vector<Move> genKMoves(ChessState cs);
 
 	float rate(ChessState cs);
-	pair<Move, float> bestMove(ChessState cs, short depth);
+	pair<Move, float> bestMove(ChessState* cs, short depth);
 
 	StateTree stateTree;
 };

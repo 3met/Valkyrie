@@ -15,6 +15,7 @@ private:
 	void updateAllBitboard(bool colour);
 
 public:
+
 	enum colour {
 		white = 0,	// White must remain 0 for turn indexing to work
 		black = 1,
@@ -34,8 +35,6 @@ public:
 		return a.turn < b.turn;
 	}
 
-	Bitboard* pieces[2][7];	// Indexed as ordered below
-
 	Bitboard wP;
 	Bitboard wN;
 	Bitboard wB;
@@ -51,6 +50,29 @@ public:
 	Bitboard bQ;
 	Bitboard bK;
 	Bitboard bAll;
+
+	// Bitboard* pieces[2][7];
+	Bitboard* pieces[2][7] = {
+		{
+			&wP,
+			&wN,
+			&wB,
+			&wR,
+			&wQ,
+			&wK,
+			&wAll
+		},
+		{
+			&bP,
+			&bN,
+			&bB,
+			&bR,
+			&bQ,
+			&bK,
+			&bAll
+		},
+	};	// Indexed as ordered below
+
 
 	static const char piece_names[2][6];	// Note: must match piece indexing
 
@@ -76,6 +98,7 @@ public:
 	};
 
 	ChessState();
+	ChessState(const ChessState* cs);
 	~ChessState();
 	
 	// Query Methods

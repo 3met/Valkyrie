@@ -33,8 +33,17 @@ For Consideration:
 
 using namespace std;
 
-ChessState play_self(ChessState cs) {
+ChessState play_self(ChessState cs, ChessEngine engine, short depth, short count) {
+	pair<Move, float> m;
 
+	for (int i=0; i<count; ++i) {
+		cout << "===== NUM " << i << " =====" << endl;
+		m = engine.bestMove(&cs, depth);
+		cout << m.second << endl;
+		m.first.print();
+		cs.move(m.first);
+		cs.show();
+	}
 }
 
 int main() {
@@ -46,57 +55,28 @@ int main() {
 		cout << "Warning: Bitboard has incorrect number of bits" << endl;
 		return 1;
 	}
-
+	
 	ChessState cs;
 	ChessEngine engine;
 	pair<Move, float> m;
 	char buffer[10];
 
-	ChessState cs_buffer;
-	Move move_buffer;
-
-	cs.clear();
-	
-	// cs.place(cs.white, cs.knight, 26);
-	// cs.place(cs.white, cs.king, 56);
-	// cs.place(cs.black, cs.pawn, 46);
-	// cs.place(cs.black, cs.king, 61);
-
 	cout << "===== Initial =====" << endl;
 	cs.show();
 
-	cout << "===== One =====" << endl;
-	m = engine.bestMove(cs, 2);
-	cout << m.second << endl;
-	cs.move(m.first);
-	cs.show();
+	// play_self(cs, engine, 6, 20);
 
-	// Show engine planning
-	// cs_buffer = cs;
-	// for (int i=0; i<6; ++i) {
-	// 	move_buffer = engine.stateTree.get(cs_buffer);
-	// 	cs_buffer.move(move_buffer);
-	// 	move_buffer.print();
-	// 	cs.show();
-	// }
+	int count = 100;
+	int depth = 4;
 
-	cout << "===== Two =====" << endl;
-	m = engine.bestMove(cs, 2);
-	cout << m.second << endl;
-	cs.move(m.first);
-	cs.show();
-	
-	cout << "===== Three =====" << endl;
-	m = engine.bestMove(cs, 2);
-	cout << m.second << endl;
-	cs.move(m.first);
-	cs.show();
-
-	cout << "===== Four =====" << endl;
-	m = engine.bestMove(cs, 2);
-	cout << m.second << endl;
-	cs.move(m.first);
-	cs.show();
+	for (int i=0; i<count; ++i) {
+		cout << "===== NUM " << i << " =====" << endl;
+		m = engine.bestMove(&cs, depth);
+		cout << m.second << endl;
+		m.first.print();
+		cs.move(m.first);
+		cs.show();
+	}
 
 	return 0;
 }

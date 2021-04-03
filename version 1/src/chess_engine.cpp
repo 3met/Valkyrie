@@ -18,6 +18,8 @@
 #include "move.hpp"
 #include "U64.hpp"
 
+#include <typeinfo>	// TEMP
+
 using namespace std;
 
 ChessEngine::ChessEngine() {
@@ -57,10 +59,113 @@ ChessEngine::ChessEngine() {
 ChessEngine::~ChessEngine() {}
 
 // ----- Generating Moves -----
-vector<Move> ChessEngine::genNMoves(ChessState cs){
+
+vector<Move> ChessEngine::genPMoves(ChessState cs) {
+	/* Generates all legal pawn moves */
+
+	short i, j;
+	vector<short> start;
+	Bitboard move_board;
+	Bitboard kill_board;
+	vector<short> move_targets;
+	vector<short> kill_targets;
+	short killed;
+	vector<Move> validMoves;
+	
+	// Get all pawn locations
+	start = cs.pieces[cs.turn][cs.pawn]->getPosVector();
+
+	for (i=0; i<start.size(); ++i) {
+		// Get potential squares
+		move_board.board = 0;
+		kill_board.board = 0;
+		if (cs.turn == cs.white) {
+			// Add square above
+			move_board.setPos(start[i]+8, true);
+			// Remove if blocked by enemy piece
+			move_board.board &= ~(cs.pieces[cs.black][cs.all_pieces]->board);
+			// Remove if blocked by friendly piece
+			if (move_board.board != 0) {
+				move_board.board &= ~(cs.pieces[cs.white][cs.all_pieces]->board);
+			}
+
+			// Try two squares up if can move up one and on home row
+			if (move_board.board != 0 && start[i] >= 8 && start[i] <= 15) {
+				move_board.setPos(start[i]+16, true);
+				// Remove square if occupied
+				move_board.board &= ~(cs.pieces[cs.white][cs.all_pieces]->board);
+				move_board.board &= ~(cs.pieces[cs.black][cs.all_pieces]->board);
+			}
+
+			// Add left kill position if not on a column
+			if (start[i] % 8 != 0) {
+				kill_board.setPos(start[i]+7, true);
+			}
+			// Add right kill position if not on h column
+			if (start[i] % 8 != 7) {
+				kill_board.setPos(start[i]+9, true);
+			}
+			// Remove any kill positions without enemy pieces
+			kill_board.board &= cs.pieces[cs.black][cs.all_pieces]->board;
+
+		} else {	// Black
+			// Add square above
+			move_board.setPos(start[i]-8, true);
+			// Remove if blocked by enemy piece
+			move_board.board &= ~(cs.pieces[cs.white][cs.all_pieces]->board);
+			// Remove if blocked by friendly piece
+			if (move_board.board != 0) {
+				move_board.board &= ~(cs.pieces[cs.black][cs.all_pieces]->board);
+			}
+
+			// Try two squares up if can move up one and on home row
+			if (move_board.board != 0 && start[i] >= 48 && start[i] <= 55) {
+				move_board.setPos(start[i]-16, true);
+				// Remove square if occupied
+				move_board.board &= ~(cs.pieces[cs.white][cs.all_pieces]->board);
+				move_board.board &= ~(cs.pieces[cs.black][cs.all_pieces]->board);
+			}
+
+			// Add left kill position if not on a column
+			if (start[i] % 8 != 0) {
+				kill_board.setPos(start[i]-9, true);
+			}
+			// Add right kill position if not on h column
+			if (start[i] % 8 != 7) {
+				kill_board.setPos(start[i]-7, true);
+			}
+			// Remove any kill positions without pawns
+			kill_board.board &= cs.pieces[cs.white][cs.all_pieces]->board;
+		}
+
+		// All squares that can be killed/moved to
+		move_targets = move_board.getPosVector();
+		kill_targets = kill_board.getPosVector();
+
+		// TODO: Make sure king is safe after move
+
+		// All possible non-kill moves
+		for (j=0; j<move_targets.size(); ++j) {
+			validMoves.push_back(Move(cs.pawn, start[i], move_targets[j]));
+		}
+
+		// All possible kill moves
+		for (j=0; j<kill_targets.size(); ++j) {
+			// Check for killing a piece
+			killed = cs.getPieceType(!cs.turn, kill_targets[j]);
+			validMoves.push_back(Move(cs.pawn, start[i], kill_targets[j], killed));
+		}
+	}
+
+	return validMoves;
+}
+
+
+
+vector<Move> ChessEngine::genNMoves(ChessState cs) {
 	/* Generates all legal knight moves */
 
-	short i, j, k;
+	short i, j;
 	vector<Move> validMoves;
 	vector<short> start;
 	Bitboard target_board;
@@ -97,8 +202,108 @@ vector<Move> ChessEngine::genNMoves(ChessState cs){
 	return validMoves;
 }
 
-vector<Move> ChessEngine::genQMoves(ChessState cs){
+vector<Move> ChessEngine::genRMoves(ChessState cs) {
+	/* Generates all legal rook moves */
 
+	short i, j;
+	short pos;
+	vector<short> start;
+	vector<short> kill_targets;
+	short killed;
+	vector<Move> validMoves;
+	
+	// Get all rook locations
+	start = cs.pieces[cs.turn][cs.rook]->getPosVector();
+
+	for (i=0; i<start.size(); ++i) {
+		kill_targets.clear();
+
+		// Upward moves
+		pos = start[i];
+		while (pos < 56) {	// Not top row
+			// If an enemy piece at target position
+			if (cs.pieces[!cs.turn][cs.all_pieces]->getPos(pos+8)) {
+				kill_targets.push_back(pos+8);
+				break;
+			// Else if there is no friendly piece at the target position
+			} else if (!cs.pieces[cs.turn][cs.all_pieces]->getPos(pos+8)) {
+				validMoves.push_back(Move(cs.rook, start[i], pos+8));
+			// Else there is a friendly piece at target position
+			} else {
+				break;
+			}
+			pos += 8;
+		}
+
+		// Downward moves
+		pos = start[i];
+		while (pos > 7) {	// Not bottom row
+			// If an enemy piece at target
+			if (cs.pieces[!cs.turn][cs.all_pieces]->getPos(pos-8)) {
+				kill_targets.push_back(pos-8);
+				break;
+			// Else if there is no friendly piece at the target position
+			} else if (!cs.pieces[cs.turn][cs.all_pieces]->getPos(pos-8)) {
+				validMoves.push_back(Move(cs.rook, start[i], pos-8));
+			// Else there is a friendly piece at target position
+			} else {
+				break;
+			}
+			pos -= 8;
+		}
+
+		// Leftward moves
+		pos = start[i];
+		while (pos % 8 != 0) {	// Not leftmost column
+			// If an enemy piece at target
+			if (cs.pieces[!cs.turn][cs.all_pieces]->getPos(pos-1)) {
+				kill_targets.push_back(pos-1);
+				break;
+			// Else if there is no friendly piece at the target position
+			} else if (!cs.pieces[cs.turn][cs.all_pieces]->getPos(pos-1)) {
+				validMoves.push_back(Move(cs.rook, start[i], pos-1));
+			// Else there is a friendly piece at target position
+			} else {
+				break;
+			}
+			pos -= 1;
+		}
+
+		// Rightward moves
+		pos = start[i];
+		while (pos % 8 != 7) {	// Not rightmost column
+			// If an enemy piece at target
+			if (cs.pieces[!cs.turn][cs.all_pieces]->getPos(pos+1)) {
+				kill_targets.push_back(pos+1);
+				break;
+			// Else if there is no friendly piece at the target position
+			} else if (!cs.pieces[cs.turn][cs.all_pieces]->getPos(pos+1)) {
+				validMoves.push_back(Move(cs.rook, start[i], pos+1));
+			// Else there is a friendly piece at target position
+			} else {
+				break;
+			}
+			pos += 1;
+		}
+
+		// TODO: Make sure king is safe after move
+
+		// All possible kill moves
+		for (j=0; j<kill_targets.size(); ++j) {
+			// Check for killing a piece
+			killed = cs.getPieceType(!cs.turn, kill_targets[j]);
+			validMoves.push_back(Move(cs.rook, start[i], kill_targets[j], killed));
+		}
+	}
+
+	return validMoves;
+}
+
+vector<Move> ChessEngine::genQMoves(ChessState cs){
+	/* Generates all legal queen moves */
+
+	vector<Move> validMoves;
+	return validMoves;
 }
 
 vector<Move> ChessEngine::genKMoves(ChessState cs){
@@ -121,6 +326,7 @@ vector<Move> ChessEngine::genKMoves(ChessState cs){
 		target_board = KMoveDB.find(start[i])->second;
 		// Remove squares with same coloured pieces
 		target_board.board = target_board.board & (~cs.pieces[cs.turn][cs.all_pieces]->board);	
+
 		// TODO: CHECK IF TARGET SQUARE IS UNDER ATTACK
 
 		// Positions of all target squares
@@ -198,7 +404,8 @@ float ChessEngine::rate(ChessState cs) {
 	return this->scoreMaterialSTD(cs);
 }
 
-pair<Move, float> ChessEngine::bestMove(ChessState cs, short depth) {
+pair<Move, float> ChessEngine::bestMove(ChessState* asdf, short depth) {
+	ChessState cs(asdf);
 
 	short i;
 	vector<Move> validMoves;
@@ -206,10 +413,16 @@ pair<Move, float> ChessEngine::bestMove(ChessState cs, short depth) {
 	vector<pair<Move, float>> ratedMoves;
 
 	// --- Generate Valid Moves ---
-	m = genKMoves(cs);
+	m = genPMoves(cs);
 	validMoves.insert(validMoves.end(), m.begin(), m.end());
 
 	m = genNMoves(cs);
+	validMoves.insert(validMoves.end(), m.begin(), m.end());
+
+	m = genRMoves(cs);
+	validMoves.insert(validMoves.end(), m.begin(), m.end());
+
+	m = genKMoves(cs);
 	validMoves.insert(validMoves.end(), m.begin(), m.end());
 
 	// Check if valid moves were generated
@@ -232,7 +445,7 @@ pair<Move, float> ChessEngine::bestMove(ChessState cs, short depth) {
 			cs.move(validMoves[i]);
 			try {
 				ratedMoves.push_back(
-					make_pair(validMoves[i], this->bestMove(cs, depth-1).second));
+					make_pair(validMoves[i], this->bestMove(&cs, depth-1).second));
 			} catch (ChessState::NoMoves& e) {
 				ratedMoves.push_back(
 					make_pair(validMoves[i], 0));
@@ -244,11 +457,10 @@ pair<Move, float> ChessEngine::bestMove(ChessState cs, short depth) {
 	// Return the best move for the current player
 	sort(ratedMoves.begin(), ratedMoves.end(), this->sortRatedMove);
 
-	if (cs.turn) {	// Highest rating for white, lowest for black
-		stateTree.add(cs, ratedMoves[0].first);
+	// Return highest rating for white, lowest for black
+	if (cs.turn) {
 		return ratedMoves[0];
 	} else {
-		stateTree.add(cs, ratedMoves[ratedMoves.size() - 1].first);
 		return ratedMoves[ratedMoves.size() - 1];
 	}
 }
