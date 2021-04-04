@@ -27,9 +27,9 @@ private:
 	map<U8, S8> knightBonus;
 
 	// Material value systems
-	const static float materialValsSTD[6];
-	const static float materialValsLK[6];
-	const static float materialValsHB[6];
+	const static short materialValsSTD[6];
+	const static short materialValsLK[6];
+	const static short materialValsHB[6];
 
 	static bool sortRatedMove(const pair<Move, float> &a, const pair<Move, float> &b) {
 		return a.second < b.second;
@@ -48,11 +48,11 @@ public:
 	void genKMoves(ChessState* cs, vector<Move>* moves);
 	void genAllMoves(ChessState* cs, vector<Move>* moves);
 
-	float eval(ChessState* cs);
-	float eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]);
-	pair<Move, float> bestMove(ChessState* cs, U8 depth);
-	float minimax_eval(ChessState* cs, U8 depth, float alpha, float beta);
-	float minimax_eval_top(ChessState* cs, U8 depth, float alpha, float beta, Move* bestMove);
+	short eval(ChessState* cs);
+	short eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]);
+	pair<Move, short> bestMove(ChessState* cs, U8 depth);
+	short minimax_eval(ChessState* cs, U8 depth, short alpha, short beta);
+	short minimax_eval_top(ChessState* cs, U8 depth, short alpha, short beta, Move* bestMove);
 
 	StateTree stateTree;
 };

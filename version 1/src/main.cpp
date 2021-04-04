@@ -64,7 +64,7 @@ int main() {
 	
 	ChessState cs;
 	ChessEngine engine;
-	pair<Move, float> m;
+	pair<Move, short> m;
 	char buffer[10];
 
 	int count = 50;

@@ -26,3 +26,6 @@ void ChessEngine::read_move_list(map<U64, Bitboard>* moveList, string fileName) 
 	}
 	db_file.close();
 }
+
+
+
