@@ -38,16 +38,12 @@ void Bitboard::setPos(short pos, bool value) {
 	} else {
 		n = 0;
 	}
-	//board ^= n << pos;
 	board ^= (-n ^ board) & (1ULL << pos);
 }
 
-bool Bitboard::getPos(short pos) {
+inline bool Bitboard::getPos(U8 pos) {
 	/* Returns the value of the bit position */
-
-	U64 n = pos;
-
-	return bool((board >> n) & 1);
+	return (board >> pos) & 1;
 }
 
 vector<short> Bitboard::getPosVector() {
