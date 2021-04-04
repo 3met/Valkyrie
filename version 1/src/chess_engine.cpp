@@ -20,13 +20,6 @@
 
 using namespace std;
 
-#include <time.h>
-clock_t start_t, end_t;
-double move_time = 0;
-double rate_time = 0;
-double material_time = 0;
-double pos_vec_time = 0;
-
 ChessEngine::ChessEngine() {
 
 	srand(time(0));
@@ -621,17 +614,12 @@ float ChessEngine::scoreMaterialSTD(ChessState *cs) {
 	/*	Provides a score based on the material on the board 
 	 * 	using the standard system */
 
-
-	start_t = clock();
 	float total = 0;
 
 	for (U8 i=0; i<6; ++i) {
 		total += cs->pieces[0][i]->getPosVector().size() * materialValsSTD[0][i];
 		total += cs->pieces[1][i]->getPosVector().size() * materialValsSTD[1][i];
 	}
-
-	end_t = clock();	// TEMP
-	material_time += ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
 
 	return total;
 }
@@ -670,8 +658,8 @@ float ChessEngine::rate(ChessState* cs) {
 	return this->scoreMaterialSTD(cs);
 }
 
-pair<Move, float> ChessEngine::bestMove(ChessState* asdf, short depth) {
-	ChessState cs(asdf);
+pair<Move, float> ChessEngine::bestMove(ChessState* _cs, short depth) {
+	ChessState cs(_cs);
 
 	U8 i;
 	vector<Move> validMoves;
@@ -679,8 +667,6 @@ pair<Move, float> ChessEngine::bestMove(ChessState* asdf, short depth) {
 	vector<pair<Move, float>> ratedMoves;
 
 	// --- Generate Valid Moves ---
-	start_t = clock();	// TEMP
-
 	m = genPMoves(&cs);
 	validMoves.insert(validMoves.end(), m.begin(), m.end());
 
@@ -698,9 +684,6 @@ pair<Move, float> ChessEngine::bestMove(ChessState* asdf, short depth) {
 
 	m = genKMoves(&cs);
 	validMoves.insert(validMoves.end(), m.begin(), m.end());
-	
-	end_t = clock();	// TEMP
-	move_time += ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
 
 	// Check if valid moves were generated
 	if (validMoves.size() == 0) {
@@ -712,12 +695,7 @@ pair<Move, float> ChessEngine::bestMove(ChessState* asdf, short depth) {
 		// Create a vector of ratings paired with moves
 		for (i=0; i<validMoves.size(); ++i) {
 			cs.move(validMoves[i]);
-
-			start_t = clock();	// TEMP
 			ratedMoves.push_back(make_pair(validMoves[i], this->rate(&cs)));
-			end_t = clock();	// TEMP
-			rate_time += ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
-
 			cs.reverseMove(validMoves[i]);
 		}
 

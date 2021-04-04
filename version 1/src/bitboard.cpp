@@ -29,7 +29,7 @@ const U8 Bitboard::show_order[64] = {
 };
 
 // |~| ----- Get and Set Methods -----
-void Bitboard::setPos(short pos, bool value) {
+void Bitboard::setPos(U8 pos, bool value) {
 	/* Set the given position to the given value */
 
 	U64 n;	// Needs to be same size as board
@@ -42,7 +42,7 @@ void Bitboard::setPos(short pos, bool value) {
 	board ^= (-n ^ board) & (1ULL << pos);
 }
 
-inline bool Bitboard::getPos(short pos) {
+inline bool Bitboard::getPos(U8 pos) {
 	/* Returns the value of the bit position */
 	return (board >> pos) & 1;
 }

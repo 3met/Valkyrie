@@ -7,7 +7,7 @@ using namespace std;
 
 Move::Move() {}
 
-Move::Move(short p, short s, short e) {
+Move::Move(U8 p, U8 s, U8 e) {
 	piece = p;
 	start = s;
 	end = e;
@@ -16,7 +16,7 @@ Move::Move(short p, short s, short e) {
 	promoted = -1;	// Piece promoted to; else -1
 }
 
-Move::Move(short p, short s, short e, short k) {
+Move::Move(U8 p, U8 s, U8 e, short k) {
 	piece = p;
 	start = s;
 	end = e;

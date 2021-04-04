@@ -104,7 +104,7 @@ public:
 	
 	// Query Methods
 	bool isLegalMove();
-	short getPieceType(bool colour, short pos);
+	U8 getPieceType(bool colour, U8 pos);
 
 	// Setup Methods
 	void reset();

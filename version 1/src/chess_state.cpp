@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "chess_state.hpp"
+#include "U8.hpp"
 
 ChessState::ChessState() {
 	this->reset();
@@ -42,10 +43,10 @@ const char ChessState::piece_names[2][6] = {	// Note: must match piece indexing
 	{'p', 'n', 'b', 'r', 'q', 'k'},
 };
 
-short ChessState::getPieceType(bool colour, short pos) {
+U8 ChessState::getPieceType(bool colour, U8 pos) {
 	/* Returns the type of piece at the given position */
 
-	for (short i=0; i<6; ++i) {
+	for (U8 i=0; i<6; ++i) {
 		if (pieces[colour][i]->getPos(pos)) {
 			return i;
 		}
@@ -122,8 +123,8 @@ void ChessState::reset() {
 void ChessState::clear() {
 	/* Clears the board and resets game data */
 
-	for (short i=0; i<2; ++i) {
-		for (short j=0; j<6; ++j) {
+	for (U8 i=0; i<2; ++i) {
+		for (U8 j=0; j<6; ++j) {
 			pieces[i][j]->board = 0;
 		}
 	}
@@ -162,7 +163,7 @@ void ChessState::move(Move m) {
 	/* 	Moves a piece on the board.
 		Assumes move is valid.	*/
 
-	short i;
+	U8 i;
 
 	// Removes potential killed piece from bitboard
 	if (m.killed != -1) {
@@ -218,7 +219,7 @@ void ChessState::reverseMove(Move m) {
 
 /* ----- Update State Functions ----- */
 void ChessState::updateAllBitboard(bool colour) {
-	if (colour) {
+	if (colour == BLACK) {
 		bAll.board = (bP.board | bN.board | bB.board | bR.board | bQ.board | bK.board);
 	} else {
 		wAll.board = (wP.board | wN.board | wB.board | wR.board | wQ.board | wK.board);
@@ -228,7 +229,7 @@ void ChessState::updateAllBitboard(bool colour) {
 /* ----- Output Functions -----*/
 void ChessState::mapBoardToChar(Bitboard b, char arr[64], char target) {
 	vector v = b.getPosVector();
-	for (short i=0; i<v.size(); ++i) {
+	for (U8 i=0; i<v.size(); ++i) {
 		arr[v[i]] = target;
 	}
 }
@@ -239,7 +240,7 @@ void ChessState::show() {
 
 void ChessState::show(bool show_coords) {
 	char board[64];
-	short i;
+	U8 i;
 
 	for (i=0; i<64; ++i) {
 		board[i] = '.';

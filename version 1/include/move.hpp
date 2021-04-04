@@ -10,17 +10,17 @@ using namespace std;
 class Move {
 public:
 	Move();
-	Move(short piece, short start, short end);
-	Move(short piece, short start, short end, short killed);
-	Move(short piece, short start, short end, short killed, short promoted);
+	Move(U8 piece, U8 start, U8 end);
+	Move(U8 piece, U8 start, U8 end, short killed);
+	Move(U8 piece, U8 start, U8 end, short killed, short promoted);
 	~Move();
 
 	static const char positions[64];
 	
-	short start;
-	short end;
+	U8 start;
+	U8 end;
 	
-	short piece;	// Piece being moved
+	U8 piece;	// Piece being moved
 	short killed;	// Piece killed; else -1
 	short promoted;	// Piece promoted to; else -1
 

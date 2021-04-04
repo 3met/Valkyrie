@@ -33,6 +33,10 @@ For Consideration:
 
 using namespace std;
 
+#include <time.h>
+clock_t start_t, end_t;
+double total_time = 0;
+
 void play_self(ChessState* cs, ChessEngine engine, U8 depth, U8 count) {
 	pair<Move, float> m;
 
@@ -69,6 +73,7 @@ int main() {
 	cout << "Depth: " << depth << endl;
 	cs.show();
 
+	start_t = clock();
 	for (int i=0; i<count; ++i) {
 		cout << "===== Move #" << i+1 << " =====" << endl;
 		m = engine.bestMove(&cs, depth);
@@ -77,6 +82,15 @@ int main() {
 		cs.move(m.first);
 		cs.show();
 	}
+	end_t = clock();	// TEMP
+	total_time += ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
+
+	cout << "per_count=" << (total_time/count) << endl;
+	// count = 20; depth=3
+	// per_count=0.3092
+	// per_count=0.3098
+	// per_count=0.30835
+	// per_count=0.31355
 
 	return 0;
 }

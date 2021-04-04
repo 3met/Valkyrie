@@ -18,8 +18,8 @@ public:
 	U64 board;
 
 	// Get and Set methods
-	void setPos(short pos, bool value);
-	bool getPos(short pos);
+	void setPos(U8 pos, bool value);
+	bool getPos(U8 pos);
 	vector<U8> getPosVector();
 	vector<U8> getPosVector(U8 limit);
 
