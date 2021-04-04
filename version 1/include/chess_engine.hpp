@@ -36,15 +36,18 @@ public:
 	~ChessEngine();
 
 	// Generating Moves
-	pair<Move, float> bestMove(ChessState* cs, short depth);
-	vector<Move> genPMoves(ChessState* cs);
-	vector<Move> genNMoves(ChessState* cs);
-	vector<Move> genBMoves(ChessState* cs);
-	vector<Move> genRMoves(ChessState* cs);
-	vector<Move> genQMoves(ChessState* cs);
-	vector<Move> genKMoves(ChessState* cs);
+	void genPMoves(ChessState* cs, vector<Move>* moves);
+	void genNMoves(ChessState* cs, vector<Move>* moves);
+	void genBMoves(ChessState* cs, vector<Move>* moves);
+	void genRMoves(ChessState* cs, vector<Move>* moves);
+	void genQMoves(ChessState* cs, vector<Move>* moves);
+	void genKMoves(ChessState* cs, vector<Move>* moves);
+	void genAllMoves(ChessState* cs, vector<Move>* moves);
 
 	float rate(ChessState* cs);
+	pair<Move, float> bestMove(ChessState* cs, short depth);
+	float minimax_eval(ChessState* cs, short depth, float alpha, float beta);
+
 
 	StateTree stateTree;
 };
