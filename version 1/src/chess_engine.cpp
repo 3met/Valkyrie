@@ -69,7 +69,7 @@ short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6])
 	return rating;
 }
 
-short ChessEngine::eval(ChessState* cs) {
+short ChessEngine::eval_board(ChessState* cs) {
 	/* Rates the status of game in terms of advantage */
 
 	U8 i;
@@ -103,7 +103,7 @@ short ChessEngine::eval(ChessState* cs) {
 
 pair<Move, short> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	Move bestMove;
-	short rating = minimax_eval_top(cs, depth, -10000, 10000, &bestMove);
+	short rating = minimax_eval_top(cs, depth, -30000, 30000, &bestMove);
 
 	return make_pair(bestMove, rating);
 }
@@ -114,7 +114,7 @@ short ChessEngine::minimax_eval_top(ChessState* cs, U8 depth, short alpha, short
 	 * Beta represents the max guaranteed eval. */ 
 
 	if (depth == 0) {	// Add case if checkmate?
-		return eval(cs);
+		return eval_board(cs);
 	}
 
 	vector<Move> moves;
@@ -125,28 +125,51 @@ short ChessEngine::minimax_eval_top(ChessState* cs, U8 depth, short alpha, short
 		throw ChessState::NoMoves();
 	}
 
-	short maxEval = -30000;	// Arbitrary low number
 	short eval;
-	for (U8 i=0; i<moves.size(); ++i) {
-		cs->move(moves[i]);
-		eval = -minimax_eval(cs, depth-1, -beta, -alpha);
-		if (!cs->turn) {
-			eval = -eval;
-		}
-		cs->reverseMove(moves[i]);
 
-		if (maxEval < eval) {
-			maxEval = eval;
-			*bestMove = moves[i];
+	if (cs->turn == cs->WHITE) {
+		short maxEval = -30000;	// Arbitrary low number
+
+		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
+			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
+
+			if (maxEval < eval) {
+				maxEval = eval;
+				*bestMove = moves[i];
+			}
+			if (alpha < maxEval) {
+				alpha = maxEval;
+			}
+			if (alpha >= beta) {
+				break;
+			}
 		}
-		if (alpha < eval) {
-			alpha = eval;
+		return maxEval;
+
+	} else {	// Black to play
+		short minEval = 30000;	// Arbitrary high number
+
+		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
+			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
+
+			if (minEval > eval) {
+				minEval = eval;
+				*bestMove = moves[i];
+			}
+			if (beta > minEval) {
+				beta = minEval;
+			}
+			if (beta <= alpha) {
+				break;
+			}
 		}
-		if (beta <= alpha) {
-			break;
-		}
+
+		return minEval;
 	}
-	return maxEval;
 }
 
 short ChessEngine::minimax_eval(ChessState* cs, U8 depth, short alpha, short beta) {
@@ -155,7 +178,7 @@ short ChessEngine::minimax_eval(ChessState* cs, U8 depth, short alpha, short bet
 	 * Beta represents the max guaranteed eval. */ 
 
 	if (depth == 0) {	// Add case if checkmate?
-		return eval(cs);
+		return eval_board(cs);
 	}
 
 	vector<Move> moves;
@@ -166,25 +189,47 @@ short ChessEngine::minimax_eval(ChessState* cs, U8 depth, short alpha, short bet
 		throw ChessState::NoMoves();
 	}
 
-	short maxEval = -30000;	// Arbitrary low number
 	short eval;
-	for (U8 i=0; i<moves.size(); ++i) {
-		cs->move(moves[i]);
-		eval = -minimax_eval(cs, depth-1, -beta, -alpha);
-		if (!cs->turn) {
-			eval = -eval;
-		}
-		cs->reverseMove(moves[i]);
 
-		if (maxEval < eval) {
-			maxEval = eval;
+	if (cs->turn == cs->WHITE) {
+		short maxEval = -30000;	// Arbitrary low number
+
+		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
+			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
+
+			if (maxEval < eval) {
+				maxEval = eval;
+			}
+			if (alpha < maxEval) {
+				alpha = maxEval;
+			}
+			if (alpha >= beta) {
+				break;
+			}
 		}
-		if (alpha < eval) {
-			alpha = eval;
+		return maxEval;
+
+	} else {	// Black to play
+		short minEval = 30000;	// Arbitrary high number
+
+		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
+			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
+
+			if (minEval > eval) {
+				minEval = eval;
+			}
+			if (beta > minEval) {
+				beta = minEval;
+			}
+			if (beta <= alpha) {
+				break;
+			}
 		}
-		if (beta <= alpha) {
-			break;
-		}
+
+		return minEval;
 	}
-	return maxEval;
 }

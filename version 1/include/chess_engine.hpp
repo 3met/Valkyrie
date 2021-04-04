@@ -48,7 +48,7 @@ public:
 	void genKMoves(ChessState* cs, vector<Move>* moves);
 	void genAllMoves(ChessState* cs, vector<Move>* moves);
 
-	short eval(ChessState* cs);
+	short eval_board(ChessState* cs);
 	short eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]);
 	pair<Move, short> bestMove(ChessState* cs, U8 depth);
 	short minimax_eval(ChessState* cs, U8 depth, short alpha, short beta);

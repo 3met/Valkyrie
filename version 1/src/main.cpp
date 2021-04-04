@@ -75,11 +75,14 @@ int main() {
 	cout << "Depth: " << depth << endl;
 	cs.show();
 
+	// cout << endl;
+	// engine.bestMove(&cs, 3).first.print();
+
 	start_t = clock();
 	for (int i=0; i<count; ++i) {
 		cout << "===== Move #" << i+1 << " =====" << endl;
 		m = engine.bestMove(&cs, depth);
-		cout << "Score: " << m.second << endl;
+		cout << "Score: " << m.second/100 << endl;
 		m.first.print();
 		cs.move(m.first);
 		cs.show();
@@ -88,19 +91,7 @@ int main() {
 	total_time += ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
 
 	cout << "per_count=" << (total_time/count) << endl;
-	// count = 20; depth=3
-	// per_count=0.3092
-	// per_count=0.3098
-	// per_count=0.30835
-	// per_count=0.31355
-	// per_count=0.33455
-	// per_count=0.3038		UPDATE change cs from obj to ref in bestMove
-	// per_count=0.31035
-	// per_count=0.3049
-	// per_count=0.29985	UPDATE change move vector to pass by ref
-	// per_count=0.2988
-	// per_count=0.14445	UPDATE Remake minimax algorithm and added pruning
-	// per_count=0.1427
+
 	return 0;
 }
 
