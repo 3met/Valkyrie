@@ -3,6 +3,7 @@
 #include <vector>
 #include "bitboard.hpp"
 #include "U64.hpp"
+#include "U8.hpp"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ Bitboard::Bitboard(U64 b) {
 
 Bitboard::~Bitboard() {};
 
-const short Bitboard::show_order[64] = {
+const U8 Bitboard::show_order[64] = {
 	56,	57, 58, 59, 60, 61, 62, 63,
 	48, 49, 50, 51, 52, 53, 54, 55,
 	40, 41, 42, 43, 44, 45, 46, 47,
@@ -31,7 +32,7 @@ const short Bitboard::show_order[64] = {
 void Bitboard::setPos(short pos, bool value) {
 	/* Set the given position to the given value */
 
-	unsigned long long int n;	// Needs to be same size as board
+	U64 n;	// Needs to be same size as board
 
 	if (value) {
 		n = 1;
@@ -41,17 +42,17 @@ void Bitboard::setPos(short pos, bool value) {
 	board ^= (-n ^ board) & (1ULL << pos);
 }
 
-inline bool Bitboard::getPos(U8 pos) {
+inline bool Bitboard::getPos(short pos) {
 	/* Returns the value of the bit position */
 	return (board >> pos) & 1;
 }
 
-vector<short> Bitboard::getPosVector() {
+vector<U8> Bitboard::getPosVector() {
 	/* Returns the all positions with a positive value */
 
-	vector<short> v;
+	vector<U8> v;
 
-	for (short i=0; i<64; ++i) {
+	for (U8 i=0; i<64; ++i) {
 		if (this->getPos(i)) {
 			v.push_back(i);
 		}
@@ -60,12 +61,12 @@ vector<short> Bitboard::getPosVector() {
 	return v;
 }
 
-vector<short> Bitboard::getPosVector(short limit) {
+vector<U8> Bitboard::getPosVector(U8 limit) {
 	/* Returns the all positions with a positive value */
 
-	vector<short> v;
+	vector<U8> v;
 
-	for (short i=0; i<64; ++i) {
+	for (U8 i=0; i<64; ++i) {
 		if (this->getPos(i)) {
 			v.push_back(i);
 
@@ -82,7 +83,7 @@ vector<short> Bitboard::getPosVector(short limit) {
 void Bitboard::show() {
 	/* Displays Bitboard on Console */
 
-	for (int i=0; i<64; ++i) {
+	for (U8 i=0; i<64; ++i) {
 		cout << ((board >> show_order[i]) & 1) << ' ';
 
 		if ((i+1) % 8 == 0) {

@@ -18,17 +18,17 @@ private:
 public:
 
 	enum colour {
-		white = 0,	// White must remain 0 for turn indexing to work
-		black = 1,
+		WHITE = 0,	// White must remain 0 for turn indexing to work
+		BLACK = 1,
 	};
 	enum piece_type {
-		pawn = 0,
-		knight,
-		bishop,
-		rook,
-		queen,
-		king,
-		all_pieces,
+		PAWN = 0,
+		KNIGHT,
+		BISHOP,
+		ROOK,
+		QUEEN,
+		KING,
+		ALL_PIECES,
 	};
 
 	// Sort chess state by turn

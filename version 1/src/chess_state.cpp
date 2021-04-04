@@ -104,8 +104,8 @@ void ChessState::reset() {
 	bK.setPos(60, true);
 
 	// Set universal bitboards
-	this->updateAllBitboard(white);
-	this->updateAllBitboard(black);
+	this->updateAllBitboard(WHITE);
+	this->updateAllBitboard(BLACK);
 
 	turn = false;	// False for white; true for black
 	
@@ -129,8 +129,8 @@ void ChessState::clear() {
 	}
 
 	// Set universal bitboards
-	this->updateAllBitboard(white);
-	this->updateAllBitboard(black);
+	this->updateAllBitboard(WHITE);
+	this->updateAllBitboard(BLACK);
 
 	turn = false;	// False for white; true for black
 	

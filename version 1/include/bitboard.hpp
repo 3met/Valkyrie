@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "U64.hpp"
+#include "U8.hpp"
 
 using namespace std;
 
@@ -13,14 +14,14 @@ public:
 	Bitboard(U64 b);
 	~Bitboard();
 
-	const static short show_order[64];	// Order to display the bits
+	const static U8 show_order[64];	// Order to display the bits
 	U64 board;
 
 	// Get and Set methods
 	void setPos(short pos, bool value);
 	bool getPos(short pos);
-	vector<short> getPosVector();
-	vector<short> getPosVector(short limit);
+	vector<U8> getPosVector();
+	vector<U8> getPosVector(U8 limit);
 
 	U64 posToBoard(short pos);
 
