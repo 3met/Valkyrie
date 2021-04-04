@@ -19,7 +19,7 @@
 For Consideration:
 
  - Instead of calculating all moves everytime, somehow reuse?
- - For rook move generation, remove non-horizontal pieces from board before calculation
+ - For rook move generation, remove non-horizontal pieces from bitboard before calculation
  - Add engine settings class for things like material scoring system
 
 */
