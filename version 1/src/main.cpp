@@ -33,7 +33,7 @@ For Consideration:
 
 using namespace std;
 
-ChessState play_self(ChessState cs, ChessEngine engine, short depth, short count) {
+void play_self(ChessState* cs, ChessEngine engine, U8 depth, U8 count) {
 	pair<Move, float> m;
 
 	for (int i=0; i<count; ++i) {
