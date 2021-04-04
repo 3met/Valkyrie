@@ -58,63 +58,58 @@ ChessEngine::~ChessEngine() {}
 
 // ----- Scoring Game State -----
 // Standard material valuation
-const float ChessEngine::materialValsSTD[6] = {
-	1, 3, 3, 5, 9, 200,
+const float ChessEngine::materialValsSTD[2][6] = {
+	{1, 3, 3, 5, 9, 200},
+	{-1, -3, -3, -5, -9, -200},
 };
 
-// Larry Kaufman's material valuation
-const float ChessEngine::materialValsLK[6] = {
-	// https://web.archive.org/web/20160314214435/http://www.danheisman.com/Articles/evaluation_of_material_imbalance.htm
-	1, 3.25, 3.25, 5, 9.75, 200,
-};
+float ChessEngine::scoreMaterialSTD(ChessState *cs) {
+	/*	Provides a score based on the material on the board 
+	 * 	using the standard system */
 
-// Hans Berliner's material valuation
-const float ChessEngine::materialValsHB[6] = {
-	// https://en.wikipedia.org/wiki/Chess_piece_relative_value#Hans_Berliner's_system
-	1, 3.2, 3.33, 5.1, 8.8, 200,
-};
+	float total = 0;
 
-// ----- Primary Operations -----
-float ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]) {
-
-	float rating;
-
-	// Account for material advantage
 	for (U8 i=0; i<6; ++i) {
-		rating += pieces[side][i].size() * materialValsSTD[i];
+		total += cs->pieces[0][i]->getPosVector().size() * materialValsSTD[0][i];
+		total += cs->pieces[1][i]->getPosVector().size() * materialValsSTD[1][i];
 	}
 
-	return rating;
+	return total;
 }
 
-float ChessEngine::eval(ChessState* cs) {
+// Larry Kaufman's material valuation
+const float ChessEngine::materialValsLK[2][6] = {
+	{1, 3.25, 3.25, 5, 9.75, 200},
+	{-1, -3.25, -3.25, -5, -9.75, -200},
+};
+
+float ChessEngine::scoreMaterialLK(ChessState* cs) {
+	/*	Provides a score based on the material on the board
+	 * 	using the Larry Kaufman's system
+	 *	https://web.archive.org/web/20160314214435/http://www.danheisman.com/Articles/evaluation_of_material_imbalance.htm */
+
+	return 0;
+}
+
+// Hans Berliner's material valuation
+const float ChessEngine::materialValsHB[2][6] = {
+	{1, 3.2, 3.33, 5.1, 8.8, 200},
+	{-1, -3.2, -3.33, -5.1, -8.8, -200},
+};
+
+float ChessEngine::scoreMaterialHB(ChessState* cs) {
+	/*	Provides a score based on the material on the board
+	 * 	using the Hans Berliner's system
+	 *	https://en.wikipedia.org/wiki/Chess_piece_relative_value#Hans_Berliner's_system */
+	return 0;
+}
+
+// ----- Primary Operations -----
+float ChessEngine::rate(ChessState* cs) {
 	/* Rates the status of game in terms of advantage */
+	float rating = this->scoreMaterialSTD(cs);
 
-	U8 i;
 
-	// Positions of all the pieces
-	vector<U8> pieces[2][6] = {
-		// White
-		{
-			cs->pieces[0][0]->getPosVector(),
-			cs->pieces[0][1]->getPosVector(),
-			cs->pieces[0][2]->getPosVector(),
-			cs->pieces[0][3]->getPosVector(),
-			cs->pieces[0][4]->getPosVector(),
-			cs->pieces[0][5]->getPosVector(),
-		},
-		// Black
-		{
-			cs->pieces[1][0]->getPosVector(),
-			cs->pieces[1][1]->getPosVector(),
-			cs->pieces[1][2]->getPosVector(),
-			cs->pieces[1][3]->getPosVector(),
-			cs->pieces[1][4]->getPosVector(),
-			cs->pieces[1][5]->getPosVector(),
-		}
-	};
-
-	float rating = eval_side(cs, cs->WHITE, pieces) - eval_side(cs, cs->BLACK, pieces);
 
 	return rating;
 }
@@ -132,7 +127,7 @@ float ChessEngine::minimax_eval_top(ChessState* cs, U8 depth, float alpha, float
 	 * Beta represents the max guaranteed eval. */ 
 
 	if (depth == 0) {	// Add case if checkmate?
-		return eval(cs);
+		return rate(cs);
 	}
 
 	vector<Move> moves;
@@ -143,28 +138,48 @@ float ChessEngine::minimax_eval_top(ChessState* cs, U8 depth, float alpha, float
 		throw ChessState::NoMoves();
 	}
 
-	float maxEval = -100000;	// Arbitrary low number
-	float eval;
-	for (U8 i=0; i<moves.size(); ++i) {
-		cs->move(moves[i]);
-		eval = -minimax_eval(cs, depth-1, -beta, -alpha);
-		if (!cs->turn) {
-			eval = -eval;
-		}
-		cs->reverseMove(moves[i]);
+	if (cs->turn) {
+		float maxEval = -10000;	// Arbitrary low number
+		float eval;
+		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
+			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
 
-		if (maxEval < eval) {
-			maxEval = eval;
-			*bestMove = moves[i];
+			if (maxEval < eval) {
+				maxEval = eval;
+				*bestMove = moves[i];
+			}
+			if (alpha < eval) {
+				alpha = eval;
+			}
+			if (beta <= alpha) {
+				break;
+			}
 		}
-		if (alpha < eval) {
-			alpha = eval;
+		return maxEval;
+
+	} else {	// Black's turn
+		float minEval = 10000;	// Arbitrary high number
+		float eval;
+		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
+			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
+
+			if (minEval > eval) {
+				minEval = eval;
+				*bestMove = moves[i];
+			}
+			if (beta > eval) {
+				beta = eval;
+			}
+			if (beta <= alpha) {
+				break;
+			}
 		}
-		if (beta <= alpha) {
-			break;
-		}
+		return minEval;
 	}
-	return maxEval;
 }
 
 float ChessEngine::minimax_eval(ChessState* cs, U8 depth, float alpha, float beta) {
@@ -173,7 +188,7 @@ float ChessEngine::minimax_eval(ChessState* cs, U8 depth, float alpha, float bet
 	 * Beta represents the max guaranteed eval. */ 
 
 	if (depth == 0) {	// Add case if checkmate?
-		return eval(cs);
+		return rate(cs);
 	}
 
 	vector<Move> moves;
