@@ -4,22 +4,6 @@
 #include "chess_state.hpp"
 
 ChessState::ChessState() {
-	// pieces[0][0] = &wP;
-	// pieces[0][1] = &wN;
-	// pieces[0][2] = &wB;
-	// pieces[0][3] = &wR;
-	// pieces[0][4] = &wQ;
-	// pieces[0][5] = &wK;
-	// pieces[0][6] = &wAll;
-
-	// pieces[1][0] = &bP;
-	// pieces[1][1] = &bN;
-	// pieces[1][2] = &bB;
-	// pieces[1][3] = &bR;
-	// pieces[1][4] = &bQ;
-	// pieces[1][5] = &bK;
-	// pieces[1][6] = &bAll;
-
 	this->reset();
 };
 
@@ -47,7 +31,6 @@ ChessState::ChessState(const ChessState* cs) {
 	bKCastle = cs->bKCastle;
 	bQCastle = cs->bQCastle;
 	
-	// en_passant[3] = cs.;
 	halfmoveClock = cs->halfmoveClock;
 	turnNumber = cs->turnNumber;
 }
@@ -90,13 +73,13 @@ void ChessState::reset() {
 	wN.setPos(1, true);	// White knights
 	wN.setPos(6, true);
 
-	//wB.setPos(2, true);	// White bishops
-	//wB.setPos(5, true);
+	wB.setPos(2, true);	// White bishops
+	wB.setPos(5, true);
 
 	wR.setPos(0, true);	// White rooks
 	wR.setPos(7, true);
 
-	//wQ.setPos(3, true);	// White queen and king
+	wQ.setPos(3, true);	// White queen and king
 	wK.setPos(4, true);
 
 	bP.setPos(48, true); // Black pawns
@@ -111,13 +94,13 @@ void ChessState::reset() {
 	bN.setPos(57, true);	// Black knights
 	bN.setPos(62, true);
 
-	//bB.setPos(58, true);	// Black bishops
-	//bB.setPos(61, true);
+	bB.setPos(58, true);	// Black bishops
+	bB.setPos(61, true);
 
 	bR.setPos(56, true);	// Black rooks
 	bR.setPos(63, true);
 
-	//bQ.setPos(59, true);	// Black queen and king
+	bQ.setPos(59, true);	// Black queen and king
 	bK.setPos(60, true);
 
 	// Set universal bitboards
@@ -131,8 +114,7 @@ void ChessState::reset() {
 	bKCastle = true;
 	bQCastle = true;
 
-	en_passant[0] = '-';	// Square behind pawn else "-"
-	en_passant[1] = '\0';	// Square behind pawn else "\0"
+	enPassant = -1;
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
 	turnNumber = 1;	// Game turn number
 }
@@ -157,8 +139,7 @@ void ChessState::clear() {
 	bKCastle = true;
 	bQCastle = true;
 
-	en_passant[0] = '-';	// Square behind pawn else "-"
-	en_passant[1] = '\0';	// Square behind pawn else "\0"
+	enPassant = -1;
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
 	turnNumber = 1;	// Game turn number
 }
@@ -185,7 +166,6 @@ void ChessState::move(Move m) {
 
 	// Removes potential killed piece from bitboard
 	if (m.killed != -1) {
-		// cout << "REMOVE" << m.killed << endl;
 		for (i=0; i<6; ++i) {
 			if (pieces[!turn][i]->getPos(m.end)) {
 				pieces[!turn][i]->setPos(m.end, false);
@@ -215,8 +195,6 @@ void ChessState::move(Move m) {
 void ChessState::reverseMove(Move m) {
 	/* 	Reverses a moves.
 		Assumes move is valid.	*/
-
-	short i;
 
 	turn = !turn;	// Swaps turn
 
@@ -275,7 +253,7 @@ void ChessState::show(bool show_coords) {
 	// TODO: ADD COORDS around board
 
 	cout << "---------------" << endl;
-	for (int i=0; i<64; ++i) {
+	for (i=0; i<64; ++i) {
 		cout << board[Bitboard::show_order[i]] << ' ';
 
 		if ((i+1) % 8 == 0) {
