@@ -77,7 +77,7 @@ public:
 
 	static const char piece_names[2][6];	// Note: must match piece indexing
 
-	bool turn;	// True for white; false for black
+	bool turn;	// False for white; true for black
 	
 	bool wKCastle;	// Castle perms
 	bool wQCcastle;
