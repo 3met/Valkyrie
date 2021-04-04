@@ -6,6 +6,7 @@
 #include <string>
 #include "bitboard.hpp"
 #include "move.hpp"
+#include "U8.hpp"
 
 using namespace std;
 
