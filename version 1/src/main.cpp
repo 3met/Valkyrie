@@ -38,11 +38,11 @@ ChessState play_self(ChessState cs, ChessEngine engine, short depth, short count
 
 	for (int i=0; i<count; ++i) {
 		cout << "===== NUM " << i << " =====" << endl;
-		m = engine.bestMove(&cs, depth);
+		m = engine.bestMove(cs, depth);
 		cout << m.second << endl;
 		m.first.print();
-		cs.move(m.first);
-		cs.show();
+		cs->move(m.first);
+		cs->show();
 	}
 }
 
@@ -61,18 +61,18 @@ int main() {
 	pair<Move, float> m;
 	char buffer[10];
 
+	int count = 20;
+	int depth = 3;
+
 	cout << "===== Initial =====" << endl;
+	cout << "Count: " << count << endl;
+	cout << "Depth: " << depth << endl;
 	cs.show();
 
-	// play_self(cs, engine, 6, 20);
-
-	int count = 100;
-	int depth = 4;
-
 	for (int i=0; i<count; ++i) {
-		cout << "===== NUM " << i << " =====" << endl;
+		cout << "===== Move #" << i+1 << " =====" << endl;
 		m = engine.bestMove(&cs, depth);
-		cout << m.second << endl;
+		cout << "Score: " << m.second << endl;
 		m.first.print();
 		cs.move(m.first);
 		cs.show();

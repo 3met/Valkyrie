@@ -23,9 +23,9 @@ private:
 	const static float materialValsHB[2][6];
 
 	// Scoring Game State
-	float scoreMaterialSTD(ChessState cs);
-	float scoreMaterialLK(ChessState cs);
-	float scoreMaterialHB(ChessState cs);
+	float scoreMaterialSTD(ChessState* cs);
+	float scoreMaterialLK(ChessState* cs);
+	float scoreMaterialHB(ChessState* cs);
 
 	static bool sortRatedMove(const pair<Move, float> &a, const pair<Move, float> &b) {
 		return a.second < b.second;
@@ -36,15 +36,15 @@ public:
 	~ChessEngine();
 
 	// Generating Moves
-	vector<Move> genPMoves(ChessState cs);
-	vector<Move> genNMoves(ChessState cs);
-	vector<Move> genBMoves(ChessState cs);
-	vector<Move> genRMoves(ChessState cs);
-	vector<Move> genQMoves(ChessState cs);
-	vector<Move> genKMoves(ChessState cs);
-
-	float rate(ChessState cs);
 	pair<Move, float> bestMove(ChessState* cs, short depth);
+	vector<Move> genPMoves(ChessState* cs);
+	vector<Move> genNMoves(ChessState* cs);
+	vector<Move> genBMoves(ChessState* cs);
+	vector<Move> genRMoves(ChessState* cs);
+	vector<Move> genQMoves(ChessState* cs);
+	vector<Move> genKMoves(ChessState* cs);
+
+	float rate(ChessState* cs);
 
 	StateTree stateTree;
 };
