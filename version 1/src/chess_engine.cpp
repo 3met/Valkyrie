@@ -109,61 +109,19 @@ float ChessEngine::rate(ChessState* cs) {
 	/* Rates the status of game in terms of advantage */
 	float rating = this->scoreMaterialSTD(cs);
 
+
+
 	return rating;
 }
 
-pair<Move, float> ChessEngine::bestMove(ChessState* cs, short depth) {
+pair<Move, float> ChessEngine::bestMove(ChessState* cs, U8 depth) {
+	Move bestMove;
+	float rating = minimax_eval_top(cs, depth, -10000, 10000, &bestMove);
 
-	U8 i;
-	vector<Move> validMoves;
-	vector<pair<Move, float>> ratedMoves;
-
-	// Generate all moves
-	genAllMoves(cs, &validMoves);
-
-	// Check if valid moves were generated
-	if (validMoves.size() == 0) {
-		throw ChessState::NoMoves();
-	}
-
-	// --- Recursively Calculate Best Move ---
-	if (depth <= 1) {
-		// Create a vector of ratings paired with moves
-		for (i=0; i<validMoves.size(); ++i) {
-			cs->move(validMoves[i]);
-			ratedMoves.push_back(make_pair(validMoves[i], this->rate(cs)));
-			cs->reverseMove(validMoves[i]);
-		}
-
-	} else {
-		// Make each move then recursively calculate its rating
-		// before reversing the move. 
-		for (i=0; i<validMoves.size(); ++i) {
-			cs->move(validMoves[i]);
-			try {
-				ratedMoves.push_back(
-					make_pair(validMoves[i], this->bestMove(cs, depth-1).second));
-			} catch (ChessState::NoMoves& e) {
-				ratedMoves.push_back(
-					make_pair(validMoves[i], 0));
-			}
-			cs->reverseMove(validMoves[i]);
-		}
-	}
-
-	// Return the best move for the current player
-	sort(ratedMoves.begin(), ratedMoves.end(), this->sortRatedMove);
-
-	// Return highest rating for white, lowest for black
-	if (cs->turn) {
-		return ratedMoves[0];
-	} else {
-		return ratedMoves[ratedMoves.size() - 1];
-	}
+	return make_pair(bestMove, rating);
 }
 
-
-float ChessEngine::minimax_eval(ChessState* cs, short depth, float alpha, float beta) {
+float ChessEngine::minimax_eval_top(ChessState* cs, U8 depth, float alpha, float beta, Move* bestMove) {
 	/* Evaluates the passed position.
 	 * Alpha represents the min guaranteed eval. 
 	 * Beta represents the max guaranteed eval. */ 
@@ -175,11 +133,79 @@ float ChessEngine::minimax_eval(ChessState* cs, short depth, float alpha, float 
 	vector<Move> moves;
 	genAllMoves(cs, &moves);
 
-	if (cs->turn == cs->WHITE) {
+	// Check if valid moves were generated
+	if (moves.size() == 0) {
+		throw ChessState::NoMoves();
+	}
+
+	if (cs->turn) {
 		float maxEval = -10000;	// Arbitrary low number
 		float eval;
 		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
 			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
+
+			if (maxEval < eval) {
+				maxEval = eval;
+				*bestMove = moves[i];
+			}
+			if (alpha < eval) {
+				alpha = eval;
+			}
+			if (beta <= alpha) {
+				break;
+			}
+		}
+		return maxEval;
+
+	} else {	// Black's turn
+		float minEval = 10000;	// Arbitrary high number
+		float eval;
+		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
+			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
+
+			if (minEval > eval) {
+				minEval = eval;
+				*bestMove = moves[i];
+			}
+			if (beta > eval) {
+				beta = eval;
+			}
+			if (beta <= alpha) {
+				break;
+			}
+		}
+		return minEval;
+	}
+}
+
+float ChessEngine::minimax_eval(ChessState* cs, U8 depth, float alpha, float beta) {
+	/* Evaluates the passed position.
+	 * Alpha represents the min guaranteed eval. 
+	 * Beta represents the max guaranteed eval. */ 
+
+	if (depth == 0) {	// Add case if checkmate?
+		return rate(cs);
+	}
+
+	vector<Move> moves;
+	genAllMoves(cs, &moves);
+
+	// Check if valid moves were generated
+	if (moves.size() == 0) {
+		throw ChessState::NoMoves();
+	}
+
+	if (cs->turn) {
+		float maxEval = -10000;	// Arbitrary low number
+		float eval;
+		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
+			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
 
 			if (maxEval < eval) {
 				maxEval = eval;
@@ -197,7 +223,9 @@ float ChessEngine::minimax_eval(ChessState* cs, short depth, float alpha, float 
 		float minEval = 10000;	// Arbitrary high number
 		float eval;
 		for (U8 i=0; i<moves.size(); ++i) {
+			cs->move(moves[i]);
 			eval = minimax_eval(cs, depth-1, alpha, beta);
+			cs->reverseMove(moves[i]);
 
 			if (minEval > eval) {
 				minEval = eval;

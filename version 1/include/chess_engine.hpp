@@ -9,6 +9,7 @@
 #include "move.hpp"
 #include "state_tree.hpp"
 #include "U64.hpp"
+#include "U8.hpp"
 
 using namespace std;
 
@@ -45,9 +46,9 @@ public:
 	void genAllMoves(ChessState* cs, vector<Move>* moves);
 
 	float rate(ChessState* cs);
-	pair<Move, float> bestMove(ChessState* cs, short depth);
-	float minimax_eval(ChessState* cs, short depth, float alpha, float beta);
-
+	pair<Move, float> bestMove(ChessState* cs, U8 depth);
+	float minimax_eval(ChessState* cs, U8 depth, float alpha, float beta);
+	float minimax_eval_top(ChessState* cs, U8 depth, float alpha, float beta, Move* bestMove);
 
 	StateTree stateTree;
 };

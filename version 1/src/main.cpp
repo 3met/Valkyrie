@@ -18,6 +18,7 @@
 /*
 For Consideration:
 
+ - Sort moves by likelyhood it is best move in alpha beta pruning
  - Instead of calculating all moves everytime, somehow reuse?
  - For rook move generation, remove non-horizontal pieces from bitboard before calculation
  - Add engine settings class for things like material scoring system
@@ -33,6 +34,7 @@ For Consideration:
 
 using namespace std;
 
+#include <vector>	// TEMP
 #include <time.h>
 clock_t start_t, end_t;
 double total_time = 0;
@@ -65,8 +67,8 @@ int main() {
 	pair<Move, float> m;
 	char buffer[10];
 
-	int count = 20;
-	int depth = 3;
+	int count = 50;
+	int depth = 5;
 
 	cout << "===== Initial =====" << endl;
 	cout << "Count: " << count << endl;
@@ -97,7 +99,8 @@ int main() {
 	// per_count=0.3049
 	// per_count=0.29985	UPDATE change move vector to pass by ref
 	// per_count=0.2988
-
+	// per_count=0.14445	UPDATE Remake minimax algorithm and added pruning
+	// per_count=0.1427
 	return 0;
 }
 
