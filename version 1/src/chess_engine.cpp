@@ -6,7 +6,6 @@
  * 4. Calculate the best move from a given game state */
 
 #include <algorithm>
-#include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <stdlib.h>
@@ -24,34 +23,8 @@ ChessEngine::ChessEngine() {
 
 	srand(time(0));
 
-	ifstream db_file;
-
-	// Load king move database
-	db_file.open("../data/king-moves.movelist");
-	if (!db_file) {
-		cout << "Fatal Error: Unable to read king moves file" << endl;
-		return;
-	} else {
-		U64 a, b;
-		for (U8 i=0; i<64; ++i) {	
-			db_file >> a >> b;
-			KMoveDB[i] = Bitboard(b);
-		}
-	}
-	db_file.close();
-
-	db_file.open("../data/knight-moves.movelist");
-	if (!db_file) {
-		cout << "Fatal Error: Unable to read knight moves file" << endl;
-		return;
-	} else {
-		U64 a, b;
-		for (U8 i=0; i<64; ++i) {
-			db_file >> a >> b;
-			NMoveDB[i] = Bitboard(b);
-		}
-	}
-	db_file.close();
+	read_move_list(&KMoveDB, "king-moves.movelist");
+	read_move_list(&NMoveDB, "knight-moves.movelist");
 }
 
 ChessEngine::~ChessEngine() {}
@@ -77,12 +50,21 @@ const float ChessEngine::materialValsHB[6] = {
 // ----- Primary Operations -----
 float ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]) {
 
-	float rating;
+	float rating = 0;
 
 	// Account for material advantage
 	for (U8 i=0; i<6; ++i) {
 		rating += pieces[side][i].size() * materialValsSTD[i];
 	}
+
+	// 
+
+	// Bonus for having two bishops
+	if (pieces[side][cs->BISHOP].size() == 2) {
+		rating += 0.5;
+	}
+
+	// 
 
 	return rating;
 }

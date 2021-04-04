@@ -10,14 +10,22 @@
 #include "state_tree.hpp"
 #include "U64.hpp"
 #include "U8.hpp"
+#include "S8.hpp"
 
 using namespace std;
 
 class ChessEngine {
 private:
+	// File IO methods
+	void read_move_list(map<U64, Bitboard>* moveList, string fileName);
+
+	// King and knight move databases
 	map<U64, Bitboard> KMoveDB;
 	map<U64, Bitboard> NMoveDB;
-	
+
+	// Position bonuses
+	map<U8, S8> knightBonus;
+
 	// Material value systems
 	const static float materialValsSTD[6];
 	const static float materialValsLK[6];

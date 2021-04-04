@@ -4,6 +4,7 @@
 
 #include <string>
 #include "U8.hpp"
+#include "S8.hpp"
 
 using namespace std;
 
@@ -11,8 +12,8 @@ class Move {
 public:
 	Move();
 	Move(U8 piece, U8 start, U8 end);
-	Move(U8 piece, U8 start, U8 end, short killed);
-	Move(U8 piece, U8 start, U8 end, short killed, short promoted);
+	Move(U8 piece, U8 start, U8 end, S8 killed);
+	Move(U8 piece, U8 start, U8 end, S8 killed, S8 promoted);
 	~Move();
 
 	static const char positions[64];

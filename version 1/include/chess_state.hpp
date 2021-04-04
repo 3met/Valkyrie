@@ -7,6 +7,7 @@
 #include "bitboard.hpp"
 #include "move.hpp"
 #include "U8.hpp"
+#include "S8.hpp"
 
 using namespace std;
 
@@ -74,7 +75,6 @@ public:
 		},
 	};	// Indexed as ordered below
 
-
 	static const char piece_names[2][6];	// Note: must match piece indexing
 
 	bool turn;	// False for white; true for black
@@ -84,7 +84,7 @@ public:
 	bool bKCastle;
 	bool bQCastle;
 	
-	U8 enPassant;	// Pos behind pawn, else -1
+	S8 enPassant;	// Pos behind pawn, else -1
 	short halfmoveClock;	// # of halfmoves since last capture or pawn move
 	short turnNumber;	// Game turn number
 
