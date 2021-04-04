@@ -26,7 +26,12 @@ Move::Move(short p, short s, short e, short k) {
 
 Move::~Move() {}
 
+string Move::posToCoord(U8 pos) {
+	char col = 'a';
+	col += pos % 8;
+	return col + to_string((pos/8) + 1);
+}
 
 void Move::print() {
-	cout << start << " to " << end << endl;
+	cout << Move::posToCoord(start) << " to " << Move::posToCoord(end) << endl;
 }
