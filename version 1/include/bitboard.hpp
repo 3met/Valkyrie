@@ -14,7 +14,7 @@ public:
 	Bitboard(U64 b);
 	~Bitboard();
 
-	const static U8 show_order[64];	// Order to display the bits
+	const static U8 SHOW_ORDER[64];	// Order to display the bits
 	U64 board;
 
 	// Get and Set methods

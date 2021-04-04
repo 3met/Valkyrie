@@ -23,8 +23,10 @@ ChessEngine::ChessEngine() {
 
 	srand(time(0));
 
-	read_move_list(&KMoveDB, "king-moves.movelist");
-	read_move_list(&NMoveDB, "knight-moves.movelist");
+	read_move_table(&KMoveDB, "king-moves.movetable");
+	read_move_table(&NMoveDB, "knight-moves.movetable");
+
+	read_bonus_table(&knightBonus, "knight-bonus.bonustable");
 }
 
 ChessEngine::~ChessEngine() {}
@@ -50,21 +52,24 @@ const short ChessEngine::materialValsHB[6] = {
 // ----- Primary Operations -----
 short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]) {
 
+	U8 i;
 	short rating = 0;
 
 	// Account for material advantage
-	for (U8 i=0; i<6; ++i) {
+	for (i=0; i<6; ++i) {
 		rating += pieces[side][i].size() * materialValsSTD[i];
 	}
-
-	// 
 
 	// Bonus for having two bishops
 	if (pieces[side][cs->BISHOP].size() == 2) {
 		rating += 50;
 	}
 
-	// 
+	// --- Adjustment for material placement ---
+	// Knight placement
+	for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
+		rating += knightBonus[pieces[side][cs->KNIGHT][i]];
+	}
 
 	return rating;
 }

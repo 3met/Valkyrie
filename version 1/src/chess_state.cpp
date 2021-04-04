@@ -255,7 +255,7 @@ void ChessState::show(bool show_coords) {
 
 	cout << "---------------" << endl;
 	for (i=0; i<64; ++i) {
-		cout << board[Bitboard::show_order[i]] << ' ';
+		cout << board[Bitboard::SHOW_ORDER[i]] << ' ';
 
 		if ((i+1) % 8 == 0) {
 			cout << endl;

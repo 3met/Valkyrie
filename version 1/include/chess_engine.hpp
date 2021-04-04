@@ -17,7 +17,8 @@ using namespace std;
 class ChessEngine {
 private:
 	// File IO methods
-	void read_move_list(map<U64, Bitboard>* moveList, string fileName);
+	void read_move_table(map<U64, Bitboard>* moveTable, string fileName);
+	void read_bonus_table(map<U8, S8>* bonusTable, string fileName);
 
 	// King and knight move databases
 	map<U64, Bitboard> KMoveDB;

@@ -17,7 +17,7 @@ Bitboard::Bitboard(U64 b) {
 
 Bitboard::~Bitboard() {};
 
-const U8 Bitboard::show_order[64] = {
+const U8 Bitboard::SHOW_ORDER[64] = {
 	56,	57, 58, 59, 60, 61, 62, 63,
 	48, 49, 50, 51, 52, 53, 54, 55,
 	40, 41, 42, 43, 44, 45, 46, 47,
@@ -84,7 +84,7 @@ void Bitboard::show() {
 	/* Displays Bitboard on Console */
 
 	for (U8 i=0; i<64; ++i) {
-		cout << ((board >> show_order[i]) & 1) << ' ';
+		cout << ((board >> SHOW_ORDER[i]) & 1) << ' ';
 
 		if ((i+1) % 8 == 0) {
 			cout << endl;
