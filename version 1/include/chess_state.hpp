@@ -84,7 +84,7 @@ public:
 	bool bKCastle;
 	bool bQCastle;
 	
-	char en_passant[3];	// Square behind pawn else "-"
+	U8 enPassant;	// Pos behind pawn, else -1
 	short halfmoveClock;	// # of halfmoves since last capture or pawn move
 	short turnNumber;	// Game turn number
 
