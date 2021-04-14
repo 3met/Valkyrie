@@ -53,7 +53,6 @@ public:
 	Bitboard bK;
 	Bitboard bAll;
 
-	// Bitboard* pieces[2][7];
 	Bitboard* pieces[2][7] = {
 		{
 			&wP,
@@ -80,9 +79,19 @@ public:
 	bool turn;	// False for white; true for black
 	
 	bool wKCastle;	// Castle perms
-	bool wQCcastle;
+	bool wQCastle;
 	bool bKCastle;
 	bool bQCastle;
+	bool* castle[2][2] = {
+		{
+			&wQCastle,
+			&wKCastle,
+		},
+		{
+			&bQCastle,
+			&bKCastle,
+		},
+	};
 	
 	S8 enPassant;	// Pos behind pawn, else -1
 	short halfmoveClock;	// # of halfmoves since last capture or pawn move

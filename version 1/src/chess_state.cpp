@@ -28,7 +28,7 @@ ChessState::ChessState(const ChessState* cs) {
 	turn = cs->turn;
 	
 	wKCastle = cs->wKCastle;	// Castle perms
-	wQCcastle = cs->wQCcastle;
+	wQCastle = cs->wQCastle;
 	bKCastle = cs->bKCastle;
 	bQCastle = cs->bQCastle;
 	
@@ -111,7 +111,7 @@ void ChessState::reset() {
 	turn = false;	// False for white; true for black
 	
 	wKCastle = true;	// Castle perms
-	wQCcastle = true;
+	wQCastle = true;
 	bKCastle = true;
 	bQCastle = true;
 
@@ -136,7 +136,7 @@ void ChessState::clear() {
 	turn = false;	// False for white; true for black
 	
 	wKCastle = true;	// Castle perms
-	wQCcastle = true;
+	wQCastle = true;
 	bKCastle = true;
 	bQCastle = true;
 
@@ -151,6 +151,7 @@ void ChessState::place(short colour, short piece, short pos) {
 	pieces[colour][piece]->setPos(pos, true);
 	this->updateAllBitboard(colour);
 }
+
 
 void ChessState::loadFEN(string FEN) {
 	/* Loads FEN econding into chess state */
