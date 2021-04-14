@@ -1,9 +1,10 @@
 
 /* --- In this File ---
  * 1. ChessEngine Constructor
- * 2. Calculating Psudo-legal piece moves
- * 3. Calculating material value and advantages
- * 4. Calculate the best move from a given game state */
+ * 2. Material value sets
+ * 3. Static board evaluation tactics
+ * 4. Move ordering (for alpha-beta)
+ * 5. Best move calculations (negamax, alpha-beta) */
 
 #include <algorithm>
 #include <iostream>
@@ -16,6 +17,11 @@
 #include "chess_state.hpp"
 #include "move.hpp"
 #include "U64.hpp"
+
+// Factors used in static evaluation
+#define USE_MATERIAL_VALUE
+#define USE_MATERIAL_PLACEMENT
+
 
 using namespace std;
 
@@ -49,15 +55,18 @@ const short ChessEngine::materialValsHB[6] = {
 	100, 320, 333, 510, 880, 20000,
 };
 
+
 // ----- Primary Operations -----
 short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]) {
 
 	U8 i;
 	short rating = 0;
 
+#ifdef USE_MATERIAL_VALUE
+	// --- Adjustment for Material Amount --- 
 	// Account for material advantage
 	for (i=0; i<6; ++i) {
-		rating += pieces[side][i].size() * materialValsSTD[i];
+		rating += pieces[side][i].size() * materialValsLK[i];
 	}
 
 	// Bonus for having two bishops
@@ -65,14 +74,53 @@ short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6])
 		rating += 50;
 	}
 
-	// --- Adjustment for material placement ---
+	// Adjust knight value with pawns
+	// +6 for each pawn above 5, -6 for each below
+	rating += pieces[side][cs->KNIGHT].size() * ((6*pieces[side][cs->PAWN].size()) - 30);
+
+	// Adjust rook value with pawns
+	// -12 for each pawn above 5, +12 for each below
+	rating += pieces[side][cs->ROOK].size() * ((-12*pieces[side][cs->PAWN].size()) + 60);
+#endif
+
+#ifdef USE_MATERIAL_PLACEMENT
+	// --- Adjustment for Material Placement ---
 	// Knight placement
 	for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
 		rating += knightBonus[pieces[side][cs->KNIGHT][i]];
 	}
+#endif
+
+	// --- Adjustment for Pawn Structure ---
+	// Penalize doubled pawns
+
+	// Penalize backward pawns
+
+	// Penalize blocked pawns (Covered by mobility bonus?)
+
+
+	// --- Adjust for Passed Pawns ---
+	// Hidden Passed Pawn
+
+	// Distance from opposing king
+
+	// Distance to promotion bonus
+
+
+	// --- Adjust for King Safty ---
+	// Stay in corner during middle game
+
+	// Retain pawn protection
+
+	// Distance from enemy pieces
+
+
+	// --- Adjustment for Mobility ---
+	// TODO
 
 	return rating;
 }
+
 
 short ChessEngine::eval_board(ChessState* cs) {
 	/* Rates the status of game in terms of advantage */
@@ -106,20 +154,51 @@ short ChessEngine::eval_board(ChessState* cs) {
 	return rating;
 }
 
+
 pair<Move, short> ChessEngine::bestMove(ChessState* cs, U8 depth) {
-	Move bestMove;
-	short rating = minimax_eval_top(cs, depth, -30000, 30000, &bestMove);
+	vector<Move> moves;
+	genAllMoves(cs, &moves);
 
-	return make_pair(bestMove, rating);
+	// Check if valid moves were generated
+	if (moves.size() == 0) {
+		throw ChessState::NoMoves();
+	}
+
+	// TODO sort moves
+
+	short alpha = -30000;	// -INF; best score current color can achive 
+	short beta = 30000;	// INF; best score other color can achive
+	U8 bestIndex;
+	short score;
+	short bestScore;
+
+	for (U8 i=0; i<moves.size(); ++i) {
+		cs->move(moves[i]);
+		score = -negamaxSearch(cs, depth-1, -beta, -alpha);
+		cs->reverseMove(moves[i]);
+
+		if (score > alpha) {
+			alpha = score;
+			bestIndex = i;
+		}
+	}
+
+	if (cs->turn == cs->WHITE) {
+		return make_pair(moves[bestIndex], alpha);
+	} else {
+		return make_pair(moves[bestIndex], -alpha);
+	}
 }
 
-short ChessEngine::minimax_eval_top(ChessState* cs, U8 depth, short alpha, short beta, Move* bestMove) {
-	/* Evaluates the passed position.
-	 * Alpha represents the min guaranteed eval. 
-	 * Beta represents the max guaranteed eval. */ 
 
-	if (depth == 0) {	// Add case if checkmate?
-		return eval_board(cs);
+short ChessEngine::negamaxSearch(ChessState* cs, U8 depth, short alpha, short beta) {
+	if (depth == 0) {
+		short rating = eval_board(cs);
+		if (cs->turn == cs->BLACK) {
+			return -rating;
+		} else {
+			return rating;
+		}		 
 	}
 
 	vector<Move> moves;
@@ -130,111 +209,21 @@ short ChessEngine::minimax_eval_top(ChessState* cs, U8 depth, short alpha, short
 		throw ChessState::NoMoves();
 	}
 
-	short eval;
+	short score;
 
-	if (cs->turn == cs->WHITE) {
-		short maxEval = -30000;	// Arbitrary low number
+	for (U8 i=0; i<moves.size(); ++i) {
+		cs->move(moves[i]);
+		score = -negamaxSearch(cs, depth-1, -beta, -alpha);
+		cs->reverseMove(moves[i]);
 
-		for (U8 i=0; i<moves.size(); ++i) {
-			cs->move(moves[i]);
-			eval = minimax_eval(cs, depth-1, alpha, beta);
-			cs->reverseMove(moves[i]);
-
-			if (maxEval < eval) {
-				maxEval = eval;
-				*bestMove = moves[i];
-			}
-			if (alpha < maxEval) {
-				alpha = maxEval;
-			}
-			if (alpha >= beta) {
-				break;
-			}
+		if (score >= beta) {
+			return beta;
 		}
-		return maxEval;
-
-	} else {	// Black to play
-		short minEval = 30000;	// Arbitrary high number
-
-		for (U8 i=0; i<moves.size(); ++i) {
-			cs->move(moves[i]);
-			eval = minimax_eval(cs, depth-1, alpha, beta);
-			cs->reverseMove(moves[i]);
-
-			if (minEval > eval) {
-				minEval = eval;
-				*bestMove = moves[i];
-			}
-			if (beta > minEval) {
-				beta = minEval;
-			}
-			if (beta <= alpha) {
-				break;
-			}
+		if (score > alpha) {
+			alpha = score;
 		}
-
-		return minEval;
 	}
+
+	return alpha;
 }
 
-short ChessEngine::minimax_eval(ChessState* cs, U8 depth, short alpha, short beta) {
-	/* Evaluates the passed position.
-	 * Alpha represents the min guaranteed eval. 
-	 * Beta represents the max guaranteed eval. */ 
-
-	if (depth == 0) {	// Add case if checkmate?
-		return eval_board(cs);
-	}
-
-	vector<Move> moves;
-	genAllMoves(cs, &moves);
-
-	// Check if valid moves were generated
-	if (moves.size() == 0) {
-		throw ChessState::NoMoves();
-	}
-
-	short eval;
-
-	if (cs->turn == cs->WHITE) {
-		short maxEval = -30000;	// Arbitrary low number
-
-		for (U8 i=0; i<moves.size(); ++i) {
-			cs->move(moves[i]);
-			eval = minimax_eval(cs, depth-1, alpha, beta);
-			cs->reverseMove(moves[i]);
-
-			if (maxEval < eval) {
-				maxEval = eval;
-			}
-			if (alpha < maxEval) {
-				alpha = maxEval;
-			}
-			if (alpha >= beta) {
-				break;
-			}
-		}
-		return maxEval;
-
-	} else {	// Black to play
-		short minEval = 30000;	// Arbitrary high number
-
-		for (U8 i=0; i<moves.size(); ++i) {
-			cs->move(moves[i]);
-			eval = minimax_eval(cs, depth-1, alpha, beta);
-			cs->reverseMove(moves[i]);
-
-			if (minEval > eval) {
-				minEval = eval;
-			}
-			if (beta > minEval) {
-				beta = minEval;
-			}
-			if (beta <= alpha) {
-				break;
-			}
-		}
-
-		return minEval;
-	}
-}

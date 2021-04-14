@@ -1,0 +1,4 @@
+
+check if king square being attacked before castling
+
+

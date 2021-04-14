@@ -51,9 +51,9 @@ public:
 
 	short eval_board(ChessState* cs);
 	short eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]);
+	
 	pair<Move, short> bestMove(ChessState* cs, U8 depth);
-	short minimax_eval(ChessState* cs, U8 depth, short alpha, short beta);
-	short minimax_eval_top(ChessState* cs, U8 depth, short alpha, short beta, Move* bestMove);
+	short negamaxSearch(ChessState* cs, U8 depth, short alpha, short beta);
 
 	StateTree stateTree;
 };

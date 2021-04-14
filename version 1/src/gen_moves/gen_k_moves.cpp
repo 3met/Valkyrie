@@ -40,5 +40,7 @@ void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 			// Add to list of valid moves
 			moves->push_back(Move(cs->KING, start[i], targets[j], killed));
 		}
+
+		// if (cs)
 	}
 }
