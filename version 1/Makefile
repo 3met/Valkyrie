@@ -27,7 +27,7 @@ compile: $(BIN)/$(EXECUTABLE)
 
 # Compile Normally
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp $(SRC)/*/*.cpp
-	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
+	cls && $(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
 
 compile_debug: $(BIN)/$(DEBUG_EXECUTABLE)
 
