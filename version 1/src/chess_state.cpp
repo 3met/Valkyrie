@@ -53,7 +53,6 @@ U8 ChessState::getPieceType(bool colour, U8 pos) {
 		}
 	}
 
-	//cout << "Warning: No piece found." << endl;
 	return -1;
 }
 
@@ -293,7 +292,27 @@ void ChessState::loadFEN(string FEN) {
 			break;
 		}
 	}
+
 	turnNumber = stoi(FEN.substr(FEN_index-(nLength-1), nLength));
+}
+
+
+Move ChessState::notationToMove(string notation) {
+	// Converts chess notation to Move object (a7b8q ==> Move)	
+	U8 start = Move::coordToPos(notation.substr(0, 2));
+	U8 end = Move::coordToPos(notation.substr(2, 2));
+	U8 promoted;
+	if (end >= 56 || end <= 7) {
+		promoted = QUEEN;
+	} else {
+		promoted = -1;
+	}
+	return Move(getPieceType(turn, start),
+		getPieceType(turn, start),
+		start,
+		end,
+		getPieceType(!turn, end),
+		promoted);
 }
 
 

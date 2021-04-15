@@ -58,25 +58,9 @@ public:
 	Bitboard bAll;
 
 	Bitboard* pieces[2][7] = {
-		{
-			&wP,
-			&wN,
-			&wB,
-			&wR,
-			&wQ,
-			&wK,
-			&wAll
-		},
-		{
-			&bP,
-			&bN,
-			&bB,
-			&bR,
-			&bQ,
-			&bK,
-			&bAll
-		},
-	};	// Indexed as ordered below
+		{&wP, &wN, &wB, &wR, &wQ, &wK, &wAll},
+		{&bP, &bN, &bB, &bR, &bQ, &bK, &bAll},
+	};
 
 	static const char piece_names[2][6];	// Note: must match piece indexing
 
@@ -87,14 +71,8 @@ public:
 	bool bKCastle;
 	bool bQCastle;
 	bool* castle[2][2] = {
-		{
-			&wQCastle,
-			&wKCastle,
-		},
-		{
-			&bQCastle,
-			&bKCastle,
-		},
+		{&wQCastle, &wKCastle},
+		{&bQCastle, &bKCastle},
 	};
 	
 	S8 enPassant;	// Pos behind pawn, else -1
@@ -121,6 +99,7 @@ public:
 	void place(short colour, short piece, short pos);
 	pair<bool, U8> charToPiece(char piece);
 	void loadFEN(string FEN);
+	Move notationToMove(string notation);
 
 	// Playing Methods
 	void move(Move m);
