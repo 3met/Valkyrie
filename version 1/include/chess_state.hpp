@@ -17,7 +17,6 @@ private:
 	void updateAllBitboard(bool colour);
 
 public:
-
 	enum colour {
 		WHITE = 0,	// White must remain 0 for turn indexing to work
 		BLACK = 1,

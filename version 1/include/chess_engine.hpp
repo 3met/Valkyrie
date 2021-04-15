@@ -7,7 +7,6 @@
 #include "bitboard.hpp"
 #include "chess_state.hpp"
 #include "move.hpp"
-#include "state_tree.hpp"
 #include "U64.hpp"
 #include "U8.hpp"
 #include "S8.hpp"
@@ -54,8 +53,5 @@ public:
 	
 	pair<Move, short> bestMove(ChessState* cs, U8 depth);
 	short negamaxSearch(ChessState* cs, U8 depth, short alpha, short beta);
-
-	StateTree stateTree;
 };
-
 #endif
