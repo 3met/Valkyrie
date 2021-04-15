@@ -85,16 +85,31 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 
 		// TODO: Make sure king is safe after move
 
+		S8 promotion;
 		// All possible non-kill moves
 		for (j=0; j<move_targets.size(); ++j) {
-			moves->push_back(Move(cs->PAWN, start[i], move_targets[j]));
+			// Check pawn promotion
+			if (move_targets[j] >= 56 || move_targets[j] <= 7) {
+				promotion = 4;	// Auto queen
+			} else {
+				promotion = -1;
+			}
+			moves->push_back(Move(cs->PAWN, start[i], move_targets[j], -1, promotion));
 		}
 
 		// All possible kill moves
 		for (j=0; j<kill_targets.size(); ++j) {
+			// Check pawn promotion
+			if (kill_targets[j] >= 56 || kill_targets[j] <= 7) {
+				promotion = 4;	// Auto queen
+			} else {
+				promotion = -1;
+			}
 			// Check for killing a piece
 			killed = cs->getPieceType(!cs->turn, kill_targets[j]);
-			moves->push_back(Move(cs->PAWN, start[i], kill_targets[j], killed));
+			moves->push_back(Move(cs->PAWN, start[i], kill_targets[j], killed, promotion));
 		}
 	}
+
+
 }
