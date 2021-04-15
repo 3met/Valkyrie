@@ -34,23 +34,9 @@ For Consideration:
 
 using namespace std;
 
-#include <vector>	// TEMP
 #include <time.h>
 clock_t start_t, end_t;
 double total_time = 0;
-
-void play_self(ChessState* cs, ChessEngine engine, U8 depth, U8 count) {
-	pair<Move, float> m;
-
-	for (int i=0; i<count; ++i) {
-		cout << "===== NUM " << i << " =====" << endl;
-		m = engine.bestMove(cs, depth);
-		cout << m.second << endl;
-		m.first.print();
-		cs->move(m.first);
-		cs->show();
-	}
-}
 
 int main() {
 	cout << "----- Chess Engine -----" << endl;
@@ -67,7 +53,7 @@ int main() {
 	pair<Move, short> m;
 	char buffer[10];
 
-	int count = 50;
+	int count = 10;
 	int depth = 5;
 
 	cout << "===== Initial =====" << endl;
@@ -75,14 +61,11 @@ int main() {
 	cout << "Depth: " << depth << endl;
 	cs.show();
 
-	// cout << endl;
-	// engine.bestMove(&cs, 3).first.print();
-
 	start_t = clock();
 	for (int i=0; i<count; ++i) {
 		cout << "===== Move #" << i+1 << " =====" << endl;
 		m = engine.bestMove(&cs, depth);
-		cout << "Score: " << m.second/100 << endl;
+		cout << "Score: " << float(m.second)/100 << endl;
 		m.first.print();
 		cs.move(m.first);
 		cs.show();
