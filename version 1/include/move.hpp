@@ -18,14 +18,14 @@ public:
 
 	static const char positions[64];
 	
-	U8 start;
-	U8 end;
-	
 	U8 piece;	// Piece being moved
+	U8 start;	// Start pos
+	U8 end;		// End pos
 	short killed;	// Piece killed; else -1
 	short promoted;	// Piece promoted to; else -1
 
-	static string posToCoord(U8 pos);	// Position to coord (9 ==> b2)
+	static string posToCoord(const U8 pos);	// Position to coord (9 ==> b2)
+	static U8 coordToPos(const string coord);	// Coord to position (b2 ==> 9)
 	void print();
 };
 

@@ -17,11 +17,11 @@
 
 /*
 For Consideration:
-
  - Sort moves by likelyhood it is best move in alpha beta pruning
  - Instead of calculating all moves everytime, somehow reuse?
  - For rook move generation, remove non-horizontal pieces from bitboard before calculation
  - Add engine settings class for things like material scoring system
+ - Pawn structure lookup
 
 */
 

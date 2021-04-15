@@ -27,10 +27,14 @@ Move::Move(U8 p, U8 s, U8 e, S8 k) {
 
 Move::~Move() {}
 
-string Move::posToCoord(U8 pos) {
+string Move::posToCoord(const U8 pos) {
 	char col = 'a';
 	col += pos % 8;
 	return col + to_string((pos/8) + 1);
+}
+
+U8 Move::coordToPos(string coord) {
+	// TODO
 }
 
 void Move::print() {
