@@ -4,6 +4,7 @@
 
 #include <exception>
 #include <string>
+#include <utility>
 #include "bitboard.hpp"
 #include "move.hpp"
 #include "U8.hpp"
@@ -17,6 +18,10 @@ private:
 	void updateAllBitboard(bool colour);
 
 public:
+	ChessState();
+	ChessState(const ChessState* cs);
+	~ChessState();
+
 	enum colour {
 		WHITE = 0,	// White must remain 0 for turn indexing to work
 		BLACK = 1,
@@ -105,10 +110,6 @@ public:
 			return "There are no legal moves.";
 		}
 	};
-
-	ChessState();
-	ChessState(const ChessState* cs);
-	~ChessState();
 	
 	// Query Methods
 	bool isLegalMove();
@@ -118,6 +119,7 @@ public:
 	void reset();
 	void clear();
 	void place(short colour, short piece, short pos);
+	pair<bool, U8> charToPiece(char piece);
 	void loadFEN(string FEN);
 
 	// Playing Methods

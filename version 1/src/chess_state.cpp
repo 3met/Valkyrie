@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <string>
+#include <utility>
 #include "chess_state.hpp"
 #include "U8.hpp"
 
@@ -135,10 +136,10 @@ void ChessState::clear() {
 
 	turn = false;	// False for white; true for black
 	
-	wKCastle = true;	// Castle perms
-	wQCastle = true;
-	bKCastle = true;
-	bQCastle = true;
+	wKCastle = false;	// Castle perms
+	wQCastle = false;
+	bKCastle = false;
+	bQCastle = false;
 
 	enPassant = -1;
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
@@ -152,10 +153,147 @@ void ChessState::place(short colour, short piece, short pos) {
 	this->updateAllBitboard(colour);
 }
 
+pair<bool, U8> ChessState::charToPiece(char piece) {
+	/* Returns colour and types of piece */
+	switch (piece) {
+		case 'P':
+			return make_pair(WHITE, PAWN);
+		case 'p':
+			return make_pair(BLACK, PAWN);
+		case 'N':
+			return make_pair(WHITE, KNIGHT);
+		case 'n':
+			return make_pair(BLACK, KNIGHT);
+		case 'B':
+			return make_pair(WHITE, BISHOP);
+		case 'b':
+			return make_pair(BLACK, BISHOP);
+		case 'R':
+			return make_pair(WHITE, ROOK);
+		case 'r':
+			return make_pair(BLACK, ROOK);
+		case 'Q':
+			return make_pair(WHITE, QUEEN);
+		case 'q':
+			return make_pair(BLACK, QUEEN);
+		case 'K':
+			return make_pair(WHITE, KING);
+		case 'k':
+			return make_pair(BLACK, KING);
+		default:
+			cout << "ERROR: \"" << piece << "\" is an invalid character" << endl;
+			return make_pair(WHITE, -1);
+	}
+}
 
 void ChessState::loadFEN(string FEN) {
-	/* Loads FEN econding into chess state */
+	/* Loads FEN encoding into chess state */
+	this->clear();
 
+	U8 i=0;
+	pair<bool, U8> piece;
+	U8 FEN_index = 0;
+	// Load board
+	while (i < 64) {
+		// If number at index
+		if (FEN[FEN_index] >= '0' && FEN[FEN_index] <= '8') {
+			i += FEN[FEN_index] - '0';
+			++FEN_index;
+			continue;
+		}
+		// If '/' at index
+		if (FEN[FEN_index] == '/') {
+			++FEN_index;
+			continue;
+		}
+
+		piece = charToPiece(FEN[FEN_index]);
+		this->place(piece.first, piece.second, Bitboard::SHOW_ORDER[i]);
+		++FEN_index;
+		++i;
+	}
+
+	++FEN_index;	// Skip over space
+
+	if (FEN[FEN_index] == 'w') {
+		this->turn = WHITE;
+	} else {
+		this->turn = BLACK;
+	}
+
+	++FEN_index;	// Skip over space
+	++FEN_index;
+
+	// Read castling permissions
+	if (FEN[FEN_index] != '-') {
+		while (FEN[FEN_index] != ' ') {
+			switch (FEN[FEN_index]) {
+				case 'K':
+					wKCastle = true;
+					break;
+				case 'Q':
+					wQCastle = true;
+					break;
+				case 'k':
+					bKCastle = true;
+					break;
+				case 'q':
+					bQCastle = true;
+					break;
+				default:
+					cout << "INVALID FEN" << endl;
+			}
+
+			++FEN_index;
+		}
+	}
+
+	++FEN_index;	// Skip over space
+
+	if (FEN[FEN_index] != '-') {
+		this->enPassant = Move::coordToPos(FEN.substr(FEN_index, 2));
+		++FEN_index;	// Move to last en passant character
+	}
+
+	// Return if no more to read
+	if (FEN_index == FEN.size()-1) {
+		return;
+	}
+
+	++FEN_index;	// Skip over space
+	++FEN_index;
+
+	U8 nLength = 1;	// Number digit length (567 ==> 3)
+	// Add halfmove count (allows varible number of digits)
+	while (true) {
+		if (FEN_index != FEN.size()-1 && FEN[FEN_index+1] != ' ') {
+			++nLength;
+			++FEN_index;
+		} else {
+			break;
+		}
+	}
+	halfmoveClock = stoi(FEN.substr(FEN_index-(nLength-1), nLength));
+
+	// Return if no more to read
+	if (FEN_index == FEN.size()-1) {
+		return;
+	}
+
+	++FEN_index;	// Skip over space
+	++FEN_index;
+
+	nLength = 1;
+	// Add turn number (allows varible number of digits)
+	while (true) {
+		if (FEN_index != FEN.size()-1 && FEN[FEN_index+1] != ' ') {
+			++nLength;
+			++FEN_index;
+		} else {
+			break;
+		}
+	}
+	turnNumber = stoi(FEN.substr(FEN_index-(nLength-1), nLength));
 }
 
 

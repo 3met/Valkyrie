@@ -34,13 +34,14 @@ Move::Move(U8 p, U8 s, U8 e, S8 k, S8 pro) {
 Move::~Move() {}
 
 string Move::posToCoord(const U8 pos) {
-	char col = 'a';
-	col += pos % 8;
-	return col + to_string((pos/8) + 1);
+	char file = 'a';
+	file += pos % 8;
+	return file + to_string((pos/8) + 1);
 }
 
-U8 Move::coordToPos(string coord) {
-	// TODO
+U8 Move::coordToPos(const string coord) {
+	// Returns 8 * (rank-1) + file[0-7]
+	return (8 * (coord[1] - '1')) + (coord[0] - 'a');	
 }
 
 void Move::print() {
