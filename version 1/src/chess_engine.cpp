@@ -21,7 +21,8 @@
 // Factors used in static evaluation
 #define USE_MATERIAL_VALUE
 #define USE_MATERIAL_PLACEMENT
-
+#define USE_DOUBLED_PAWNS
+#define USE_ISOLATED_PAWNS
 
 using namespace std;
 
@@ -62,7 +63,7 @@ short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6])
 	U8 i;
 	short rating = 0;
 
-#ifdef USE_MATERIAL_VALUE
+	#ifdef USE_MATERIAL_VALUE
 	// --- Adjustment for Material Amount --- 
 	// Account for material advantage
 	for (i=0; i<6; ++i) {
@@ -81,18 +82,63 @@ short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6])
 	// Adjust rook value with pawns
 	// -12 for each pawn above 5, +12 for each below
 	rating += pieces[side][cs->ROOK].size() * ((-12*pieces[side][cs->PAWN].size()) + 60);
-#endif
+	#endif
 
-#ifdef USE_MATERIAL_PLACEMENT
+	#ifdef USE_MATERIAL_PLACEMENT
 	// --- Adjustment for Material Placement ---
 	// Knight placement
 	for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
 		rating += knightBonus[pieces[side][cs->KNIGHT][i]];
 	}
-#endif
+	#endif
 
 	// --- Adjustment for Pawn Structure ---
+	U8 pawnsPerFile[2][8] = {{0},{0}};	// colors * files 
+	U8 file;
+	// Fill pawnsPerFile array
+	for (i=0; i<pieces[side][cs->PAWN].size(); ++i) {
+		file = pieces[side][cs->PAWN][i] % 8;
+		pawnsPerFile[side][file] += 1;
+	}
+	for (i=0; i<pieces[!side][cs->PAWN].size(); ++i) {
+		file = pieces[!side][cs->PAWN][i] % 8;
+		pawnsPerFile[!side][file] += 1;
+	}
+
+	#ifdef USE_DOUBLED_PAWNS
 	// Penalize doubled pawns
+	// Subtract 40 centipawns for each doubled/tripled pawn
+	for (i=0; i<8; ++i) {
+		if (pawnsPerFile[side][i] > 1) {
+			rating -= (pawnsPerFile[side][i]-1) * 40;
+		}
+	}
+
+	// TODO: types of doubled pawns
+	// https://en.wikipedia.org/wiki/Chess_piece_relative_value
+	#endif
+
+	#ifdef USE_ISOLATED_PAWNS
+	// Penalize isolated pawns
+	// Substract 10 centipawns for each isolated pawn
+	i = 0;	// File
+	while (i < 7) {	// Files a to g
+		if (pawnsPerFile[side][i] > 0) {
+			if (pawnsPerFile[side][i+1] == 0) {
+				rating -= 10 * pawnsPerFile[side][i];
+				i += 2;
+			} else {
+				i += 3;
+			}
+		} else {
+			++i;
+		}
+	}
+	if (i == 7 && pawnsPerFile[side][7] > 0 && pawnsPerFile[side][6] == 0) {
+		// Pawn on last file (h)
+		rating -= 10 * pawnsPerFile[side][7];
+	}
+	#endif
 
 	// Penalize backward pawns
 
@@ -226,4 +272,3 @@ short ChessEngine::negamaxSearch(ChessState* cs, U8 depth, short alpha, short be
 
 	return alpha;
 }
-
