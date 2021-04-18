@@ -62,47 +62,7 @@ void ChessState::reset() {
 		be at the beginning of a game.	*/
 
 	// Initial piece setup
-	wP.setPos(8, true);	// White pawns
-	wP.setPos(9, true);
-	wP.setPos(10, true);
-	wP.setPos(11, true);
-	wP.setPos(12, true);
-	wP.setPos(13, true);
-	wP.setPos(14, true);
-	wP.setPos(15, true);
-
-	wN.setPos(1, true);	// White knights
-	wN.setPos(6, true);
-
-	wB.setPos(2, true);	// White bishops
-	wB.setPos(5, true);
-
-	wR.setPos(0, true);	// White rooks
-	wR.setPos(7, true);
-
-	wQ.setPos(3, true);	// White queen and king
-	wK.setPos(4, true);
-
-	bP.setPos(48, true); // Black pawns
-	bP.setPos(49, true);
-	bP.setPos(50, true);
-	bP.setPos(51, true);
-	bP.setPos(52, true);
-	bP.setPos(53, true);
-	bP.setPos(54, true);
-	bP.setPos(55, true);
-
-	bN.setPos(57, true);	// Black knights
-	bN.setPos(62, true);
-
-	bB.setPos(58, true);	// Black bishops
-	bB.setPos(61, true);
-
-	bR.setPos(56, true);	// Black rooks
-	bR.setPos(63, true);
-
-	bQ.setPos(59, true);	// Black queen and king
-	bK.setPos(60, true);
+	this->loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -");
 
 	// Set universal bitboards
 	this->updateAllBitboard(WHITE);
@@ -114,6 +74,11 @@ void ChessState::reset() {
 	wQCastle = true;
 	bKCastle = true;
 	bQCastle = true;
+
+	turnLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
+	turnLostCastlePerms[WHITE][QUEEN_SIDE] = -1;
+	turnLostCastlePerms[BLACK][KING_SIDE] = -1;
+	turnLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
 
 	enPassant = -1;
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
@@ -349,12 +314,20 @@ void ChessState::move(Move m) {
 		pieces[turn][m.promoted]->setPos(m.end, true);
 	}
 
-	// Account for castling
+	// Account for castling in king movement
 	if (m.piece == KING) {
-		if (turn == WHITE) {
-			wKCastle = false;
-			wQCastle = false;
+		// Update castle permissions
+		if (*castlePerms[turn][KING_SIDE]) {
+			*castlePerms[turn][KING_SIDE] = false;
+			turnLostCastlePerms[turn][KING_SIDE] = turnNumber;
+		}
+		if (*castlePerms[turn][QUEEN_SIDE]) {
+			*castlePerms[turn][QUEEN_SIDE] = false;
+			turnLostCastlePerms[turn][QUEEN_SIDE] = turnNumber;
+		}
 
+		// Updated rook position if King castled
+		if (turn == WHITE) {
 			// Hard-coded castle positions
 			if (m.start == 4) {
 				if (m.end == 6) {
@@ -366,9 +339,6 @@ void ChessState::move(Move m) {
 				}
 			}
 		} else {	// Black's turn
-			bKCastle = false;
-			bQCastle = false;
-
 			if (m.start == 60) {
 				if (m.end == 62) {
 					bR.setPos(63, false);
@@ -377,6 +347,28 @@ void ChessState::move(Move m) {
 					bR.setPos(56, false);
 					bR.setPos(59, true);
 				}
+			}
+		}
+	}
+
+	// Account for castling in rook movement
+	if (m.piece == ROOK) {
+		if (turn == WHITE) {
+			// Removing relevant castling perms if rook moves
+			if (m.start == 7 && wKCastle) {
+				wKCastle = false;
+				turnLostCastlePerms[WHITE][KING_SIDE] = turnNumber;
+			} else if (m.start == 0 && wQCastle) {
+				wQCastle = false;
+				turnLostCastlePerms[WHITE][QUEEN_SIDE] = turnNumber;
+			}
+		} else {	// Black's turn
+			if (m.start == 63 && bKCastle) {
+				bKCastle = false;
+				turnLostCastlePerms[BLACK][KING_SIDE] = turnNumber;
+			} else if (m.start == 56 && bQCastle) {
+				bQCastle = false;
+				turnLostCastlePerms[BLACK][QUEEN_SIDE] = turnNumber;
 			}
 		}
 	}
@@ -408,7 +400,7 @@ void ChessState::move(Move m) {
 	}
 
 	// Updates move count
-	if (turn) {	// If black completed turn
+	if (turn == BLACK) {	// If black completed turn
 		turnNumber += 1;
 	}
 
@@ -424,7 +416,7 @@ void ChessState::reverseMove() {
 
 	turn = !turn;	// Swaps turn
 
-	if (!turn) {	// If reversing white turn
+	if (turn == BLACK) {
 		turnNumber -= 1;
 	}
 
@@ -439,6 +431,42 @@ void ChessState::reverseMove() {
 	// Adds previously killed piece to bitboard
 	if (m->killed != -1) {
 		pieces[!turn][m->killed]->setPos(m->end, true);
+	}
+
+	// Reverse rook movement in castling
+	if (m->piece == KING) {
+		if (turn == WHITE) {
+			// Hard-coded castle positions
+			if (m->start == 4) {
+				if (m->end == 6) {
+					wR.setPos(7, true);
+					wR.setPos(5, false);
+				} else if (m->end == 2) {
+					wR.setPos(0, true);
+					wR.setPos(3, false);
+				}
+			}
+		} else {	// Black's turn
+			if (m->start == 60) {
+				if (m->end == 62) {
+					bR.setPos(63, true);
+					bR.setPos(61, false);
+				} else if (m->end == 58) {
+					bR.setPos(56, true);
+					bR.setPos(59, false);
+				}
+			}
+		}
+	}
+
+	// Update castle permissions
+	if (*castlePerms[turn][KING_SIDE] == turnNumber) {
+		*castlePerms[turn][KING_SIDE] = true;
+		turnLostCastlePerms[turn][KING_SIDE] = -1;
+	}
+	if (*castlePerms[turn][QUEEN_SIDE] == turnNumber) {
+		*castlePerms[turn][QUEEN_SIDE] = true;
+		turnLostCastlePerms[turn][QUEEN_SIDE] = -1;
 	}
 
 	// Remove reversed move from move list

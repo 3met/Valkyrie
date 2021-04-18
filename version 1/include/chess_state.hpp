@@ -26,7 +26,7 @@ public:
 		WHITE = 0,	// White must remain 0 for turn indexing to work
 		BLACK = 1,
 	};
-	enum piece_type {
+	enum pieceType {
 		PAWN = 0,
 		KNIGHT,
 		BISHOP,
@@ -34,6 +34,10 @@ public:
 		QUEEN,
 		KING,
 		ALL_PIECES,
+	};
+	enum castleSide {
+		KING_SIDE = 0,
+		QUEEN_SIDE,
 	};
 
 	// Sort chess state by turn
@@ -70,10 +74,11 @@ public:
 	bool wQCastle;
 	bool bKCastle;
 	bool bQCastle;
-	bool* castle[2][2] = {
-		{&wQCastle, &wKCastle},
-		{&bQCastle, &bKCastle},
+	bool* castlePerms[2][2] = {
+		{&wKCastle, &wQCastle},	// Order based on castleSide enum
+		{&bKCastle, &bQCastle},
 	};
+	short turnLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
 	
 	S8 enPassant;	// Pos behind pawn, else -1
 	short halfmoveClock;	// # of halfmoves since last capture or pawn move
