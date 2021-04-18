@@ -325,6 +325,8 @@ void ChessState::move(Move m) {
 	/* 	Moves a piece on the board.
 		Assumes move is valid.	*/
 
+	moveList.push_back(m);
+
 	U8 i;
 
 	// Removes potential killed piece from bitboard
@@ -337,25 +339,45 @@ void ChessState::move(Move m) {
 		}
 	}
 
-	// Updates piece location on bitboard
+	// Updates moving piece location on bitboard
 	pieces[turn][m.piece]->setPos(m.start, false);
 	if (m.promoted == -1) {
 		pieces[turn][m.piece]->setPos(m.end, true);
 	} else {
 		pieces[turn][m.promoted]->setPos(m.end, true);
 	}
-
 	this->updateAllBitboard(turn);
 
-	// Update other side if a piece was killed
+	// Update other color if a piece was killed
 	if (m.killed != -1) {
 		this->updateAllBitboard(!turn);
 	}	
 
+	// Account for en passant
+	if (m.piece == PAWN) {
+		if (turn == WHITE) {
+			if (m.start >= 7 && m.start <= 15 && m.end >=24 && m.end <= 31) {
+				enPassant = m.end - 8;
+			} else {
+				enPassant = -1;
+			}
+		} else {	// If black's turn
+			if (m.start >= 48 && m.start <= 55 && m.end >=32 && m.end <= 39) {
+				enPassant = m.end + 8;
+			} else {
+				enPassant = -1;
+			}
+		}
+	} else {
+		enPassant = -1;
+	}
+
+	// Updates move count
 	if (turn) {	// If black completed turn
 		turnNumber += 1;
 	}
 
+	// Update turn color
 	turn = !turn;
 }
 

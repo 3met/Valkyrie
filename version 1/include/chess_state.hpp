@@ -79,6 +79,8 @@ public:
 	short halfmoveClock;	// # of halfmoves since last capture or pawn move
 	short turnNumber;	// Game turn number
 
+	vector<Move> moveList;
+
 	// TODO: add Threefold repetition
 	// https://en.wikipedia.org/wiki/Threefold_repetition
 
