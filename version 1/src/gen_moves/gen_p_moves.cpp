@@ -12,7 +12,13 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 	vector<U8> move_targets;
 	vector<U8> kill_targets;
 	short killed;
+	Bitboard enPassantBoard;
 	
+	// Set en passant square
+	if (cs->enPassant != -1) {
+		enPassantBoard.setPos(cs->enPassant, true);
+	}
+
 	// Get all pawn locations
 	start = cs->pieces[cs->turn][cs->PAWN]->getPosVector();
 
@@ -70,11 +76,12 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		}
 
 		// Remove any kill positions without enemy pieces
-		kill_board.board &= cs->pieces[!cs->turn][cs->ALL_PIECES]->board;
+		// Does not remove en passant square
+		kill_board.board &= cs->pieces[!cs->turn][cs->ALL_PIECES]->board | enPassantBoard.board;
 
 		// All squares that can be killed/moved to
-		move_targets = move_board.getPosVector();
-		kill_targets = kill_board.getPosVector();
+		move_targets = move_board.getPosVector(1);
+		kill_targets = kill_board.getPosVector(2);
 
 		// TODO: Make sure king is safe after move
 
@@ -98,11 +105,13 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 			} else {
 				promotion = -1;
 			}
-			// Check for killing a piece
+			// Type of piece killed
 			killed = cs->getPieceType(!cs->turn, kill_targets[j]);
+			// Account for en passant
+			if (killed == -1) {
+				killed = cs->PAWN;
+			}
 			moves->push_back(Move(cs->PAWN, start[i], kill_targets[j], killed, promotion));
 		}
 	}
-
-
 }
