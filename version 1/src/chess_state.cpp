@@ -303,20 +303,22 @@ void ChessState::loadFEN(string FEN) {
 
 
 Move ChessState::notationToMove(string notation) {
-	// Converts chess notation to Move object (a7b8q ==> Move)	
+	// Converts chess notation to Move object (a7b8q ==> Move)
 	U8 start = Move::coordToPos(notation.substr(0, 2));
 	U8 end = Move::coordToPos(notation.substr(2, 2));
+	U8 pieceType = getPieceType(turn, start);
 	S8 promoted;
-	if (end >= 56 || end <= 7) {
+	// Check for pawn promotion
+	if (pieceType == PAWN && (end >= 56 || end <= 7)) {
 		promoted = QUEEN;
 	} else {
 		promoted = -1;
 	}
-	return Move(getPieceType(turn, start),
-		start,
-		end,
-		getPieceType(!turn, end),
-		promoted);
+	return Move(pieceType,
+				start,
+				end,
+				getPieceType(!turn, end),
+				promoted);
 }
 
 
