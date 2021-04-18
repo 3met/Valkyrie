@@ -105,7 +105,7 @@ public:
 
 	// Playing Methods
 	void move(Move m);
-	void reverseMove(Move m);
+	void reverseMove();
 
 	// Output Methods
 	void show();

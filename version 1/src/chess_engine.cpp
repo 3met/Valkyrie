@@ -237,7 +237,7 @@ pair<Move, short> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	for (U8 i=0; i<moves.size(); ++i) {
 		cs->move(moves[i]);
 		score = -negamaxSearch(cs, depth-1, -beta, -alpha);
-		cs->reverseMove(moves[i]);
+		cs->reverseMove();
 
 		if (score > alpha) {
 			alpha = score;
@@ -276,7 +276,7 @@ short ChessEngine::negamaxSearch(ChessState* cs, U8 depth, short alpha, short be
 	for (U8 i=0; i<moves.size(); ++i) {
 		cs->move(moves[i]);
 		score = -negamaxSearch(cs, depth-1, -beta, -alpha);
-		cs->reverseMove(moves[i]);
+		cs->reverseMove();
 
 		if (score >= beta) {
 			return beta;

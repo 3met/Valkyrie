@@ -381,9 +381,11 @@ void ChessState::move(Move m) {
 	turn = !turn;
 }
 
-void ChessState::reverseMove(Move m) {
+void ChessState::reverseMove() {
 	/* 	Reverses a moves.
 		Assumes move is valid.	*/
+
+	Move* m = &moveList[moveList.size()-1];
 
 	turn = !turn;	// Swaps turn
 
@@ -392,22 +394,45 @@ void ChessState::reverseMove(Move m) {
 	}
 
 	// Updates piece location on bitboard
-	if (m.promoted == -1) {
-		pieces[turn][m.piece]->setPos(m.end, false);
+	if (m->promoted == -1) {
+		pieces[turn][m->piece]->setPos(m->end, false);
 	} else {
-		pieces[turn][m.promoted]->setPos(m.end, false);
+		pieces[turn][m->promoted]->setPos(m->end, false);
 	}
-	pieces[turn][m.piece]->setPos(m.start, true);
+	pieces[turn][m->piece]->setPos(m->start, true);
 
 	// Adds previously killed piece to bitboard
-	if (m.killed != -1) {
-		pieces[!turn][m.killed]->setPos(m.end, true);
+	if (m->killed != -1) {
+		pieces[!turn][m->killed]->setPos(m->end, true);
+	}
+
+	// Remove reversed move from move list
+	moveList.pop_back();
+
+	// Account for en passant
+	m = &moveList[moveList.size()-1];
+	if (m->piece == PAWN) {
+		if (turn == WHITE) {
+			if (m->start >= 7 && m->start <= 15 && m->end >=24 && m->end <= 31) {
+				enPassant = m->end - 8;
+			} else {
+				enPassant = -1;
+			}
+		} else {	// If black's turn
+			if (m->start >= 48 && m->start <= 55 && m->end >=32 && m->end <= 39) {
+				enPassant = m->end + 8;
+			} else {
+				enPassant = -1;
+			}
+		}
+	} else {
+		enPassant = -1;
 	}
 
 	// Update both universal bitboards
 	this->updateAllBitboard(turn);
 	this->updateAllBitboard(!turn);
-};
+}
 
 /* ----- Update State Functions ----- */
 void ChessState::updateAllBitboard(bool colour) {
