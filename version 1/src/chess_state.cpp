@@ -426,6 +426,10 @@ void ChessState::reverseMove() {
 		turnNumber -= 1;
 	}
 
+	// Revert en passant value
+	enPassantHistory.pop_back();
+	enPassant = enPassantHistory[enPassantHistory.size()-1];
+
 	// Updates piece location on bitboard
 	if (m->promoted == -1) {
 		pieces[turn][m->piece]->setPos(m->end, false);
@@ -436,7 +440,16 @@ void ChessState::reverseMove() {
 
 	// Adds previously killed piece to bitboard
 	if (m->killed != -1) {
-		pieces[!turn][m->killed]->setPos(m->end, true);
+		if (m->end == enPassant) {
+			// Place killed en passant piece
+			if (turn == WHITE) {
+				pieces[BLACK][PAWN]->setPos(m->end-8, true);
+			} else {	// Black's turn
+				pieces[WHITE][PAWN]->setPos(m->end+8, true);
+			}
+		} else {
+			pieces[!turn][m->killed]->setPos(m->end, true);
+		}
 	}
 
 	// Reverse rook movement in castling
@@ -477,10 +490,6 @@ void ChessState::reverseMove() {
 
 	// Remove reversed move from move list
 	moveList.pop_back();
-
-	// Account for en passant
-	enPassantHistory.pop_back();
-	enPassant = enPassantHistory[enPassantHistory.size()-1];
 
 	// Update both universal bitboards
 	this->updateAllBitboard(turn);
