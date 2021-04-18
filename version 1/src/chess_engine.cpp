@@ -16,7 +16,10 @@
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "move.hpp"
+#include "opening_table.hpp"
 #include "U64.hpp"
+
+#include "board_hash.hpp"	// TEMP
 
 // Factors used in static evaluation
 #define USE_MATERIAL_VALUE
@@ -27,6 +30,7 @@
 using namespace std;
 
 ChessEngine::ChessEngine() {
+	cout << "Loading Engine... ";
 
 	srand(time(0));
 
@@ -34,6 +38,10 @@ ChessEngine::ChessEngine() {
 	read_move_table(&NMoveDB, "knight-moves.movetable");
 
 	read_bonus_table(&knightBonus, "knight-bonus.bonustable");
+
+	read_opening_book(&openingTable, "opening_book.dat");
+
+	cout << "\rEngine Loading Complete" << endl << endl;
 }
 
 ChessEngine::~ChessEngine() {}
@@ -203,6 +211,14 @@ short ChessEngine::eval_board(ChessState* cs) {
 
 pair<Move, short> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	vector<Move> moves;
+
+	// Check if position in opening book
+	if (openingTable.contains(cs)) {
+		cout << "Using Opening Book" << endl;
+		moves = openingTable.get(cs);
+		return make_pair(moves[rand() % moves.size()], eval_board(cs));
+	}
+
 	genAllMoves(cs, &moves);
 
 	// Check if valid moves were generated

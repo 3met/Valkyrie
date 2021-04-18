@@ -44,7 +44,7 @@ const char ChessState::piece_names[2][6] = {	// Note: must match piece indexing
 	{'p', 'n', 'b', 'r', 'q', 'k'},
 };
 
-U8 ChessState::getPieceType(bool colour, U8 pos) {
+S8 ChessState::getPieceType(bool colour, U8 pos) {
 	/* Returns the type of piece at the given position */
 
 	for (U8 i=0; i<6; ++i) {
@@ -225,7 +225,7 @@ void ChessState::loadFEN(string FEN) {
 
 	// Read castling permissions
 	if (FEN[FEN_index] != '-') {
-		while (FEN[FEN_index] != ' ') {
+		do {
 			switch (FEN[FEN_index]) {
 				case 'K':
 					wKCastle = true;
@@ -240,11 +240,15 @@ void ChessState::loadFEN(string FEN) {
 					bQCastle = true;
 					break;
 				default:
-					cout << "INVALID FEN" << endl;
+					cout << "ERROR: Invalid FEN"
+						<< " (\"" << FEN[FEN_index] << "\""
+						<< " is an castle character)" << endl;
 			}
 
 			++FEN_index;
-		}
+		} while (FEN[FEN_index] != ' ');
+	} else {
+		++FEN_index;
 	}
 
 	++FEN_index;	// Skip over space
@@ -272,6 +276,7 @@ void ChessState::loadFEN(string FEN) {
 			break;
 		}
 	}
+
 	halfmoveClock = stoi(FEN.substr(FEN_index-(nLength-1), nLength));
 
 	// Return if no more to read
@@ -301,14 +306,13 @@ Move ChessState::notationToMove(string notation) {
 	// Converts chess notation to Move object (a7b8q ==> Move)	
 	U8 start = Move::coordToPos(notation.substr(0, 2));
 	U8 end = Move::coordToPos(notation.substr(2, 2));
-	U8 promoted;
+	S8 promoted;
 	if (end >= 56 || end <= 7) {
 		promoted = QUEEN;
 	} else {
 		promoted = -1;
 	}
 	return Move(getPieceType(turn, start),
-		getPieceType(turn, start),
 		start,
 		end,
 		getPieceType(!turn, end),

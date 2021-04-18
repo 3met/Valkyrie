@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include "bitboard.hpp"
+#include "opening_table.hpp"
 #include "chess_state.hpp"
 #include "move.hpp"
 #include "U64.hpp"
@@ -15,13 +16,12 @@ using namespace std;
 
 class ChessEngine {
 private:
-	// File IO methods
-	void read_move_table(map<U64, Bitboard>* moveTable, string fileName);
-	void read_bonus_table(map<U8, S8>* bonusTable, string fileName);
-
 	// King and knight move databases
 	map<U64, Bitboard> KMoveDB;
 	map<U64, Bitboard> NMoveDB;
+
+	// Opening book database
+	OpeningTable openingTable;
 
 	// Position bonuses
 	map<U8, S8> knightBonus;
@@ -34,6 +34,11 @@ private:
 	static bool sortRatedMove(const pair<Move, float> &a, const pair<Move, float> &b) {
 		return a.second < b.second;
 	};
+
+	// File IO methods
+	void read_move_table(map<U64, Bitboard>* moveTable, string fileName);
+	void read_bonus_table(map<U8, S8>* bonusTable, string fileName);
+	void read_opening_book(OpeningTable* openingTable, string fileName);
 
 public:
 	ChessEngine();
