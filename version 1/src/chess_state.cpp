@@ -98,7 +98,7 @@ void ChessState::clear() {
 	this->updateAllBitboard(WHITE);
 	this->updateAllBitboard(BLACK);
 
-	turn = false;	// False for white; true for black
+	turn = WHITE;
 	
 	wKCastle = false;	// Castle perms
 	wQCastle = false;

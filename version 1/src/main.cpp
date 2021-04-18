@@ -53,7 +53,7 @@ int main() {
 	pair<Move, short> m;
 	char buffer[10];
 
-	int count = 15;
+	int count = 20;
 	int depth = 5;
 
 	cout << "===== Initial =====" << endl;
