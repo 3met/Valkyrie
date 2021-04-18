@@ -348,8 +348,41 @@ void ChessState::move(Move m) {
 	} else {
 		pieces[turn][m.promoted]->setPos(m.end, true);
 	}
-	this->updateAllBitboard(turn);
 
+	// Account for castling
+	if (m.piece == KING) {
+		if (turn == WHITE) {
+			wKCastle = false;
+			wQCastle = false;
+
+			// Hard-coded castle positions
+			if (m.start == 4) {
+				if (m.end == 6) {
+					wR.setPos(7, false);
+					wR.setPos(5, true);
+				} else if (m.end == 2) {
+					wR.setPos(0, false);
+					wR.setPos(3, true);
+				}
+			}
+		} else {	// Black's turn
+			bKCastle = false;
+			bQCastle = false;
+
+			if (m.start == 60) {
+				if (m.end == 62) {
+					bR.setPos(63, false);
+					bR.setPos(61, true);
+				} else if (m.end == 58) {
+					bR.setPos(56, false);
+					bR.setPos(59, true);
+				}
+			}
+		}
+	}
+
+	// Update "all" bitboard
+	this->updateAllBitboard(turn);
 	// Update other color if a piece was killed
 	if (m.killed != -1) {
 		this->updateAllBitboard(!turn);
