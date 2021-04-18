@@ -81,6 +81,8 @@ public:
 	short turnLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
 	
 	S8 enPassant;	// Pos behind pawn, else -1
+	vector<S8> enPassantHistory;
+
 	short halfmoveClock;	// # of halfmoves since last capture or pawn move
 	short turnNumber;	// Game turn number
 

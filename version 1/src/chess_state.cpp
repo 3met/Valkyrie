@@ -383,6 +383,7 @@ void ChessState::move(Move m) {
 	// Account for en passant
 	if (m.piece == PAWN) {
 		if (turn == WHITE) {
+			// If pawn moved two squares forward
 			if (m.start >= 7 && m.start <= 15 && m.end >=24 && m.end <= 31) {
 				enPassant = m.end - 8;
 			} else {
@@ -398,6 +399,7 @@ void ChessState::move(Move m) {
 	} else {
 		enPassant = -1;
 	}
+	enPassantHistory.push_back(enPassant);
 
 	// Updates move count
 	if (turn == BLACK) {	// If black completed turn
@@ -473,24 +475,8 @@ void ChessState::reverseMove() {
 	moveList.pop_back();
 
 	// Account for en passant
-	m = &moveList[moveList.size()-1];
-	if (m->piece == PAWN) {
-		if (turn == WHITE) {
-			if (m->start >= 7 && m->start <= 15 && m->end >=24 && m->end <= 31) {
-				enPassant = m->end - 8;
-			} else {
-				enPassant = -1;
-			}
-		} else {	// If black's turn
-			if (m->start >= 48 && m->start <= 55 && m->end >=32 && m->end <= 39) {
-				enPassant = m->end + 8;
-			} else {
-				enPassant = -1;
-			}
-		}
-	} else {
-		enPassant = -1;
-	}
+	enPassantHistory.pop_back();
+	enPassant = enPassantHistory[enPassantHistory.size()-1];
 
 	// Update both universal bitboards
 	this->updateAllBitboard(turn);
