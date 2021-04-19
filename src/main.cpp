@@ -25,6 +25,7 @@ For Consideration:
 
 */
 
+#include <string>
 #include <iostream>
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
@@ -52,8 +53,9 @@ int main() {
 	ChessEngine engine;
 	pair<Move, short> m;
 	char buffer[10];
+	string playerInput;
 
-	int count = 20;
+	int count = 30;
 	int depth = 5;
 
 	cout << "===== Initial =====" << endl;
@@ -62,7 +64,7 @@ int main() {
 	cs.show();
 	
 	for (int i=0; i<count; ++i) {
-		cout << "===== Move #" << i+1 << " =====" << endl;
+		cout << endl << "===== Move #" << i+1 << " =====" << endl;
 
 		start_t = clock();
 		m = engine.bestMove(&cs, depth);
@@ -74,6 +76,13 @@ int main() {
 		m.first.print();
 		cs.move(m.first);
 		cs.show();
+
+		cout << endl << "Enter move:" << endl;
+		cout << ">>> ";
+		cin >> playerInput;
+		Move m2 = cs.notationToMove(playerInput);
+		
+		cs.move(m2);
 	}
 	
 	return 0;
