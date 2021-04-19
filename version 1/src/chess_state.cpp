@@ -272,17 +272,28 @@ Move ChessState::notationToMove(string notation) {
 	U8 start = Move::coordToPos(notation.substr(0, 2));
 	U8 end = Move::coordToPos(notation.substr(2, 2));
 	U8 pieceType = getPieceType(turn, start);
+	U8 killed;
+	// Check for en passant killing
+	if (end == enPassant && pieceType == PAWN) {
+		killed == PAWN;
+	} else {
+		killed == getPieceType(!turn, end);
+	}
 	S8 promoted;
 	// Check for pawn promotion
 	if (pieceType == PAWN && (end >= 56 || end <= 7)) {
-		promoted = QUEEN;
+		if (notation.size() >= 5) {
+			promoted = charToPiece(notation[4]).second;
+		} else {
+			promoted = QUEEN;
+		}
 	} else {
 		promoted = -1;
 	}
 	return Move(pieceType,
 				start,
 				end,
-				getPieceType(!turn, end),
+				killed,
 				promoted);
 }
 
