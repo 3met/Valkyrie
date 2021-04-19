@@ -60,21 +60,22 @@ int main() {
 	cout << "Count: " << count << endl;
 	cout << "Depth: " << depth << endl;
 	cs.show();
-
-	start_t = clock();
+	
 	for (int i=0; i<count; ++i) {
 		cout << "===== Move #" << i+1 << " =====" << endl;
+
+		start_t = clock();
 		m = engine.bestMove(&cs, depth);
+		end_t = clock();	// TEMP
+		total_time = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
+		
+		cout << "Processing Time: " << total_time << endl;
 		cout << "Score: " << float(m.second)/100 << endl;
 		m.first.print();
 		cs.move(m.first);
 		cs.show();
 	}
-	end_t = clock();	// TEMP
-	total_time += ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
-
-	cout << "per_count=" << (total_time/count) << endl;
-
+	
 	return 0;
 }
 

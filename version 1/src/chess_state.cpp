@@ -530,6 +530,7 @@ void ChessState::show() {
 
 void ChessState::show(bool show_coords) {
 	char board[64];
+	char ranks[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
 	U8 i;
 
 	for (i=0; i<64; ++i) {
@@ -543,13 +544,20 @@ void ChessState::show(bool show_coords) {
 
 	// TODO: ADD COORDS around board
 
-	cout << "---------------" << endl;
+	cout << "-------------------" << endl;
+	// cout << 
 	for (i=0; i<64; ++i) {
+		if ((i+1) % 8 == 1) {
+			cout << ranks[i/8] << "|  ";
+		}		
+
 		cout << board[Bitboard::SHOW_ORDER[i]] << ' ';
 
 		if ((i+1) % 8 == 0) {
 			cout << endl;
 		}
 	}
-	cout << "---------------" << endl;
+	cout << " |_________________" << endl;
+	cout << "    a b c d e f g h" << endl;
+	cout << "-------------------" << endl;
 }
