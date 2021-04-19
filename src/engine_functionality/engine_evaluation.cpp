@@ -1,23 +1,28 @@
 
 #include <algorithm>
+#include <iostream>
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "U8.hpp"
 #include "S8.hpp"
 
-short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]) {
+// Factors used in static evaluation
+#define USE_MATERIAL_VALUE
+#define USE_MATERIAL_PLACEMENT
+#define USE_DOUBLED_PAWNS
+#define USE_ISOLATED_PAWNS
+#define USE_BACKWARD_PAWNS
+#define USE_BLOCKED_PAWNS
 
+/* A measure of how far the game has progressed
+ * 0		--> opening position
+ * 1-63 	--> opening
+ * 64-127 	--> early-mid game
+ * 128-191	--> mid-late game
+ * 192-254	--> late game
+ * 255		--> game over (checkmate/stalemate)	*/
+U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
 	U8 i;
-	short rating = 0;
-
-	// --- Game Stage ---
-	// A measure of how far the game has progressed
-	// 0		--> opening position
-	// 1-63 	--> opening
-	// 64-127 	--> early-mid game
-	// 128-191	--> mid-late game
-	// 192-254	--> late game
-	// 255		--> game over (checkmate/stalemate)
 	U8 gameStage;
 	S8 pieceCount = 0;
 	
@@ -31,33 +36,43 @@ short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6])
 	// Account for development of pieces
 	gameStage = min(gameStage + cs->turnNumber, 254);
 
+	return gameStage;
+}
+
+/* Evaluates a score for a single color/side */
+short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) {
+
+	U8 i;
+	short rating = 0;
+	U8 gameStage = rateGameStage(cs, pieces);
+	
 	#ifdef USE_MATERIAL_VALUE
-	// --- Adjustment for Material Amount --- 
-	// Account for material advantage
-	for (i=0; i<6; ++i) {
-		rating += pieces[side][i].size() * materialValsLK[i];
-	}
+		// --- Adjustment for Material Amount --- 
+		// Account for material advantage
+		for (i=0; i<6; ++i) {
+			rating += pieces[side][i].size() * materialValsLK[i];
+		}
 
-	// Bonus for having two bishops
-	if (pieces[side][cs->BISHOP].size() == 2) {
-		rating += 50;
-	}
+		// Bonus for having two bishops
+		if (pieces[side][cs->BISHOP].size() == 2) {
+			rating += 50;
+		}
 
-	// Adjust knight value with pawns
-	// +6 for each pawn above 5, -6 for each below
-	rating += pieces[side][cs->KNIGHT].size() * ((6*pieces[side][cs->PAWN].size()) - 30);
+		// Adjust knight value with pawns
+		// +6 for each pawn above 5, -6 for each below
+		rating += pieces[side][cs->KNIGHT].size() * ((6*pieces[side][cs->PAWN].size()) - 30);
 
-	// Adjust rook value with pawns
-	// -12 for each pawn above 5, +12 for each below
-	rating += pieces[side][cs->ROOK].size() * ((-12*pieces[side][cs->PAWN].size()) + 60);
+		// Adjust rook value with pawns
+		// -12 for each pawn above 5, +12 for each below
+		rating += pieces[side][cs->ROOK].size() * ((-12*pieces[side][cs->PAWN].size()) + 60);
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
-	// --- Adjustment for Material Placement ---
-	// Knight placement
-	for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
-		rating += knightBonus[pieces[side][cs->KNIGHT][i]];
-	}
+		// --- Adjustment for Material Placement ---
+		// Knight placement
+		for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
+			rating += knightBonus[pieces[side][cs->KNIGHT][i]];
+		}
 	#endif
 
 	// --- Adjustment for Pawn Structure ---
@@ -74,44 +89,49 @@ short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6])
 	}
 
 	#ifdef USE_DOUBLED_PAWNS
-	// Penalize doubled pawns
-	// Subtract 40 centipawns for each doubled/tripled pawn
-	for (i=0; i<8; ++i) {
-		if (pawnsPerFile[side][i] > 1) {
-			rating -= (pawnsPerFile[side][i]-1) * 40;
+		// Penalize doubled pawns
+		// Subtract 40 centipawns for each doubled/tripled pawn
+		for (i=0; i<8; ++i) {
+			if (pawnsPerFile[side][i] > 1) {
+				rating -= (pawnsPerFile[side][i]-1) * 40;
+			}
 		}
-	}
 
-	// TODO: types of doubled pawns
-	// https://en.wikipedia.org/wiki/Chess_piece_relative_value
+		// TODO: types of doubled pawns
+		// https://en.wikipedia.org/wiki/Chess_piece_relative_value
 	#endif
 
 	#ifdef USE_ISOLATED_PAWNS
-	// Penalize isolated pawns
-	// Substract 10 centipawns for each isolated pawn
-	i = 0;	// File
-	while (i < 7) {	// Files a to g
-		if (pawnsPerFile[side][i] > 0) {
-			if (pawnsPerFile[side][i+1] == 0) {
-				rating -= 10 * pawnsPerFile[side][i];
-				i += 2;
+		// Penalize isolated pawns
+		// Substract 10 centipawns for each isolated pawn
+		i = 0;	// File
+		while (i < 7) {	// Files a to g
+			if (pawnsPerFile[side][i] > 0) {
+				if (pawnsPerFile[side][i+1] == 0) {
+					rating -= 10 * pawnsPerFile[side][i];
+					i += 2;
+				} else {
+					i += 3;
+				}
 			} else {
-				i += 3;
+				++i;
 			}
-		} else {
-			++i;
 		}
-	}
-	if (i == 7 && pawnsPerFile[side][7] > 0 && pawnsPerFile[side][6] == 0) {
-		// Pawn on last file (h)
-		rating -= 10 * pawnsPerFile[side][7];
-	}
+		if (i == 7 && pawnsPerFile[side][7] > 0 && pawnsPerFile[side][6] == 0) {
+			// Pawn on last file (h)
+			rating -= 10 * pawnsPerFile[side][7];
+		}
 	#endif
 
 	// Penalize backward pawns
+	#ifdef USE_BACKWARD_PAWNS
+
+	#endif
 
 	// Penalize blocked pawns (Covered by mobility bonus?)
+	#ifdef USE_BLOCKED_PAWNS
 
+	#endif
 
 	// --- Adjust for Passed Pawns ---
 	// Hidden Passed Pawn
@@ -135,8 +155,11 @@ short ChessEngine::eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6])
 	return rating;
 }
 
-
-short ChessEngine::eval_board(ChessState* cs) {
+/* Evaluates the state of the entire board
+ * A positive number indicates White has an advantage
+ * A negative number indicates Black has an advantage
+ * The magnatude of the number represents the size of the advantage */
+short ChessEngine::evalBoard(ChessState* cs) {
 	/* Rates the status of game in terms of advantage */
 
 	U8 i;
@@ -163,7 +186,7 @@ short ChessEngine::eval_board(ChessState* cs) {
 		}
 	};
 
-	short rating = eval_side(cs, cs->WHITE, pieces) - eval_side(cs, cs->BLACK, pieces);
+	short rating = evalSide(cs, cs->WHITE, pieces) - evalSide(cs, cs->BLACK, pieces);
 
 	return rating;
 }

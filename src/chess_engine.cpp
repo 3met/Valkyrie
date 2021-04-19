@@ -6,7 +6,6 @@
  * 4. Move ordering (for alpha-beta)
  * 5. Best move calculations (negamax, alpha-beta) */
 
-#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <stdlib.h>
@@ -18,12 +17,6 @@
 #include "move.hpp"
 #include "opening_table.hpp"
 #include "U64.hpp"
-
-// Factors used in static evaluation
-#define USE_MATERIAL_VALUE
-#define USE_MATERIAL_PLACEMENT
-#define USE_DOUBLED_PAWNS
-#define USE_ISOLATED_PAWNS
 
 using namespace std;
 
@@ -64,9 +57,6 @@ const short ChessEngine::materialValsHB[6] = {
 
 
 // ----- Primary Operations -----
-
-
-
 pair<Move, short> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	vector<Move> moves;
 
@@ -74,7 +64,7 @@ pair<Move, short> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	if (openingTable.contains(cs)) {
 		cout << "Using Opening Book" << endl;
 		moves = openingTable.get(cs);
-		return make_pair(moves[rand() % moves.size()], eval_board(cs));
+		return make_pair(moves[rand() % moves.size()], evalBoard(cs));
 	}
 
 	genAllMoves(cs, &moves);
@@ -113,11 +103,10 @@ pair<Move, short> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 short ChessEngine::negamaxSearch(ChessState* cs, U8 depth, short alpha, short beta) {
 	if (depth == 0) {
-		short rating = eval_board(cs);
 		if (cs->turn == cs->BLACK) {
-			return -rating;
+			return -evalBoard(cs);
 		} else {
-			return rating;
+			return evalBoard(cs);
 		}		 
 	}
 

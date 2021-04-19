@@ -44,7 +44,7 @@ public:
 	ChessEngine();
 	~ChessEngine();
 
-	// Generating Moves
+	// Move Generation
 	void genPMoves(ChessState* cs, vector<Move>* moves);
 	void genNMoves(ChessState* cs, vector<Move>* moves);
 	void genBMoves(ChessState* cs, vector<Move>* moves);
@@ -53,9 +53,12 @@ public:
 	void genKMoves(ChessState* cs, vector<Move>* moves);
 	void genAllMoves(ChessState* cs, vector<Move>* moves);
 
-	short eval_board(ChessState* cs);
-	short eval_side(ChessState* cs, bool side, vector<U8> pieces[2][6]);
+	// Evaluation Methods
+	U8 rateGameStage(ChessState* cs, vector<U8> pieces[2][6]);
+	short evalBoard(ChessState* cs);
+	short evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]);
 	
+	// Move Selection
 	pair<Move, short> bestMove(ChessState* cs, U8 depth);
 	short negamaxSearch(ChessState* cs, U8 depth, short alpha, short beta);
 };

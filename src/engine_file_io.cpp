@@ -39,7 +39,7 @@ void ChessEngine::read_bonus_table(map<U8, S8>* bonusTable, string fileName) {
 		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
 		return;
 	} else {
-		S8 val;
+		short val;
 		for (U8 i=0; i<64; ++i) {	
 			db_file >> val;
 			(*bonusTable)[Bitboard::SHOW_ORDER[i]] = val;
