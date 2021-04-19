@@ -275,9 +275,9 @@ Move ChessState::notationToMove(string notation) {
 	U8 killed;
 	// Check for en passant killing
 	if (end == enPassant && pieceType == PAWN) {
-		killed == PAWN;
+		killed = PAWN;
 	} else {
-		killed == getPieceType(!turn, end);
+		killed = getPieceType(!turn, end);
 	}
 	S8 promoted;
 	// Check for pawn promotion
@@ -290,6 +290,7 @@ Move ChessState::notationToMove(string notation) {
 	} else {
 		promoted = -1;
 	}
+	
 	return Move(pieceType,
 				start,
 				end,
