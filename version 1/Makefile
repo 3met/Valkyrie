@@ -1,6 +1,9 @@
 
 CXX       := g++
-CXX_FLAGS := -std=c++17 -ggdb
+# -static-libstdc++ links standard libraries
+# https://stackoverflow.com/questions/6404636/libstdc-6-dll-not-found
+
+CXX_FLAGS := -std=c++17 -ggdb -static-libstdc++
 DEBUG_FLAGS	:= -std=c++17 -ggdb -g
 
 BIN     := bin
