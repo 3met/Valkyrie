@@ -14,7 +14,10 @@ public:
 	Bitboard(U64 b);
 	~Bitboard();
 
-	const static U8 SHOW_ORDER[64];	// Order to display the bits
+	const static U8 SHOW_ORDER[64];	// Order that the positions are displayed
+	const static U8 RANK[64];	// Map position to rank
+	const static U8 FILE[64];	// Map position to file
+
 	U64 board;
 
 	// Get and Set methods
@@ -22,6 +25,7 @@ public:
 	bool getPos(U8 pos);
 	vector<U8> getPosVector();
 	vector<U8> getPosVector(U8 limit);
+	U8 getFirstPos();
 
 	U64 posToBoard(short pos);
 
