@@ -2,9 +2,8 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
+/* Generates all legal pawn moves */
 void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
-	/* Generates all legal pawn moves */
-
 	U8 i, j;
 	vector<U8> start;
 	Bitboard move_board;
@@ -43,34 +42,35 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 
 		if (cs->turn == cs->WHITE) {
 			// Try two squares up if can move up one and on home row
-			if (move_board.board != 0 && start[i] >= 8 && start[i] <= 15) {
-				move_board.setPos(start[i]+16, true);
-				// Remove square if occupied
-				move_board.board &= ~(cs->pieces[cs->WHITE][cs->ALL_PIECES]->board);
-				move_board.board &= ~(cs->pieces[cs->BLACK][cs->ALL_PIECES]->board);
+			if (move_board.board != 0 && Bitboard::RANK[start[i]] == 1) {
+				// Add square if not occupied
+				if (!cs->pieces[cs->WHITE][cs->ALL_PIECES]->getPos(start[i]+16)
+					&& !cs->pieces[cs->BLACK][cs->ALL_PIECES]->getPos(start[i]+16)) {
+					move_board.setPos(start[i]+16, true);
+				}
 			}
-			// Add left kill position if not on a column
-			if (start[i] % 8 != 0) {
+			// Add left kill position if not on a file
+			if (Bitboard::FILE[start[i]] != 0) {
 				kill_board.setPos(start[i]+7, true);
 			}
 			// Add right kill position if not on h column
-			if (start[i] % 8 != 7) {
+			if (Bitboard::FILE[start[i]] != 7) {
 				kill_board.setPos(start[i]+9, true);
 			}
 		} else {	// Black's turn
 			// Try two squares up if can move up one and on home row
-			if (move_board.board != 0 && start[i] >= 48 && start[i] <= 55) {
-				move_board.setPos(start[i]-16, true);
-				// Remove square if occupied
-				move_board.board &= ~(cs->pieces[cs->WHITE][cs->ALL_PIECES]->board);
-				move_board.board &= ~(cs->pieces[cs->BLACK][cs->ALL_PIECES]->board);
+			if (move_board.board != 0 && Bitboard::RANK[start[i]] == 6) {
+				if (!cs->pieces[cs->WHITE][cs->ALL_PIECES]->getPos(start[i]-16)
+					&& !cs->pieces[cs->BLACK][cs->ALL_PIECES]->getPos(start[i]-16)) {
+					move_board.setPos(start[i]-16, true);
+				}
 			}
 			// Add left kill position if not on a column
-			if (start[i] % 8 != 0) {
+			if (Bitboard::FILE[start[i]] != 0) {
 				kill_board.setPos(start[i]-9, true);
 			}
 			// Add right kill position if not on h column
-			if (start[i] % 8 != 7) {
+			if (Bitboard::FILE[start[i]] != 7) {
 				kill_board.setPos(start[i]-7, true);
 			}
 		}
@@ -89,8 +89,8 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// All possible non-kill moves
 		for (j=0; j<move_targets.size(); ++j) {
 			// Check pawn promotion
-			if (move_targets[j] >= 56 || move_targets[j] <= 7) {
-				promotion = 4;	// Auto queen
+			if (Bitboard::RANK[start[i]] == 0 || Bitboard::RANK[start[i]] == 7) {
+				promotion = cs->QUEEN;	// Auto queen
 			} else {
 				promotion = -1;
 			}
@@ -100,8 +100,8 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// All possible kill moves
 		for (j=0; j<kill_targets.size(); ++j) {
 			// Check pawn promotion
-			if (kill_targets[j] >= 56 || kill_targets[j] <= 7) {
-				promotion = 4;	// Auto queen
+			if (Bitboard::RANK[start[i]] == 0 || Bitboard::RANK[start[i]] == 7) {
+				promotion = cs->QUEEN;	// Auto queen
 			} else {
 				promotion = -1;
 			}

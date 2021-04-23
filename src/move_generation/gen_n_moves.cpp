@@ -2,9 +2,8 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
+/* Generates all legal knight moves */
 void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
-	/* Generates all legal knight moves */
-
 	U8 i, j;
 	vector<U8> start;
 	Bitboard target_board;

@@ -168,12 +168,12 @@ short ChessEngine::evalBoard(ChessState* cs) {
 	vector<U8> pieces[2][6] = {
 		// White
 		{
-			cs->pieces[0][0]->getPosVector(),
+			cs->pieces[0][0]->getPosVector(),	// Pawn to king
 			cs->pieces[0][1]->getPosVector(),
 			cs->pieces[0][2]->getPosVector(),
 			cs->pieces[0][3]->getPosVector(),
 			cs->pieces[0][4]->getPosVector(),
-			cs->pieces[0][5]->getPosVector(),
+			cs->pieces[0][5]->getPosVector(1),
 		},
 		// Black
 		{
@@ -182,7 +182,7 @@ short ChessEngine::evalBoard(ChessState* cs) {
 			cs->pieces[1][2]->getPosVector(),
 			cs->pieces[1][3]->getPosVector(),
 			cs->pieces[1][4]->getPosVector(),
-			cs->pieces[1][5]->getPosVector(),
+			cs->pieces[1][5]->getPosVector(1),
 		}
 	};
 

@@ -8,7 +8,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 	U8 i, j;
 	U8 pos;
 	vector<U8> start;
-	vector<short> kill_targets;
+	vector<U8> kill_targets;
 	short killed;
 	
 	// Get all bishop locations
@@ -19,7 +19,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Up-right movement
 		pos = start[i];
-		while (pos < 56 && pos % 8 != 7) {	// Not top row or right col
+		while (Bitboard::RANK[pos] != 7 && Bitboard::FILE[pos] != 7) {	// Not top row or right col
 			// If an enemy piece at target position
 			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos+9)) {
 				kill_targets.push_back(pos+9);
@@ -36,7 +36,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Down-right moves
 		pos = start[i];
-		while (pos > 7 && pos % 8 != 7) {	// Not bottom row or right col
+		while (Bitboard::RANK[pos] != 0 && Bitboard::FILE[pos] != 7) {	// Not bottom row or right col
 			// If an enemy piece at target
 			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos-7)) {
 				kill_targets.push_back(pos-7);
@@ -53,7 +53,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Down-left moves
 		pos = start[i];
-		while (pos > 7 && pos % 8 != 0) {	// Not bottom row or left col
+		while (Bitboard::RANK[pos] != 0 && Bitboard::FILE[pos] != 0) {	// Not bottom row or left col
 			// If an enemy piece at target
 			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos-9)) {
 				kill_targets.push_back(pos-9);
@@ -70,7 +70,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Up-left moves
 		pos = start[i];
-		while (pos < 56 && pos % 8 != 0) {	// Not rightmost column
+		while (Bitboard::RANK[pos] != 7 && Bitboard::FILE[pos] != 0) {	// Not rightmost column
 			// If an enemy piece at target
 			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos+7)) {
 				kill_targets.push_back(pos+7);

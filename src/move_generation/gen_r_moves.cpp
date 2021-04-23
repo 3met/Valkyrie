@@ -1,3 +1,4 @@
+#include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "U8.hpp"
@@ -19,7 +20,7 @@ void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Upward moves
 		pos = start[i];
-		while (pos < 56) {	// Not top row
+		while (Bitboard::RANK[pos] != 7) {	// Not top rank
 			// If an enemy piece at target position
 			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos+8)) {
 				kill_targets.push_back(pos+8);
@@ -36,7 +37,7 @@ void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Downward moves
 		pos = start[i];
-		while (pos > 7) {	// Not bottom row
+		while (Bitboard::RANK[pos] != 0) {	// Not bottom row
 			// If an enemy piece at target
 			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos-8)) {
 				kill_targets.push_back(pos-8);
@@ -53,7 +54,7 @@ void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Leftward moves
 		pos = start[i];
-		while (pos % 8 != 0) {	// Not leftmost column
+		while (Bitboard::FILE[pos] != 0) {	// Not leftmost column
 			// If an enemy piece at target
 			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos-1)) {
 				kill_targets.push_back(pos-1);
@@ -70,7 +71,7 @@ void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Rightward moves
 		pos = start[i];
-		while (pos % 8 != 7) {	// Not rightmost column
+		while (Bitboard::FILE[pos] != 7) {	// Not rightmost column
 			// If an enemy piece at target
 			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos+1)) {
 				kill_targets.push_back(pos+1);

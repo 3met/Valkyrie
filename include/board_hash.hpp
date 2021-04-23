@@ -7,7 +7,7 @@
 #include "U64.hpp"
 #include "zobrist_values.hpp"
 
-/* Zobrist  */
+/* Zobrist Board Hash */
 class BoardHash {
 private:
 	U64 hash;

@@ -1,46 +1,46 @@
+
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "U8.hpp"
 
+#include <iostream>	// TEMP
+using namespace std;	// TEMP
+
 void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 	/* Generates all legal king moves */
 
-	U8 i, j;
+	U8 i;
 	vector<Move> validMoves;
-	vector<U8> start;
+	U8 start;
 	Bitboard target_board;
 	vector<U8> targets;
 	short killed;
 	
 	// Start position of the king
-	start = cs->pieces[cs->turn][cs->KING]->getPosVector(1);
+	// cout << "START" << endl;
+	start = cs->pieces[cs->turn][cs->KING]->getFirstPos();
+	// cout << "END" << endl;
 
-	// For each king (there should only be one)
-	for (i=0; i<start.size(); ++i) {
+	// Get surrounding squares
+	target_board = KMoveDB.find(start)->second;
+	// Remove squares with same coloured pieces
+	target_board.board = target_board.board & (~cs->pieces[cs->turn][cs->ALL_PIECES]->board);	
 
-		// Get surrounding squares
-		target_board = KMoveDB.find(start[i])->second;
-		// Remove squares with same coloured pieces
-		target_board.board = target_board.board & (~cs->pieces[cs->turn][cs->ALL_PIECES]->board);	
+	// TODO: CHECK IF TARGET SQUARE IS UNDER ATTACK
 
-		// TODO: CHECK IF TARGET SQUARE IS UNDER ATTACK
+	// Positions of all target squares
+	targets = target_board.getPosVector();
 
-		// Positions of all target squares
-		targets = target_board.getPosVector();
-
-		// Add moves to vector
-		for (j=0; j<targets.size(); ++j) {
-			// Check for killing a piece
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(targets[j])) {
-				killed = cs->getPieceType(!cs->turn, targets[j]);
-			} else {
-				killed = -1;	// Default
-			}
-
-			// Add to list of valid moves
-			moves->push_back(Move(cs->KING, start[i], targets[j], killed));
+	// Add moves to vector
+	for (i=0; i<targets.size(); ++i) {
+		// Check for killing a piece
+		if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(targets[i])) {
+			killed = cs->getPieceType(!cs->turn, targets[i]);
+		} else {
+			killed = -1;	// Default
 		}
 
-		// if (cs)
+		// Add to list of valid moves
+		moves->push_back(Move(cs->KING, start, targets[i], killed));
 	}
 }
