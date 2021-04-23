@@ -15,9 +15,6 @@ DEBUG_EXECUTABLE 	:= debug_main
 run:
 	cd BIN && cls && $(EXECUTABLE)
 
-compile_run: clean compile
-	cd BIN && cls && $(EXECUTABLE)
-
 debug: clean compile_debug
 	cd BIN && cls && $(DEBUG_EXECUTABLE) && gdb a.out
 
