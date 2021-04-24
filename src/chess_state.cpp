@@ -393,13 +393,13 @@ void ChessState::move(Move m) {
 	if (m.piece == PAWN) {
 		if (turn == WHITE) {
 			// If pawn moved two squares forward
-			if (m.start >= 7 && m.start <= 15 && m.end >=24 && m.end <= 31) {
+			if (Bitboard::RANK[m.start] == 1 && Bitboard::RANK[m.start] == 3) {
 				enPassant = m.end - 8;
 			} else {
 				enPassant = -1;
 			}
 		} else {	// If black's turn
-			if (m.start >= 48 && m.start <= 55 && m.end >=32 && m.end <= 39) {
+			if (Bitboard::RANK[m.start] == 6 && Bitboard::RANK[m.start] == 4) {
 				enPassant = m.end + 8;
 			} else {
 				enPassant = -1;
@@ -427,7 +427,7 @@ void ChessState::move(Move m) {
 }
 
 void ChessState::reverseMove() {
-	/* 	Reverses a moves.
+	/*	Reverses a moves.
 		Assumes move is valid.	*/
 
 	Move* m = &moveList[moveList.size()-1];
@@ -544,12 +544,12 @@ void ChessState::show(bool show_coords) {
 	}
 
 	// TODO: ADD COORDS around board
-
-	cout << "-------------------" << endl;
-	// cout << 
+	if (show_coords) {
+		cout << "-------------------" << endl;
+	}
 	for (i=0; i<64; ++i) {
-		if ((i+1) % 8 == 1) {
-			cout << ranks[i/8] << "|  ";
+		if (show_coords && (i+1) % 8 == 1) {
+			cout << ranks[i/8] << " | ";
 		}		
 
 		cout << board[Bitboard::SHOW_ORDER[i]] << ' ';
@@ -558,7 +558,10 @@ void ChessState::show(bool show_coords) {
 			cout << endl;
 		}
 	}
-	cout << " |_________________" << endl;
-	cout << "    a b c d e f g h" << endl;
-	cout << "-------------------" << endl;
+
+	if (show_coords) {
+		cout << "  +----------------" << endl;
+		cout << "    a b c d e f g h" << endl;
+		cout << "-------------------" << endl;
+	}
 }

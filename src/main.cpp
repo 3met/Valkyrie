@@ -30,12 +30,13 @@ For Consideration:
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
+#include "eval_score.hpp"
 #include "move.hpp"
 #include "U64.hpp"
 
 using namespace std;
 
-#include <time.h>
+#include <time.h>	// TEMP
 clock_t start_t, end_t;
 double total_time = 0;
 
@@ -51,12 +52,14 @@ int main() {
 	
 	ChessState cs;
 	ChessEngine engine;
-	pair<Move, short> m;
+	pair<Move, EvalScore> m;
 	char buffer[10];
 	string playerInput;
 
 	int count = 30;
-	int depth = 5;
+	int depth = 4;
+
+	cs.loadFEN("8/2k5/8/7K/8/8/4R3/3R4 w - - 0 1");
 
 	cout << "===== Initial =====" << endl;
 	cout << "Count: " << count << endl;
@@ -72,7 +75,7 @@ int main() {
 		total_time = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
 		
 		cout << "Processing Time: " << total_time << endl;
-		cout << "Score: " << float(m.second)/100 << endl;
+		cout << "Score: " << m.second << endl;
 		m.first.print();
 		cs.move(m.first);
 		cs.show();
@@ -81,7 +84,7 @@ int main() {
 		cout << ">>> ";
 		cin >> playerInput;
 		Move m2 = cs.notationToMove(playerInput);
-		
+
 		cs.move(m2);
 	}
 	

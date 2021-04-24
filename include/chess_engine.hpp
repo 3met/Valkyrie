@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include "bitboard.hpp"
+#include "eval_score.hpp"
 #include "opening_table.hpp"
 #include "chess_state.hpp"
 #include "move.hpp"
@@ -59,7 +60,7 @@ public:
 	short evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]);
 	
 	// Move Selection
-	pair<Move, short> bestMove(ChessState* cs, U8 depth);
-	short negamaxSearch(ChessState* cs, U8 depth, short alpha, short beta);
+	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
+	EvalScore negamaxSearch(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta);
 };
 #endif
