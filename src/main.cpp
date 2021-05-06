@@ -36,6 +36,8 @@ For Consideration:
 
 using namespace std;
 
+#include "board_hash.hpp"
+
 #include <time.h>	// TEMP
 clock_t start_t, end_t;
 double total_time = 0;
@@ -49,7 +51,7 @@ int main() {
 		cout << "Warning: Bitboard has incorrect number of bits" << endl;
 		return 1;
 	}
-	
+
 	ChessState cs;
 	ChessEngine engine;
 	pair<Move, EvalScore> m;
@@ -57,9 +59,9 @@ int main() {
 	string playerInput;
 
 	int count = 30;
-	int depth = 4;
+	int depth = 5;
 
-	cs.loadFEN("8/2k5/8/7K/8/8/4R3/3R4 w - - 0 1");
+	// cs.loadFEN("8/2k5/8/7K/8/8/4R3/3R4 w - - 0 1");
 
 	cout << "===== Initial =====" << endl;
 	cout << "Count: " << count << endl;

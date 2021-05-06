@@ -74,7 +74,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		throw ChessState::NoMoves();
 	}
 
-	// TODO sort moves
+	sortMoves(&moves);
 
 	EvalScore alpha(-1, true, 0);	// -INF; best score current color can achive 
 	EvalScore beta(1, true, 0);	// INF; best score other color can achive
@@ -101,34 +101,32 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 
 EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta) {
+	// Check for king death
+	if (cs->wK.board == 0) {
+		return EvalScore(-1, true, 0);
+	} else if (cs->bK.board == 0) {
+		return EvalScore(1, true, 0);
+	}
+
 	if (depth == 0) {
-		EvalScore es(evalBoard(cs));
-
-		if (es.eval > 20000) {	// If black king is dead
-			es.eval = 1;
-			es.foundMate = true;
-			es.movesToMate = 0;
-		} else if (es.eval < -20000) {	// If white king is dead
-			es.eval = -1;
-			es.foundMate = true;
-			es.movesToMate = 0;
-		}
-
 		if (cs->turn == cs->BLACK) {
-			return -es;
+			return -EvalScore(evalBoard(cs));
 		} else {
-			return es;
+			return EvalScore(evalBoard(cs));
 		}		 
 	}
 
+	// Generate and sort moves
 	vector<Move> moves;
 	genAllMoves(cs, &moves);
-
+	
 	// Check if valid moves were generated
 	if (moves.size() == 0) {
 		throw ChessState::NoMoves();
 		// return 0;
 	}
+
+	sortMoves(&moves);
 
 	EvalScore score;
 

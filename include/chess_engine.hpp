@@ -62,5 +62,6 @@ public:
 	// Move Selection
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta);
+	void sortMoves(vector<Move>* moves);
 };
 #endif

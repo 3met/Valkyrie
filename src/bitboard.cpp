@@ -56,7 +56,6 @@ const U8 Bitboard::FILE[64] = {
 // |~| ----- Get and Set Methods -----
 void Bitboard::setPos(U8 pos, bool value) {
 	/* Set the given position to the given value */
-
 	U64 n;	// Needs to be same size as board
 
 	if (value) {
