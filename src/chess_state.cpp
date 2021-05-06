@@ -393,13 +393,13 @@ void ChessState::move(Move m) {
 	if (m.piece == PAWN) {
 		if (turn == WHITE) {
 			// If pawn moved two squares forward
-			if (Bitboard::RANK[m.start] == 1 && Bitboard::RANK[m.start] == 3) {
+			if (Bitboard::RANK[m.start] == 1 && Bitboard::RANK[m.end] == 3) {
 				enPassant = m.end - 8;
 			} else {
 				enPassant = -1;
 			}
 		} else {	// If black's turn
-			if (Bitboard::RANK[m.start] == 6 && Bitboard::RANK[m.start] == 4) {
+			if (Bitboard::RANK[m.start] == 6 && Bitboard::RANK[m.end] == 4) {
 				enPassant = m.end + 8;
 			} else {
 				enPassant = -1;
