@@ -18,8 +18,8 @@ using namespace std;
 class ChessEngine {
 private:
 	// King and knight move databases
-	map<U64, Bitboard> KMoveDB;
-	map<U64, Bitboard> NMoveDB;
+	map<U8, Bitboard> KMoveDB;
+	map<U8, Bitboard> NMoveDB;
 
 	// Opening book database
 	OpeningTable openingTable;
@@ -37,9 +37,9 @@ private:
 	};
 
 	// File IO methods
-	void read_move_table(map<U64, Bitboard>* moveTable, string fileName);
-	void read_bonus_table(map<U8, S8>* bonusTable, string fileName);
-	void read_opening_book(OpeningTable* openingTable, string fileName);
+	void readMoveTable(map<U8, Bitboard>* moveTable, string fileName);
+	void readBonusTable(map<U8, S8>* bonusTable, string fileName);
+	void readOpeningBook(OpeningTable* openingTable, string fileName);
 
 public:
 	ChessEngine();

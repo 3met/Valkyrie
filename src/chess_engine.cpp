@@ -25,12 +25,12 @@ ChessEngine::ChessEngine() {
 
 	srand(time(0));
 
-	read_move_table(&KMoveDB, "king-moves.movetable");
-	read_move_table(&NMoveDB, "knight-moves.movetable");
+	readMoveTable(&KMoveDB, "king-moves.movetable");
+	readMoveTable(&NMoveDB, "knight-moves.movetable");
 
-	read_bonus_table(&knightBonus, "knight-bonus.bonustable");
+	readBonusTable(&knightBonus, "knight-bonus.bonustable");
 
-	read_opening_book(&openingTable, "opening_book.dat");
+	readOpeningBook(&openingTable, "opening_book.dat");
 
 	cout << "Engine Loading Complete" << endl << endl;
 }
@@ -55,8 +55,8 @@ const short ChessEngine::materialValsHB[6] = {
 	100, 320, 333, 510, 880, 30000,
 };
 
-
 // ----- Primary Operations -----
+
 pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	vector<Move> moves;
 
