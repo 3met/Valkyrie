@@ -58,8 +58,8 @@ int main() {
 	char buffer[10];
 	string playerInput;
 
-	int count = 30;
-	int depth = 5;
+	int count = 100;
+	int depth = 4;
 
 	// cs.loadFEN("8/2k5/8/7K/8/8/4R3/3R4 w - - 0 1");
 
@@ -76,15 +76,31 @@ int main() {
 		end_t = clock();	// TEMP
 		total_time = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
 		
-		cout << "Processing Time: " << total_time << endl;
+		cout << "Calc. Time: " << total_time << endl;
 		cout << "Score: " << m.second << endl;
 		m.first.print();
 		cs.move(m.first);
 		cs.show();
 
-		cout << endl << "Enter move:" << endl;
-		cout << ">>> ";
-		cin >> playerInput;
+		while (true) {
+			cout << endl << "Enter move:" << endl;
+			cout << ">>> ";
+			cin >> playerInput;
+
+			if (playerInput == "reverse") {
+				cs.reverseMove();
+				cs.reverseMove();
+				cout << endl << "Move Reversed." << endl;
+				continue;
+			}
+
+			break;
+		}
+
+		if (playerInput == "exit") {
+			break;
+		}
+
 		Move m2 = cs.notationToMove(playerInput);
 
 		cs.move(m2);
