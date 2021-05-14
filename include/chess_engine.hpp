@@ -3,6 +3,7 @@
 #define CHESS_ENGINE_HPP
 
 #include <map>
+#include <utility>
 #include <vector>
 #include "bitboard.hpp"
 #include "eval_score.hpp"
@@ -17,9 +18,26 @@ using namespace std;
 
 class ChessEngine {
 private:
+	enum cardinalDirections {
+		UP = 0,
+		RIGHT,
+		DOWN,
+		LEFT,
+	};
+
+	enum diagonalDirections {
+		UP_RIGHT = 0,
+		DOWN_RIGHT,
+		DOWN_LEFT,
+		UP_LEFT,
+	};
+
+	const static S8 CARDINAL_POS_INC[4];
+	const static S8 DIAGONAL_POS_INC[4];
+
 	// King and knight move databases
-	map<U8, Bitboard> KMoveDB;
-	map<U8, Bitboard> NMoveDB;
+	Bitboard KMoveDB[64];
+	Bitboard NMoveDB[64];
 
 	// Opening book database
 	OpeningTable openingTable;
@@ -37,7 +55,7 @@ private:
 	};
 
 	// File IO methods
-	void readMoveTable(map<U8, Bitboard>* moveTable, string fileName);
+	void readMoveTable(Bitboard moveTable[64], string fileName);
 	void readBonusTable(map<U8, S8>* bonusTable, string fileName);
 	void readOpeningBook(OpeningTable* openingTable, string fileName);
 
@@ -61,7 +79,14 @@ public:
 	
 	// Move Selection
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
-	EvalScore negamaxSearch(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta);
+	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
 	void sortMoves(vector<Move>* moves);
+
+	// Miscellaneous Methods
+	U64 divide(ChessState* cs, U8 depth);
+	U64 perft(ChessState* cs, U8 depth);
+	pair<bool, S8> nextPieceCardinal(ChessState* cs, U8 pos, U8 direction);
+	pair<bool, S8> nextPieceDiagonal(ChessState* cs, U8 pos, U8 direction);
+	bool isPosAttacked(ChessState* cs, bool turn, U8 pos);
 };
 #endif

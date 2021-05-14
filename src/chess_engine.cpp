@@ -14,6 +14,7 @@
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
+#include "eval_score.hpp"
 #include "move.hpp"
 #include "opening_table.hpp"
 #include "U64.hpp"
@@ -25,8 +26,8 @@ ChessEngine::ChessEngine() {
 
 	srand(time(0));
 
-	readMoveTable(&KMoveDB, "king-moves.movetable");
-	readMoveTable(&NMoveDB, "knight-moves.movetable");
+	readMoveTable(KMoveDB, "king-moves.movetable");
+	readMoveTable(NMoveDB, "knight-moves.movetable");
 
 	readBonusTable(&knightBonus, "knight-bonus.bonustable");
 
@@ -78,18 +79,25 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 	EvalScore alpha(-1, true, 0);	// -INF; best score current color can achive 
 	EvalScore beta(1, true, 0);	// INF; best score other color can achive
-	U8 bestIndex;
+	short bestIndex = -1;	// -1 as default
 	EvalScore score;
 
-	for (U8 i=0; i<moves.size(); ++i) {
+	for (short i=0; i<moves.size(); ++i) {
 		cs->move(moves[i]);
-		score = -negamaxSearch(cs, depth-1, -beta, -alpha);
-		cs->reverseMove();
+		score = -negamaxSearch(cs, 0, depth, -beta, -alpha);
 
-		if (score > alpha) {
+		if (score > alpha 
+			&& !isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
+			
 			alpha = score;
 			bestIndex = i;
 		}
+
+		cs->reverseMove();
+	}
+
+	if (bestIndex == -1) {
+		throw ChessState::NoMoves();
 	}
 
 	if (cs->turn == cs->WHITE) {
@@ -100,7 +108,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 }
 
 
-EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta) {
+EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta) {
 	// Check for king death
 	if (cs->wK.board == 0) {
 		return EvalScore(-1, true, 0);
@@ -108,8 +116,18 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, EvalScore alpha, 
 		return EvalScore(1, true, 0);
 	}
 
-	if (depth == 0) {
-		if (cs->turn == cs->BLACK) {
+	if (depth == depthTarget) {
+		// Extend if last move was a kill
+		if (cs->lastMove().killed != -1) {
+			depthTarget += 1;
+		// Extend if a pawn was promoted
+		} else if (cs->lastMove().promoted != -1) {
+			depthTarget += 1;
+		// Extend if move was a check
+		// } else if (isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING]->getFirstPos())) {
+			// depthTarget += 2;
+		// Returns evaluation score if there is not search extension
+		} else if (cs->turn == cs->BLACK) {
 			return -EvalScore(evalBoard(cs));
 		} else {
 			return EvalScore(evalBoard(cs));
@@ -129,29 +147,31 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, EvalScore alpha, 
 	sortMoves(&moves);
 
 	EvalScore score;
+	EvalScore initAlpha = alpha;
 
 	for (U8 i=0; i<moves.size(); ++i) {
 		cs->move(moves[i]);
-		score = -negamaxSearch(cs, depth-1, -beta, -alpha);
-		cs->reverseMove();
-
-		if (score >= beta) {
+		score = -negamaxSearch(cs, depth+1, depthTarget, -beta, -alpha);
+		
+		if (score >= beta 
+			&& !isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
+			
+			cs->reverseMove();
 			return beta;
 		}
 
-		if (score.eval > 20000) {	// If black king is dead
-			score.eval = 1;
-			score.foundMate = true;
-			score.movesToMate = 0;
-		} else if (score.eval < -20000) {	// If white king is dead
-			score.eval = -1;
-			score.foundMate = true;
-			score.movesToMate = 0;
-		}
+		if (score > alpha 
+			&& !isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
 
-		if (score > alpha) {
 			alpha = score;
 		}
+
+		cs->reverseMove();
+	}
+
+	// If 
+	if (alpha == initAlpha) {
+
 	}
 
 	return alpha;

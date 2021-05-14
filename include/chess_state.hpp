@@ -99,8 +99,8 @@ public:
 	};
 	
 	// Query Methods
-	bool isLegalMove();
 	S8 getPieceType(bool colour, U8 pos);
+	Move lastMove();
 
 	// Setup Methods
 	void reset();

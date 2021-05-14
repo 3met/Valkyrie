@@ -2,6 +2,8 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
+#include <iostream>	// TEMP
+
 /* Generates all legal pawn moves */
 void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 	U8 i, j;
@@ -80,38 +82,44 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		kill_board.board &= cs->pieces[!cs->turn][cs->ALL_PIECES]->board | enPassantBoard.board;
 
 		// All squares that can be killed/moved to
-		move_targets = move_board.getPosVector(1);
+		move_targets = move_board.getPosVector(2);
 		kill_targets = kill_board.getPosVector(2);
 
 		// TODO: Make sure king is safe after move
 
-		S8 promotion;
 		// All possible non-kill moves
 		for (j=0; j<move_targets.size(); ++j) {
 			// Check pawn promotion
-			if (Bitboard::RANK[start[i]] == 0 || Bitboard::RANK[start[i]] == 7) {
-				promotion = cs->QUEEN;	// Auto queen
+			if (Bitboard::RANK[move_targets[j]] == 0 || Bitboard::RANK[move_targets[j]] == 7) {
+				// Add a moves for each possible promotion type
+				moves->push_back(Move(cs->PAWN, start[i], move_targets[j], -1, cs->QUEEN));
+				moves->push_back(Move(cs->PAWN, start[i], move_targets[j], -1, cs->ROOK));
+				moves->push_back(Move(cs->PAWN, start[i], move_targets[j], -1, cs->BISHOP));
+				moves->push_back(Move(cs->PAWN, start[i], move_targets[j], -1, cs->KNIGHT));
 			} else {
-				promotion = -1;
+				moves->push_back(Move(cs->PAWN, start[i], move_targets[j], -1, -1));
 			}
-			moves->push_back(Move(cs->PAWN, start[i], move_targets[j], -1, promotion));
 		}
 
 		// All possible kill moves
 		for (j=0; j<kill_targets.size(); ++j) {
-			// Check pawn promotion
-			if (Bitboard::RANK[start[i]] == 0 || Bitboard::RANK[start[i]] == 7) {
-				promotion = cs->QUEEN;	// Auto queen
-			} else {
-				promotion = -1;
-			}
 			// Type of piece killed
 			killed = cs->getPieceType(!cs->turn, kill_targets[j]);
 			// Account for en passant
 			if (killed == -1) {
 				killed = cs->PAWN;
 			}
-			moves->push_back(Move(cs->PAWN, start[i], kill_targets[j], killed, promotion));
+
+			// Check pawn promotion
+			if (Bitboard::RANK[kill_targets[j]] == 0 || Bitboard::RANK[kill_targets[j]] == 7) {
+				// Add a moves for each possible promotion type
+				moves->push_back(Move(cs->PAWN, start[i], kill_targets[j], killed, cs->QUEEN));
+				moves->push_back(Move(cs->PAWN, start[i], kill_targets[j], killed, cs->ROOK));
+				moves->push_back(Move(cs->PAWN, start[i], kill_targets[j], killed, cs->BISHOP));
+				moves->push_back(Move(cs->PAWN, start[i], kill_targets[j], killed, cs->KNIGHT));
+			} else {
+				moves->push_back(Move(cs->PAWN, start[i], kill_targets[j], killed, -1));
+			}
 		}
 	}
 }

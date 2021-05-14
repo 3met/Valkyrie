@@ -44,6 +44,7 @@ const char ChessState::piece_names[2][6] = {	// Note: must match piece indexing
 	{'p', 'n', 'b', 'r', 'q', 'k'},
 };
 
+// |~| ----- Query Method -----
 S8 ChessState::getPieceType(bool colour, U8 pos) {
 	/* Returns the type of piece at the given position */
 
@@ -55,6 +56,12 @@ S8 ChessState::getPieceType(bool colour, U8 pos) {
 
 	return -1;
 }
+
+// Returns most recent move
+Move ChessState::lastMove() {
+	return moveList[moveList.size() -1];
+}
+
 
 // |~| ----- SETUP METHODS -----
 void ChessState::reset() {
@@ -106,6 +113,7 @@ void ChessState::clear() {
 	bQCastle = false;
 
 	enPassant = -1;
+	enPassantHistory.clear();
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
 	turnNumber = 1;	// Game turn number
 }
@@ -179,6 +187,7 @@ void ChessState::loadFEN(string FEN) {
 
 	++FEN_index;	// Skip over space
 
+	// Read turn
 	if (FEN[FEN_index] == 'w') {
 		this->turn = WHITE;
 	} else {
@@ -218,8 +227,10 @@ void ChessState::loadFEN(string FEN) {
 
 	++FEN_index;	// Skip over space
 
+	// Read en passant
 	if (FEN[FEN_index] != '-') {
 		this->enPassant = Move::coordToPos(FEN.substr(FEN_index, 2));
+		enPassantHistory.push_back(this->enPassant);	
 		++FEN_index;	// Move to last en passant character
 	}
 
@@ -265,7 +276,6 @@ void ChessState::loadFEN(string FEN) {
 
 	turnNumber = stoi(FEN.substr(FEN_index-(nLength-1), nLength));
 }
-
 
 Move ChessState::notationToMove(string notation) {
 	// Converts chess notation to Move object (a7b8q ==> Move)
@@ -440,7 +450,7 @@ void ChessState::reverseMove() {
 
 	// Revert en passant value
 	enPassantHistory.pop_back();
-	enPassant = enPassantHistory[enPassantHistory.size()-1];
+	enPassant = *(enPassantHistory.end()-1);
 
 	// Updates piece location on bitboard
 	if (m->promoted == -1) {

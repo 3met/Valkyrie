@@ -17,7 +17,9 @@ public:
 	~Move();
 
 	static const char positions[64];
-	
+
+	friend ostream& operator<<(ostream& os, const Move& m);
+
 	U8 piece;	// Piece being moved
 	U8 start;	// Start pos
 	U8 end;		// End pos

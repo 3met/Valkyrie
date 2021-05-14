@@ -75,6 +75,10 @@ public:
 	    return !(b < a);
 	}
 
+	friend bool operator==(const EvalScore& a, const EvalScore& b) {
+	    return !(b < a) && !(a < b);
+	}
+
 	friend EvalScore operator-(const EvalScore& obj) {
 		return EvalScore(-obj.eval, obj.foundMate, obj.movesToMate);
 	};

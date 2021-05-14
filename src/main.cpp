@@ -61,50 +61,56 @@ int main() {
 	int count = 100;
 	int depth = 4;
 
+
+	cs.loadFEN("r3k2r/7b/8/8/8/8/1B4BQ/R3K2R b KQkq - 0 1");
+	engine.divide(&cs, 2);
+	// cs.move(cs.notationToMove("c5c6"));
+
+
 	// cs.loadFEN("8/2k5/8/7K/8/8/4R3/3R4 w - - 0 1");
 
-	cout << "===== Initial =====" << endl;
-	cout << "Count: " << count << endl;
-	cout << "Depth: " << depth << endl;
-	cs.show();
+	// cout << "===== Initial =====" << endl;
+	// cout << "Count: " << count << endl;
+	// cout << "Depth: " << depth << endl;
+	// cs.show();
 	
-	for (int i=0; i<count; ++i) {
-		cout << endl << "===== Move #" << i+1 << " =====" << endl;
+	// for (int i=0; i<count; ++i) {
+	// 	cout << endl << "===== Turn #" << i+1 << " =====" << endl;
 
-		start_t = clock();
-		m = engine.bestMove(&cs, depth);
-		end_t = clock();	// TEMP
-		total_time = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
+	// 	start_t = clock();
+	// 	m = engine.bestMove(&cs, depth);
+	// 	end_t = clock();	// TEMP
+	// 	total_time = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
 		
-		cout << "Calc. Time: " << total_time << endl;
-		cout << "Score: " << m.second << endl;
-		m.first.print();
-		cs.move(m.first);
-		cs.show();
+	// 	cout << "Calc. Time: " << total_time << endl;
+	// 	cout << "Score: " << m.second << endl;
+	// 	cout << "Move: " << m.first << endl;
+	// 	cs.move(m.first);
+	// 	cs.show();
 
-		while (true) {
-			cout << endl << "Enter move:" << endl;
-			cout << ">>> ";
-			cin >> playerInput;
+	// 	while (true) {
+	// 		cout << endl << "Enter move:" << endl;
+	// 		cout << ">>> ";
+	// 		cin >> playerInput;
 
-			if (playerInput == "reverse") {
-				cs.reverseMove();
-				cs.reverseMove();
-				cout << endl << "Move Reversed." << endl;
-				continue;
-			}
+	// 		if (playerInput == "reverse") {
+	// 			cs.reverseMove();
+	// 			cs.reverseMove();
+	// 			cout << endl << "Move Reversed." << endl;
+	// 			continue;
+	// 		}
 
-			break;
-		}
+	// 		break;
+	// 	}
 
-		if (playerInput == "exit") {
-			break;
-		}
+	// 	if (playerInput == "exit") {
+	// 		break;
+	// 	}
 
-		Move m2 = cs.notationToMove(playerInput);
+	// 	Move m2 = cs.notationToMove(playerInput);
 
-		cs.move(m2);
-	}
+	// 	cs.move(m2);
+	// }
 	
 	return 0;
 }

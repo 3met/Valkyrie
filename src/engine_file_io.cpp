@@ -12,7 +12,7 @@
 
 string DATA_DIR = "../data/";
 
-void ChessEngine::readMoveTable(map<U8, Bitboard>* moveTable, string fileName) {
+void ChessEngine::readMoveTable(Bitboard moveTable[64], string fileName) {
 	ifstream db_file;
 
 	// Load king move database
@@ -24,7 +24,7 @@ void ChessEngine::readMoveTable(map<U8, Bitboard>* moveTable, string fileName) {
 		U64 a, b;
 		for (U8 i=0; i<64; ++i) {	
 			db_file >> a >> b;
-			(*moveTable)[i] = Bitboard(b);
+			moveTable[i] = Bitboard(b);
 		}
 	}
 	db_file.close();

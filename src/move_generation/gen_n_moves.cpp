@@ -15,7 +15,7 @@ void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 
 	for (i=0; i<start.size(); ++i) {
 		// Get potential squares
-		target_board = NMoveDB.find(start[i])->second;
+		target_board = NMoveDB[start[i]];
 		// Remove squares with same coloured pieces
 		target_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES]->board);	
 		// Positions of all targets

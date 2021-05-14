@@ -1,6 +1,7 @@
 
 #include <string>
 #include <iostream>
+#include "chess_state.hpp"
 #include "move.hpp"
 
 using namespace std;
@@ -44,6 +45,10 @@ U8 Move::coordToPos(const string coord) {
 	return (8 * (coord[1] - '1')) + (coord[0] - 'a');	
 }
 
-void Move::print() {
-	cout << Move::posToCoord(start) << " to " << Move::posToCoord(end) << endl;
+ostream& operator<<(ostream &os, const Move &m) { 
+	os << Move::posToCoord(m.start) << Move::posToCoord(m.end);
+	if (m.promoted != -1) {
+		os << ChessState::piece_names[ChessState::BLACK][m.promoted];
+	}
+	return os;
 }
