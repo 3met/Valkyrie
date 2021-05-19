@@ -35,6 +35,7 @@ ChessState::ChessState(const ChessState* cs) {
 	
 	halfmoveClock = cs->halfmoveClock;
 	turnNumber = cs->turnNumber;
+	moveNumber = cs->moveNumber;
 }
 
 ChessState::~ChessState() {};
@@ -59,7 +60,7 @@ S8 ChessState::getPieceType(bool colour, U8 pos) {
 
 // Returns most recent move
 Move ChessState::lastMove() {
-	return moveList[moveList.size() -1];
+	return *(moveList.end()-1);
 }
 
 
@@ -76,11 +77,6 @@ void ChessState::reset() {
 	this->updateAllBitboard(BLACK);
 
 	turn = false;	// False for white; true for black
-	
-	wKCastle = true;	// Castle perms
-	wQCastle = true;
-	bKCastle = true;
-	bQCastle = true;
 
 	turnLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
 	turnLostCastlePerms[WHITE][QUEEN_SIDE] = -1;
@@ -90,11 +86,13 @@ void ChessState::reset() {
 	enPassant = -1;
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
 	turnNumber = 1;	// Game turn number
+	moveNumber = 1;
 }
 
+/* Clears the board and resets game data */
 void ChessState::clear() {
-	/* Clears the board and resets game data */
-
+	
+	// Reset bitboards
 	for (U8 i=0; i<2; ++i) {
 		for (U8 j=0; j<6; ++j) {
 			pieces[i][j]->board = 0;
@@ -112,10 +110,16 @@ void ChessState::clear() {
 	bKCastle = false;
 	bQCastle = false;
 
+	turnLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
+	turnLostCastlePerms[WHITE][QUEEN_SIDE] = -1;
+	turnLostCastlePerms[BLACK][KING_SIDE] = -1;
+	turnLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
+
 	enPassant = -1;
 	enPassantHistory.clear();
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
 	turnNumber = 1;	// Game turn number
+	moveNumber = 1;
 }
 
 void ChessState::place(short colour, short piece, short pos) {
@@ -345,11 +349,11 @@ void ChessState::move(Move m) {
 		// Update castle permissions
 		if (*castlePerms[turn][KING_SIDE]) {
 			*castlePerms[turn][KING_SIDE] = false;
-			turnLostCastlePerms[turn][KING_SIDE] = turnNumber;
+			turnLostCastlePerms[turn][KING_SIDE] = moveNumber;
 		}
 		if (*castlePerms[turn][QUEEN_SIDE]) {
 			*castlePerms[turn][QUEEN_SIDE] = false;
-			turnLostCastlePerms[turn][QUEEN_SIDE] = turnNumber;
+			turnLostCastlePerms[turn][QUEEN_SIDE] = moveNumber;
 		}
 
 		// Updated rook position if King castled
@@ -383,18 +387,49 @@ void ChessState::move(Move m) {
 			// Removing relevant castling perms if rook moves
 			if (m.start == 7 && wKCastle) {
 				wKCastle = false;
-				turnLostCastlePerms[WHITE][KING_SIDE] = turnNumber;
+				turnLostCastlePerms[WHITE][KING_SIDE] = moveNumber;
 			} else if (m.start == 0 && wQCastle) {
 				wQCastle = false;
-				turnLostCastlePerms[WHITE][QUEEN_SIDE] = turnNumber;
+				turnLostCastlePerms[WHITE][QUEEN_SIDE] = moveNumber;
 			}
 		} else {	// Black's turn
 			if (m.start == 63 && bKCastle) {
 				bKCastle = false;
-				turnLostCastlePerms[BLACK][KING_SIDE] = turnNumber;
+				turnLostCastlePerms[BLACK][KING_SIDE] = moveNumber;
 			} else if (m.start == 56 && bQCastle) {
 				bQCastle = false;
-				turnLostCastlePerms[BLACK][QUEEN_SIDE] = turnNumber;
+				turnLostCastlePerms[BLACK][QUEEN_SIDE] = moveNumber;
+			}
+		}
+	}
+
+	// Account for castling in rook death
+	if (m.killed == ROOK) {
+		if (turn == WHITE) {
+			if (*castlePerms[!turn][KING_SIDE]
+				&& m.end == 63) {
+
+				*castlePerms[!turn][KING_SIDE] = false;
+				turnLostCastlePerms[!turn][KING_SIDE] = moveNumber;	
+			}
+			if (*castlePerms[!turn][QUEEN_SIDE]
+				&& m.end == 56) {
+				
+				*castlePerms[!turn][QUEEN_SIDE] = false;
+				turnLostCastlePerms[!turn][QUEEN_SIDE] = moveNumber;	
+			}
+		} else {	// Black's turn
+			if (*castlePerms[!turn][KING_SIDE]
+				&& m.end == 7) {
+
+				*castlePerms[!turn][KING_SIDE] = false;
+				turnLostCastlePerms[!turn][KING_SIDE] = moveNumber;	
+			}
+			if (*castlePerms[!turn][QUEEN_SIDE]
+				&& m.end == 0) {
+				
+				*castlePerms[!turn][QUEEN_SIDE] = false;
+				turnLostCastlePerms[!turn][QUEEN_SIDE] = moveNumber;	
 			}
 		}
 	}
@@ -431,6 +466,7 @@ void ChessState::move(Move m) {
 	if (turn == BLACK) {	// If black completed turn
 		turnNumber += 1;
 	}
+	moveNumber += 1;
 
 	// Update turn color
 	turn = !turn;
@@ -440,13 +476,14 @@ void ChessState::reverseMove() {
 	/*	Reverses a moves.
 		Assumes move is valid.	*/
 
-	Move* m = &moveList[moveList.size()-1];
+	Move* m = &(*(moveList.end()-1));
 
 	turn = !turn;	// Swaps turn
 
 	if (turn == BLACK) {
 		turnNumber -= 1;
 	}
+	moveNumber -= 1;
 
 	// Revert en passant value
 	enPassantHistory.pop_back();
@@ -501,13 +538,22 @@ void ChessState::reverseMove() {
 	}
 
 	// Update castle permissions
-	if (*castlePerms[turn][KING_SIDE] == turnNumber) {
+	if (turnLostCastlePerms[turn][KING_SIDE] == moveNumber) {
 		*castlePerms[turn][KING_SIDE] = true;
 		turnLostCastlePerms[turn][KING_SIDE] = -1;
 	}
-	if (*castlePerms[turn][QUEEN_SIDE] == turnNumber) {
+	if (turnLostCastlePerms[turn][QUEEN_SIDE] == moveNumber) {
 		*castlePerms[turn][QUEEN_SIDE] = true;
 		turnLostCastlePerms[turn][QUEEN_SIDE] = -1;
+	}
+	// One can lose castle perms regardless of turn
+	if (turnLostCastlePerms[!turn][KING_SIDE] == moveNumber) {
+		*castlePerms[!turn][KING_SIDE] = true;
+		turnLostCastlePerms[!turn][KING_SIDE] = -1;
+	}
+	if (turnLostCastlePerms[!turn][QUEEN_SIDE] == moveNumber) {
+		*castlePerms[!turn][QUEEN_SIDE] = true;
+		turnLostCastlePerms[!turn][QUEEN_SIDE] = -1;
 	}
 
 	// Remove reversed move from move list
@@ -529,7 +575,7 @@ void ChessState::updateAllBitboard(bool colour) {
 
 /* ----- Output Functions -----*/
 void ChessState::mapBoardToChar(Bitboard b, char arr[64], char target) {
-	vector v = b.getPosVector();
+	vector<U8> v = b.getPosVector();
 	for (U8 i=0; i<v.size(); ++i) {
 		arr[v[i]] = target;
 	}
