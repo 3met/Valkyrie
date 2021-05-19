@@ -65,6 +65,10 @@ public:
 	ChessEngine();
 	~ChessEngine();
 
+	// UCI accessable functions
+	bool isLoaded = false;
+	bool canSearch = false;
+
 	// Move Generation
 	void genPMoves(ChessState* cs, vector<Move>* moves);
 	void genNMoves(ChessState* cs, vector<Move>* moves);
