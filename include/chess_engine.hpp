@@ -85,6 +85,7 @@ public:
 	void sortMoves(vector<Move>* moves);
 
 	// Miscellaneous Methods
+	void load();
 	U64 divide(ChessState* cs, U8 depth);
 	U64 perft(ChessState* cs, U8 depth);
 	pair<bool, S8> nextPieceCardinal(ChessState* cs, U8 pos, U8 direction);
