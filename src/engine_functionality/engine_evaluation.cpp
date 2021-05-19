@@ -1,6 +1,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "U8.hpp"
@@ -48,7 +49,7 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 	
 	#ifdef USE_MATERIAL_VALUE
 		// --- Adjustment for Material Amount --- 
-		// Account for material advantage
+		// Account for general material value
 		for (i=0; i<6; ++i) {
 			rating += pieces[side][i].size() * materialValsLK[i];
 		}
@@ -73,19 +74,27 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 		for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
 			rating += knightBonus[pieces[side][cs->KNIGHT][i]];
 		}
+		// Bishop placement
+		for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
+			rating += bishopBonus[pieces[side][cs->KNIGHT][i]];
+		}
+		// Queen placement
+		for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
+			rating += queenBonus[pieces[side][cs->KNIGHT][i]];
+		}
 	#endif
 
 	// --- Adjustment for Pawn Structure ---
+	U8 pawnsPerRank[2][8] = {{0},{0}};	// colors * ranks 
 	U8 pawnsPerFile[2][8] = {{0},{0}};	// colors * files 
-	U8 file;
-	// Fill pawnsPerFile array
+	// Fill Arrays
 	for (i=0; i<pieces[side][cs->PAWN].size(); ++i) {
-		file = pieces[side][cs->PAWN][i] % 8;
-		pawnsPerFile[side][file] += 1;
+		pawnsPerRank[side][Bitboard::RANK[pieces[side][cs->PAWN][i]]] += 1;
+		pawnsPerFile[side][Bitboard::FILE[pieces[side][cs->PAWN][i]]] += 1;
 	}
 	for (i=0; i<pieces[!side][cs->PAWN].size(); ++i) {
-		file = pieces[!side][cs->PAWN][i] % 8;
-		pawnsPerFile[!side][file] += 1;
+		pawnsPerRank[!side][Bitboard::RANK[pieces[!side][cs->PAWN][i]]] += 1;
+		pawnsPerFile[!side][Bitboard::FILE[pieces[!side][cs->PAWN][i]]] += 1;
 	}
 
 	#ifdef USE_DOUBLED_PAWNS
@@ -144,6 +153,7 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 	// --- Adjust for King Safty ---
 	// Stay in corner during middle game
 
+
 	// Retain pawn protection
 
 	// Distance from enemy pieces
@@ -156,11 +166,10 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 }
 
 /* Evaluates the state of the entire board
- * A positive number indicates White has an advantage
- * A negative number indicates Black has an advantage
+ * A positive number indicates perspective player has an advantage
+ * A negative number indicates other player has an advantage
  * The magnatude of the number represents the size of the advantage */
-short ChessEngine::evalBoard(ChessState* cs) {
-	/* Rates the status of game in terms of advantage */
+short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 
 	U8 i;
 
@@ -186,8 +195,6 @@ short ChessEngine::evalBoard(ChessState* cs) {
 		}
 	};
 
-	short rating = evalSide(cs, cs->WHITE, pieces) - evalSide(cs, cs->BLACK, pieces);
-
-	return rating;
+	return evalSide(cs, perspective, pieces) - evalSide(cs, !perspective, pieces);;
 }
 

@@ -44,6 +44,8 @@ private:
 
 	// Position bonuses
 	map<U8, S8> knightBonus;
+	map<U8, S8> bishopBonus;
+	map<U8, S8> queenBonus;
 
 	// Material value systems
 	const static short materialValsSTD[6];
@@ -74,7 +76,7 @@ public:
 
 	// Evaluation Methods
 	U8 rateGameStage(ChessState* cs, vector<U8> pieces[2][6]);
-	short evalBoard(ChessState* cs);
+	short evalBoard(ChessState* cs, bool perspective);
 	short evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]);
 	
 	// Move Selection
