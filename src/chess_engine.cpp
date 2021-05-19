@@ -65,13 +65,16 @@ void ChessEngine::load() {
 
 // ----- Primary Operations -----
 pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
+	
+	// Return static eval if depth is 0?
+
 	vector<Move> moves;
 
 	// Check if position in opening book
 	if (openingTable.contains(cs)) {
 		cout << "Using Opening Book" << endl;
 		moves = openingTable.get(cs);
-		return make_pair(moves[rand() % moves.size()], evalBoard(cs));
+		return make_pair(moves[rand() % moves.size()], evalBoard(cs, cs->WHITE));
 	}
 
 	genAllMoves(cs, &moves);
@@ -90,13 +93,21 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 	for (short i=0; i<moves.size(); ++i) {
 		cs->move(moves[i]);
-		score = -negamaxSearch(cs, 0, depth, -beta, -alpha);
 
-		if (score > alpha 
-			&& !isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
 			
-			alpha = score;
-			bestIndex = i;
+			score = -negamaxSearch(cs, 0, depth-1, -beta, -alpha);
+
+			if (score.foundMate) {
+				score.movesToMate += 1;
+			}
+
+			// cout << moves[i] << " " << score << endl;
+
+			if (score > alpha) {
+				alpha = score;
+				bestIndex = i;
+			}
 		}
 
 		cs->reverseMove();
@@ -105,7 +116,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	if (bestIndex == -1) {
 		throw ChessState::NoMoves();
 	}
-
+	
 	if (cs->turn == cs->WHITE) {
 		return make_pair(moves[bestIndex], alpha);
 	} else {
@@ -115,12 +126,6 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 
 EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta) {
-	// Check for king death
-	if (cs->wK.board == 0) {
-		return EvalScore(-1, true, 0);
-	} else if (cs->bK.board == 0) {
-		return EvalScore(1, true, 0);
-	}
 
 	if (depth == depthTarget) {
 		// Extend if last move was a kill
@@ -133,10 +138,10 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		// } else if (isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING]->getFirstPos())) {
 			// depthTarget += 2;
 		// Returns evaluation score if there is not search extension
-		} else if (cs->turn == cs->BLACK) {
-			return -EvalScore(evalBoard(cs));
+		// } else if (cs->turn == cs->BLACK) {
+		// 	return -EvalScore(evalBoard(cs));
 		} else {
-			return EvalScore(evalBoard(cs));
+			return EvalScore(evalBoard(cs, cs->turn));
 		}		 
 	}
 
@@ -147,37 +152,48 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	// Check if valid moves were generated
 	if (moves.size() == 0) {
 		throw ChessState::NoMoves();
-		// return 0;
 	}
 
 	sortMoves(&moves);
 
+	bool hasValidMove = false;
 	EvalScore score;
-	EvalScore initAlpha = alpha;
 
 	for (U8 i=0; i<moves.size(); ++i) {
 		cs->move(moves[i]);
-		score = -negamaxSearch(cs, depth+1, depthTarget, -beta, -alpha);
-		
-		if (score >= beta 
-			&& !isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
-			
-			cs->reverseMove();
-			return beta;
-		}
 
-		if (score > alpha 
-			&& !isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
+			score = -negamaxSearch(cs, depth+1, depthTarget, -beta, -alpha);
 
-			alpha = score;
+			hasValidMove = true;
+
+			if (score.foundMate) {
+				score.movesToMate += 1;
+			}			
+
+			if (score >= beta) {
+				cs->reverseMove();
+				return beta;
+			}
+
+			if (score > alpha) {
+				alpha = score;
+			}
 		}
 
 		cs->reverseMove();
 	}
 
-	// If 
-	if (alpha == initAlpha) {
+	// If there is no valid move, it is either checkmate or stalemate
+	if (!hasValidMove) {
+		// If the active player's king is not being attacked
+		// then the situation is stalemate
+		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING]->getFirstPos())) {
+			return EvalScore(0);
+		}
 
+		// Else there is checkmate
+		return EvalScore(-1, true, 0);
 	}
 
 	return alpha;
