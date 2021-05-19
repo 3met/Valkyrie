@@ -85,6 +85,7 @@ public:
 
 	short halfmoveClock;	// # of halfmoves since last capture or pawn move
 	short turnNumber;	// Game turn number
+	short moveNumber;
 
 	vector<Move> moveList;	// List of moves that lead to current game state
 
