@@ -19,7 +19,7 @@ compile: $(BIN)/$(EXECUTABLE)
 
 # Compile Normally
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp $(SRC)/*/*.cpp
-	cls && $(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
+	cls && $(CXX) $(CXX_FLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)
 
 debug: clean compile_debug
 	cd BIN && cls && gdb $(DEBUG_EXECUTABLE)
@@ -31,4 +31,4 @@ compile_debug: $(BIN)/$(DEBUG_EXECUTABLE)
 
 # Compile with Debug
 $(BIN)/$(DEBUG_EXECUTABLE): $(SRC)/*.cpp $(SRC)/*/*.cpp
-	cls && $(CXX) $(DEBUG_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
+	cls && $(CXX) $(DEBUG_FLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)
