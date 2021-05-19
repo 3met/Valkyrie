@@ -29,7 +29,7 @@ ostream& operator<< (ostream &out, EvalScore const& obj) {
 		out << '+';
 	}
 
-	if (obj.foundMate) {
+	if (obj.foundMate && obj.eval != 0) {
 		if (obj.eval < 0) {
 			out << '-';
 		}
