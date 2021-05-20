@@ -12,6 +12,11 @@ LIBRARIES   :=
 EXECUTABLE  := main
 DEBUG_EXECUTABLE 	:= debug_main
 
+# Clear binary folder
+clean:
+	-del $(BIN)/*
+
+# Run exe
 run:
 	cd BIN && cls && $(EXECUTABLE)
 
@@ -21,13 +26,8 @@ compile: $(BIN)/$(EXECUTABLE)
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp $(SRC)/*/*.cpp
 	cls && $(CXX) $(CXX_FLAGS) -I $(INCLUDE) $^ -o $@ $(LIBRARIES)
 
-debug: clean compile_debug
+debug: clean $(BIN)/$(DEBUG_EXECUTABLE)
 	cd BIN && cls && gdb $(DEBUG_EXECUTABLE)
-
-clean:
-	-del $(BIN)/*
-
-compile_debug: $(BIN)/$(DEBUG_EXECUTABLE)
 
 # Compile with Debug
 $(BIN)/$(DEBUG_EXECUTABLE): $(SRC)/*.cpp $(SRC)/*/*.cpp
