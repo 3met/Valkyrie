@@ -66,8 +66,6 @@ void ChessEngine::load() {
 // ----- Primary Operations -----
 pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	
-	// Return static eval if depth is 0?
-
 	vector<Move> moves;
 
 	// Check if position in opening book
@@ -101,8 +99,6 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			if (score.foundMate) {
 				score.movesToMate += 1;
 			}
-
-			// cout << moves[i] << " " << score << endl;
 
 			if (score > alpha) {
 				alpha = score;

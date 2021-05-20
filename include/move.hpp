@@ -19,6 +19,7 @@ public:
 	static const char positions[64];
 
 	friend ostream& operator<<(ostream& os, const Move& m);
+	friend bool operator==(const Move& a, const Move& b);
 
 	U8 piece;	// Piece being moved
 	U8 start;	// Start pos

@@ -17,11 +17,16 @@
 
 /*
 For Consideration:
- - Sort moves by likelyhood it is best move in alpha beta pruning
- - Instead of calculating all moves everytime, somehow reuse?
  - For rook move generation, remove non-horizontal pieces from bitboard before calculation
  - Add engine settings class for things like material scoring system
- - Pawn structure lookup
+ - Pawn structure rating lookup
+ - End search function early
+
+ - Move time function: https://www.desmos.com/calculator/v9kcbgamx3
+
+ - Name: Coronation Chess
+
+ - TODO: compile with "libwinpthread-1.dll"
 
 */
 
@@ -32,42 +37,44 @@ For Consideration:
 #include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
+#include "testing.hpp"
 #include "U64.hpp"
+#include "uci.hpp"
 
 using namespace std;
-
-#include "board_hash.hpp"
 
 #include <time.h>	// TEMP
 clock_t start_t, end_t;
 double total_time = 0;
 
 int main() {
-	cout << "----- Chess Engine -----" << endl;
-	cout << "By Emet Behrendt" << endl << endl;
+	cout << "Chess Engine | By Emet Behrendt" << endl;
 
 	// Bitboard size check
 	if (sizeof(U64) != 8) {
-		cout << "Warning: Bitboard has incorrect number of bits" << endl;
+		cout << "ERROR: Bitboard has incorrect number of bits" << endl;
 		return 1;
 	}
 
 	ChessState cs;
 	ChessEngine engine;
-	pair<Move, EvalScore> m;
-	char buffer[10];
-	string playerInput;
 
-	int count = 100;
-	int depth = 4;
+	UCI uci(&cs, &engine);
 
+	uci.run();
 
-	cs.loadFEN("r3k2r/7b/8/8/8/8/1B4BQ/R3K2R b KQkq - 0 1");
-	engine.divide(&cs, 2);
-	// cs.move(cs.notationToMove("c5c6"));
+	// cout << "Loading Engine..." << endl;
 
+	// pair<Move, EvalScore> m;
+	// char buffer[10];
+	// string playerInput;
+	// cout << "Engine Loading Complete" << endl << endl;
 
-	// cs.loadFEN("8/2k5/8/7K/8/8/4R3/3R4 w - - 0 1");
+	// int count = 10;
+	// int depth = 3;
+
+	// cout << perftTest() << endl;
+
 
 	// cout << "===== Initial =====" << endl;
 	// cout << "Count: " << count << endl;
@@ -75,41 +82,42 @@ int main() {
 	// cs.show();
 	
 	// for (int i=0; i<count; ++i) {
-	// 	cout << endl << "===== Turn #" << i+1 << " =====" << endl;
+		// cout << endl << "===== Turn #" << i+1 << " =====" << endl;
 
-	// 	start_t = clock();
-	// 	m = engine.bestMove(&cs, depth);
-	// 	end_t = clock();	// TEMP
-	// 	total_time = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
+		// start_t = clock();
+		// m = engine.bestMove(&cs, depth);
+		// end_t = clock();	// TEMP
+		// total_time = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
 		
-	// 	cout << "Calc. Time: " << total_time << endl;
-	// 	cout << "Score: " << m.second << endl;
-	// 	cout << "Move: " << m.first << endl;
-	// 	cs.move(m.first);
-	// 	cs.show();
+		// cout << "Calc. Time: " << total_time << endl;
+		// cout << "Score: " << m.second << endl;
+		// cout << "Move: " << m.first << endl;
+		// cs.move(m.first);
+		// cs.show();
 
-	// 	while (true) {
-	// 		cout << endl << "Enter move:" << endl;
-	// 		cout << ">>> ";
-	// 		cin >> playerInput;
+		// while (true) {
+		// 	cout << endl << "Enter move:" << endl;
+		// 	cout << ">>> ";
+		// 	cin >> playerInput;
 
-	// 		if (playerInput == "reverse") {
-	// 			cs.reverseMove();
-	// 			cs.reverseMove();
-	// 			cout << endl << "Move Reversed." << endl;
-	// 			continue;
-	// 		}
+		// 	if (playerInput == "reverse") {
+		// 		cs.reverseMove();
+		// 		cs.reverseMove();
+		// 		cout << endl << "Move Reversed." << endl;
+		// 		cs.show();
+		// 		continue;
+		// 	}
 
-	// 		break;
-	// 	}
+		// 	break;
+		// }
 
-	// 	if (playerInput == "exit") {
-	// 		break;
-	// 	}
+		// if (playerInput == "exit") {
+		// 	break;
+		// }
 
-	// 	Move m2 = cs.notationToMove(playerInput);
+		// Move m2 = cs.notationToMove(playerInput);
 
-	// 	cs.move(m2);
+		// cs.move(m2);
 	// }
 	
 	return 0;

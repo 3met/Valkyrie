@@ -68,6 +68,11 @@ public:
 	// UCI accessable functions
 	bool isLoaded = false;
 	bool canSearch = false;
+	int nodesTotal = 0;
+	int nodesPerSecond = 0;
+	short currDepth = 0;
+	short currSelDepth = 0;
+	int searchTime = 0;
 
 	// Move Generation
 	void genPMoves(ChessState* cs, vector<Move>* moves);
@@ -84,6 +89,11 @@ public:
 	short evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]);
 	
 	// Move Selection
+	Move searchOnTimer(ChessState cs, int timeLeft, int timeInc);
+	void searchNodes();
+	void searchDepth();
+	void searchExactTime();
+	void searchInfinite();
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
 	void sortMoves(vector<Move>* moves);

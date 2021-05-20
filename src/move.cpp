@@ -52,3 +52,10 @@ ostream& operator<<(ostream &os, const Move &m) {
 	}
 	return os;
 }
+
+bool operator==(const Move& a, const Move& b) { 
+	if (a.start == b.start && a.end == b.end && a.promoted == b.promoted) {
+		return true;
+	}
+	return false;
+}
