@@ -2,12 +2,15 @@
 #ifndef CHESS_ENGINE_HPP
 #define CHESS_ENGINE_HPP
 
+#define USE_TRANS_TABLE
+
 #include <map>
 #include <utility>
 #include <vector>
 #include "bitboard.hpp"
 #include "eval_score.hpp"
 #include "opening_table.hpp"
+#include "transposition_table.hpp"
 #include "chess_state.hpp"
 #include "move.hpp"
 #include "U64.hpp"
@@ -64,6 +67,10 @@ private:
 public:
 	ChessEngine();
 	~ChessEngine();
+
+	// Transposition table
+	bool useTransTable = true;
+	TranspositonTable transTable;
 
 	// UCI accessable functions
 	bool isLoaded = false;

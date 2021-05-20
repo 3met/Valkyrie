@@ -66,15 +66,8 @@ void ChessEngine::load() {
 // ----- Primary Operations -----
 pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	
+	// Generate psudo-legal moves
 	vector<Move> moves;
-
-	// Check if position in opening book
-	if (openingTable.contains(cs)) {
-		cout << "Using Opening Book" << endl;
-		moves = openingTable.get(cs);
-		return make_pair(moves[rand() % moves.size()], evalBoard(cs, cs->WHITE));
-	}
-
 	genAllMoves(cs, &moves);
 	
 	// Check if valid moves were generated
@@ -88,9 +81,25 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	EvalScore beta(1, true, 0);	// INF; best score other color can achive
 	short bestIndex = -1;	// -1 as default
 	EvalScore score;
+	HashScore hashScore;	// Transposition table entry
 
 	for (short i=0; i<moves.size(); ++i) {
 		cs->move(moves[i]);
+
+		#ifdef USE_TRANS_TABLE
+		if (this->useTransTable && this->transTable.contains(cs)) {
+			hashScore = this->transTable.get(cs);
+			
+			if (hashScore.depth >= depth) {
+				if (score > alpha) {
+					alpha = score;
+					bestIndex = i;
+					cs->reverseMove();
+					continue;
+				}
+			}
+		}
+		#endif
 
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
 			
@@ -99,6 +108,10 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			if (score.foundMate) {
 				score.movesToMate += 1;
 			}
+
+			#ifdef USE_TRANS_TABLE
+			this->transTable.add(cs, score, depth);
+			#endif
 
 			if (score > alpha) {
 				alpha = score;
@@ -109,6 +122,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		cs->reverseMove();
 	}
 
+	// Throw error if no move were legal
 	if (bestIndex == -1) {
 		throw ChessState::NoMoves();
 	}
@@ -133,9 +147,6 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		// Extend if move was a check
 		// } else if (isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING]->getFirstPos())) {
 			// depthTarget += 2;
-		// Returns evaluation score if there is not search extension
-		// } else if (cs->turn == cs->BLACK) {
-		// 	return -EvalScore(evalBoard(cs));
 		} else {
 			return EvalScore(evalBoard(cs, cs->turn));
 		}		 
@@ -154,9 +165,31 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 	bool hasValidMove = false;
 	EvalScore score;
+	HashScore hashScore;	// Transposition table entry
 
 	for (U8 i=0; i<moves.size(); ++i) {
 		cs->move(moves[i]);
+
+		#ifdef USE_TRANS_TABLE
+		if (this->transTable.contains(cs)) {
+			hasValidMove = true;
+
+			hashScore = this->transTable.get(cs);
+
+			if (hashScore.depth >= depth) {
+				if (score >= beta) {
+					cs->reverseMove();
+					return beta;
+				}
+
+				if (score > alpha) {
+					alpha = score;
+					cs->reverseMove();
+					continue;
+				}
+			}
+		}
+		#endif
 
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
 			score = -negamaxSearch(cs, depth+1, depthTarget, -beta, -alpha);
@@ -165,7 +198,11 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			if (score.foundMate) {
 				score.movesToMate += 1;
-			}			
+			}
+
+			#ifdef USE_TRANS_TABLE
+			this->transTable.add(cs, score, depth);
+			#endif
 
 			if (score >= beta) {
 				cs->reverseMove();

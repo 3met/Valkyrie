@@ -1,6 +1,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <vector>
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "move.hpp"
@@ -21,13 +22,22 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	// Start timer
 	auto start = high_resolution_clock::now();
 	
+	// Check if position in opening book
+	if (this->openingTable.contains(&cs)) {
+		std::vector<Move> moves = this->openingTable.get(&cs);;
+		return moves[rand() % moves.size()];
+	}
+
 	// Max time to choose move
 	int maxTime = min((timeLeft/20) + timeInc, timeLeft-100);
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
 	short i = 1;
+	// Loop to increase depth until time is up
 	while (true) {
+		cout << "info depth " << i << endl;
+
 		ratedMove = this->bestMove(&cs, i);
 		moveList.push_back(ratedMove.first);
 
