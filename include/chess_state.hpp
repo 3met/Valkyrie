@@ -23,13 +23,13 @@ public:
 	ChessState(const ChessState* cs);
 	~ChessState();
 
-	enum colour {
+	enum color {
 		WHITE = 0,	// White must remain 0 for indexing to work
 		BLACK = 1,
 	};
 	enum pieceType {
-		PAWN = 0,
-		KNIGHT,
+		PAWN = 0,	// Pawn must remain 0 for indexing to work
+		KNIGHT,		// Changing order may cause errors
 		BISHOP,
 		ROOK,
 		QUEEN,
@@ -46,35 +46,18 @@ public:
 		return a.turn < b.turn;
 	}
 
-	Bitboard wP;
-	Bitboard wN;
-	Bitboard wB;
-	Bitboard wR;
-	Bitboard wQ;
-	Bitboard wK;
-	Bitboard wAll;
-
-	Bitboard bP;
-	Bitboard bN;
-	Bitboard bB;
-	Bitboard bR;
-	Bitboard bQ;
-	Bitboard bK;
-	Bitboard bAll;
-
-	Bitboard* pieces[2][7] = {
-		{&wP, &wN, &wB, &wR, &wQ, &wK, &wAll},
-		{&bP, &bN, &bB, &bR, &bQ, &bK, &bAll},
-	};
-
 	static const char piece_names[2][6];	// Note: must match piece indexing
-
-	bool turn;	// False for white; true for black
-	
+	// Stores king and rook starting positions for castling
 	static const U8 KING_START[2];	// [color]
 	static const U8 ROOK_START[2][2];	// [color][king/queen side]
+
+	// Bitboard to store piece locations
+	Bitboard pieces[2][7];	// [colors][p/n/b/r/q/k/all]
+
+	bool turn;	// False for white; true for black
+
 	bool castlePerms[2][2];	// [color][king/queen side]
-	short turnLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
+	short moveLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
 	
 	S8 enPassant;	// Pos behind pawn, else -1
 	vector<S8> enPassantHistory;	// History of en passant for reverseMove()
@@ -96,13 +79,13 @@ public:
 	};
 	
 	// Query Methods
-	S8 getPieceType(bool colour, U8 pos);
+	S8 getPieceType(bool color, U8 pos);
 	Move lastMove();
 
 	// Setup Methods
 	void reset();
 	void clear();
-	void place(short colour, short piece, short pos);
+	void place(short color, short piece, short pos);
 	pair<bool, U8> charToPiece(char piece);
 	void loadFEN(string FEN);
 	Move notationToMove(string notation);

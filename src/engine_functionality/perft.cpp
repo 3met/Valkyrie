@@ -30,7 +30,7 @@ U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 	short nMoves = moves.size();
 	for (U8 i=0; i<nMoves; ++i) {
 		cs->move(moves[i]);
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			moveTotal = perft(cs, depth-1);
 			cout << moves[i] << ": " << moveTotal << endl;
 			total += moveTotal;
@@ -57,7 +57,7 @@ U64 ChessEngine::perft(ChessState* cs, U8 depth) {
 	short nMoves = moves.size();
 	for (U8 i=0; i<nMoves; ++i) {
 		cs->move(moves[i]);
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			total += perft(cs, depth-1);
 		}
 		cs->reverseMove();

@@ -23,8 +23,8 @@ public:
 
 	// Get and Set methods
 	void setPos(U8 pos, bool value);
-	bool getPos(U8 pos);
-	vector<U8> getPosVector();
+	bool getPos(U8 pos) const;
+	vector<U8> getPosVector() const;
 	vector<U8> getPosVector(U8 limit);
 	U8 getFirstPos();
 

@@ -39,10 +39,10 @@ pair<bool, S8> ChessEngine::nextPieceCardinal(ChessState* cs, U8 pos, U8 directi
 	while (termArr[pos] != termLoc) {	// Not terminating rank/file
 		pos += CARDINAL_POS_INC[direction];
 		// If an allied piece at target position
-		if (cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(pos)) {
+		if (cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos)) {
 			return make_pair(cs->turn, pos);
 		// If an enemy piece at target position
-		} else if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos)) {
+		} else if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos)) {
 			return make_pair(!cs->turn, pos);
 		}
 	}
@@ -70,10 +70,10 @@ pair<bool, S8> ChessEngine::nextPieceDiagonal(ChessState* cs, U8 pos, U8 directi
 	while (Bitboard::RANK[pos] != termRank && Bitboard::FILE[pos] != termFile) {	// Not top row or right col
 		pos += DIAGONAL_POS_INC[direction];
 		// If an allied piece at target position
-		if (cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(pos)) {
+		if (cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos)) {
 			return make_pair(cs->turn, pos);
 		// If an enemy piece at target position
-		} else if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos)) {
+		} else if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos)) {
 			return make_pair(!cs->turn, pos);
 		}
 	}

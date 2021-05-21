@@ -14,10 +14,7 @@ public:
 	// Pseudorandom numbers for generating Zobrist Hash
 	U64 pieces[2][6][64];
 	U64 whiteToMove;
-	U64 wKCastle;	// Castling Permissions
-	U64 wQCastle;
-	U64 bKCastle;
-	U64 bQCastle;
+	U64 castlePerms[2][2];	// Castling Permissions [color][king/queen side]
 	U64 enPassant[8];	// En Passant file
 };
 

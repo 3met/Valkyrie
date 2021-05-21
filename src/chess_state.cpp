@@ -10,21 +10,12 @@ ChessState::ChessState() {
 };
 
 ChessState::ChessState(const ChessState* cs) {
-	wP.board = cs->wP.board;
-	wN.board = cs->wN.board;
-	wB.board = cs->wB.board;
-	wR.board = cs->wR.board;
-	wQ.board = cs->wQ.board;
-	wK.board = cs->wK.board;
-	wAll.board = cs->wAll.board;
+	U8 i;
 
-	bP.board = cs->bP.board;
-	bN.board = cs->bN.board;
-	bB.board = cs->bB.board;
-	bR.board = cs->bR.board;
-	bQ.board = cs->bQ.board;
-	bK.board = cs->bK.board;
-	bAll.board = cs->bAll.board;
+	for (i=0; i<7; ++i) {
+		pieces[WHITE][i] = cs->pieces[WHITE][i];
+		pieces[BLACK][i] = cs->pieces[BLACK][i];
+	}
 
 	turn = cs->turn;
 	
@@ -50,11 +41,11 @@ const U8 ChessState::KING_START[2] = {4, 60};	// {white, black}
 const U8 ChessState::ROOK_START[2][2] = {{7, 0}, {63, 56}};	// {{WK, WQ}, {BK, BQ}}
 
 // |~| ----- Query Method -----
-S8 ChessState::getPieceType(bool colour, U8 pos) {
+S8 ChessState::getPieceType(bool color, U8 pos) {
 	/* Returns the type of piece at the given position */
 
 	for (U8 i=0; i<6; ++i) {
-		if (pieces[colour][i]->getPos(pos)) {
+		if (pieces[color][i].getPos(pos)) {
 			return i;
 		}
 	}
@@ -82,10 +73,10 @@ void ChessState::reset() {
 
 	turn = false;	// False for white; true for black
 
-	turnLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
-	turnLostCastlePerms[WHITE][QUEEN_SIDE] = -1;
-	turnLostCastlePerms[BLACK][KING_SIDE] = -1;
-	turnLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
+	moveLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
+	moveLostCastlePerms[WHITE][QUEEN_SIDE] = -1;
+	moveLostCastlePerms[BLACK][KING_SIDE] = -1;
+	moveLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
 
 	enPassant = -1;
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
@@ -99,7 +90,7 @@ void ChessState::clear() {
 	// Reset bitboards
 	for (U8 i=0; i<2; ++i) {
 		for (U8 j=0; j<6; ++j) {
-			pieces[i][j]->board = 0;
+			pieces[i][j].board = 0;
 		}
 	}
 
@@ -114,10 +105,10 @@ void ChessState::clear() {
 	this->castlePerms[this->BLACK][this->KING_SIDE] = false;
 	this->castlePerms[this->BLACK][this->QUEEN_SIDE] = false;
 
-	turnLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
-	turnLostCastlePerms[WHITE][QUEEN_SIDE] = -1;
-	turnLostCastlePerms[BLACK][KING_SIDE] = -1;
-	turnLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
+	moveLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
+	moveLostCastlePerms[WHITE][QUEEN_SIDE] = -1;
+	moveLostCastlePerms[BLACK][KING_SIDE] = -1;
+	moveLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
 
 	enPassant = -1;
 	enPassantHistory.clear();
@@ -126,15 +117,15 @@ void ChessState::clear() {
 	moveNumber = 1;
 }
 
-void ChessState::place(short colour, short piece, short pos) {
+void ChessState::place(short color, short piece, short pos) {
 	/* Place piece on the board */
 
-	pieces[colour][piece]->setPos(pos, true);
-	this->updateAllBitboard(colour);
+	pieces[color][piece].setPos(pos, true);
+	this->updateAllBitboard(color);
 }
 
 pair<bool, U8> ChessState::charToPiece(char piece) {
-	/* Returns colour and types of piece */
+	/* Returns color and types of piece */
 	switch (piece) {
 		case 'P':
 			return make_pair(WHITE, PAWN);
@@ -295,8 +286,8 @@ string ChessState::stringFEN() {
 	}
 
 	for (i=0; i<6; ++i) {
-		this->mapBoardToChar(*pieces[0][i], board, piece_names[0][i]);
-		this->mapBoardToChar(*pieces[1][i], board, piece_names[1][i]);
+		this->mapBoardToChar(pieces[0][i], board, piece_names[0][i]);
+		this->mapBoardToChar(pieces[1][i], board, piece_names[1][i]);
 	}
 
 	int gap = 0;
@@ -407,21 +398,21 @@ void ChessState::move(Move m) {
 		if (m.end == enPassant) {
 			// Remove piece killed by en passant
 			if (turn == WHITE) {
-				pieces[BLACK][PAWN]->setPos(m.end-8, false);
+				pieces[BLACK][PAWN].setPos(m.end-8, false);
 			} else {	// Black's turn
-				pieces[WHITE][PAWN]->setPos(m.end+8, false);
+				pieces[WHITE][PAWN].setPos(m.end+8, false);
 			}
 		} else {
-			pieces[!turn][m.killed]->setPos(m.end, false);
+			pieces[!turn][m.killed].setPos(m.end, false);
 		}
 	}
 
 	// Updates moving piece location on bitboard
-	pieces[turn][m.piece]->setPos(m.start, false);
+	pieces[turn][m.piece].setPos(m.start, false);
 	if (m.promoted == -1) {
-		pieces[turn][m.piece]->setPos(m.end, true);
+		pieces[turn][m.piece].setPos(m.end, true);
 	} else {
-		pieces[turn][m.promoted]->setPos(m.end, true);
+		pieces[turn][m.promoted].setPos(m.end, true);
 	}
 
 	// Account for castling in king movement
@@ -429,23 +420,23 @@ void ChessState::move(Move m) {
 		// Update castle permissions
 		if (castlePerms[turn][KING_SIDE]) {
 			castlePerms[turn][KING_SIDE] = false;
-			turnLostCastlePerms[turn][KING_SIDE] = moveNumber;
+			moveLostCastlePerms[turn][KING_SIDE] = moveNumber;
 		}
 		if (castlePerms[turn][QUEEN_SIDE]) {
 			castlePerms[turn][QUEEN_SIDE] = false;
-			turnLostCastlePerms[turn][QUEEN_SIDE] = moveNumber;
+			moveLostCastlePerms[turn][QUEEN_SIDE] = moveNumber;
 		}
 
 		// Update rook positions if castled
 		if (m.start == KING_START[turn]) {
 			// If king side castled
 			if (m.end == KING_START[turn]+2) {
-				pieces[turn][ROOK]->setPos(KING_START[turn]+3, false);
-				pieces[turn][ROOK]->setPos(KING_START[turn]+1, true);
+				pieces[turn][ROOK].setPos(KING_START[turn]+3, false);
+				pieces[turn][ROOK].setPos(KING_START[turn]+1, true);
 			// If queen side castled
 			} else if (m.end == KING_START[turn]-2) {
-				pieces[turn][ROOK]->setPos(KING_START[turn]-4, false);
-				pieces[turn][ROOK]->setPos(KING_START[turn]-1, true);
+				pieces[turn][ROOK].setPos(KING_START[turn]-4, false);
+				pieces[turn][ROOK].setPos(KING_START[turn]-1, true);
 			}
 		}
 	}
@@ -458,13 +449,13 @@ void ChessState::move(Move m) {
 			&& castlePerms[turn][KING_SIDE]) {
 			
 			castlePerms[turn][KING_SIDE] = false;
-			turnLostCastlePerms[turn][KING_SIDE] = moveNumber;
+			moveLostCastlePerms[turn][KING_SIDE] = moveNumber;
 		// Queen's side
 		} else if (ROOK_START[turn][KING_SIDE]
 			&& castlePerms[turn][QUEEN_SIDE]) {
 			
 			castlePerms[turn][QUEEN_SIDE] = false;
-			turnLostCastlePerms[turn][QUEEN_SIDE] = moveNumber;
+			moveLostCastlePerms[turn][QUEEN_SIDE] = moveNumber;
 		}
 	}
 
@@ -472,10 +463,10 @@ void ChessState::move(Move m) {
 	if (m.killed == ROOK) {
 		if (castlePerms[!turn][KING_SIDE] && m.end == ROOK_START[!turn][KING_SIDE]) {
 			castlePerms[!turn][KING_SIDE] = false;
-			turnLostCastlePerms[!turn][KING_SIDE] = moveNumber;	
+			moveLostCastlePerms[!turn][KING_SIDE] = moveNumber;	
 		} else if (castlePerms[!turn][QUEEN_SIDE] && m.end == ROOK_START[!turn][QUEEN_SIDE]) {
 			castlePerms[!turn][QUEEN_SIDE] = false;
-			turnLostCastlePerms[!turn][QUEEN_SIDE] = moveNumber;	
+			moveLostCastlePerms[!turn][QUEEN_SIDE] = moveNumber;	
 		}
 	}
 
@@ -536,23 +527,23 @@ void ChessState::reverseMove() {
 
 	// Updates piece location on bitboard
 	if (m->promoted == -1) {
-		pieces[turn][m->piece]->setPos(m->end, false);
+		pieces[turn][m->piece].setPos(m->end, false);
 	} else {
-		pieces[turn][m->promoted]->setPos(m->end, false);
+		pieces[turn][m->promoted].setPos(m->end, false);
 	}
-	pieces[turn][m->piece]->setPos(m->start, true);
+	pieces[turn][m->piece].setPos(m->start, true);
 
 	// Adds previously killed piece to bitboard
 	if (m->killed != -1) {
 		if (m->end == enPassant) {
 			// Place killed en passant piece
 			if (turn == WHITE) {
-				pieces[BLACK][PAWN]->setPos(m->end-8, true);
+				pieces[BLACK][PAWN].setPos(m->end-8, true);
 			} else {	// Black's turn
-				pieces[WHITE][PAWN]->setPos(m->end+8, true);
+				pieces[WHITE][PAWN].setPos(m->end+8, true);
 			}
 		} else {
-			pieces[!turn][m->killed]->setPos(m->end, true);
+			pieces[!turn][m->killed].setPos(m->end, true);
 		}
 	}
 
@@ -560,32 +551,32 @@ void ChessState::reverseMove() {
 	if (m->piece == KING) {
 		if (m->start == KING_START[turn]) {
 			if (m->end == KING_START[turn]+2) {
-				pieces[turn][ROOK]->setPos(KING_START[turn]+3, true);
-				pieces[turn][ROOK]->setPos(KING_START[turn]+1, false);
+				pieces[turn][ROOK].setPos(KING_START[turn]+3, true);
+				pieces[turn][ROOK].setPos(KING_START[turn]+1, false);
 			} else if (m->end == KING_START[turn]-2) {
-				pieces[turn][ROOK]->setPos(KING_START[turn]-4, true);
-				pieces[turn][ROOK]->setPos(KING_START[turn]-1, false);
+				pieces[turn][ROOK].setPos(KING_START[turn]-4, true);
+				pieces[turn][ROOK].setPos(KING_START[turn]-1, false);
 			}
 		}
 	}
 
 	// Update castle permissions
-	if (turnLostCastlePerms[turn][KING_SIDE] == moveNumber) {
+	if (moveLostCastlePerms[turn][KING_SIDE] == moveNumber) {
 		castlePerms[turn][KING_SIDE] = true;
-		turnLostCastlePerms[turn][KING_SIDE] = -1;
+		moveLostCastlePerms[turn][KING_SIDE] = -1;
 	}
-	if (turnLostCastlePerms[turn][QUEEN_SIDE] == moveNumber) {
+	if (moveLostCastlePerms[turn][QUEEN_SIDE] == moveNumber) {
 		castlePerms[turn][QUEEN_SIDE] = true;
-		turnLostCastlePerms[turn][QUEEN_SIDE] = -1;
+		moveLostCastlePerms[turn][QUEEN_SIDE] = -1;
 	}
 	// One can lose castle perms regardless of turn
-	if (turnLostCastlePerms[!turn][KING_SIDE] == moveNumber) {
+	if (moveLostCastlePerms[!turn][KING_SIDE] == moveNumber) {
 		castlePerms[!turn][KING_SIDE] = true;
-		turnLostCastlePerms[!turn][KING_SIDE] = -1;
+		moveLostCastlePerms[!turn][KING_SIDE] = -1;
 	}
-	if (turnLostCastlePerms[!turn][QUEEN_SIDE] == moveNumber) {
+	if (moveLostCastlePerms[!turn][QUEEN_SIDE] == moveNumber) {
 		castlePerms[!turn][QUEEN_SIDE] = true;
-		turnLostCastlePerms[!turn][QUEEN_SIDE] = -1;
+		moveLostCastlePerms[!turn][QUEEN_SIDE] = -1;
 	}
 
 	// Remove reversed move from move list
@@ -597,11 +588,10 @@ void ChessState::reverseMove() {
 }
 
 /* ----- Update State Functions ----- */
-void ChessState::updateAllBitboard(bool colour) {
-	if (colour == BLACK) {
-		bAll.board = (bP.board | bN.board | bB.board | bR.board | bQ.board | bK.board);
-	} else {
-		wAll.board = (wP.board | wN.board | wB.board | wR.board | wQ.board | wK.board);
+void ChessState::updateAllBitboard(bool color) {
+	pieces[color][ALL_PIECES] = 0;
+	for (U8 i=0; i<6; ++i) {
+		pieces[color][ALL_PIECES].board |= pieces[color][i].board;
 	}
 }
 
@@ -627,8 +617,8 @@ void ChessState::show(bool show_coords) {
 	}
 
 	for (i=0; i<6; ++i) {
-		this->mapBoardToChar(*pieces[0][i], board, piece_names[0][i]);
-		this->mapBoardToChar(*pieces[1][i], board, piece_names[1][i]);
+		this->mapBoardToChar(pieces[0][i], board, piece_names[0][i]);
+		this->mapBoardToChar(pieces[1][i], board, piece_names[1][i]);
 	}
 
 	// TODO: ADD COORDS around board

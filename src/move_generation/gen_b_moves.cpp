@@ -12,7 +12,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 	short killed;
 	
 	// Get all bishop locations
-	start = cs->pieces[cs->turn][cs->BISHOP]->getPosVector();
+	start = cs->pieces[cs->turn][cs->BISHOP].getPosVector();
 
 	for (i=0; i<start.size(); ++i) {
 		kill_targets.clear();
@@ -21,11 +21,11 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 		pos = start[i];
 		while (Bitboard::RANK[pos] != 7 && Bitboard::FILE[pos] != 7) {	// Not top row or right col
 			// If an enemy piece at target position
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos+9)) {
+			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos+9)) {
 				kill_targets.push_back(pos+9);
 				break;
 			// Else if there is no friendly piece at the target position
-			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(pos+9)) {
+			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos+9)) {
 				moves->push_back(Move(cs->BISHOP, start[i], pos+9));
 			// Else there is a friendly piece at target position
 			} else {
@@ -38,11 +38,11 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 		pos = start[i];
 		while (Bitboard::RANK[pos] != 0 && Bitboard::FILE[pos] != 7) {	// Not bottom row or right col
 			// If an enemy piece at target
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos-7)) {
+			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos-7)) {
 				kill_targets.push_back(pos-7);
 				break;
 			// Else if there is no friendly piece at the target position
-			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(pos-7)) {
+			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos-7)) {
 				moves->push_back(Move(cs->BISHOP, start[i], pos-7));
 			// Else there is a friendly piece at target position
 			} else {
@@ -55,11 +55,11 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 		pos = start[i];
 		while (Bitboard::RANK[pos] != 0 && Bitboard::FILE[pos] != 0) {	// Not bottom row or left col
 			// If an enemy piece at target
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos-9)) {
+			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos-9)) {
 				kill_targets.push_back(pos-9);
 				break;
 			// Else if there is no friendly piece at the target position
-			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(pos-9)) {
+			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos-9)) {
 				moves->push_back(Move(cs->BISHOP, start[i], pos-9));
 			// Else there is a friendly piece at target position
 			} else {
@@ -72,11 +72,11 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 		pos = start[i];
 		while (Bitboard::RANK[pos] != 7 && Bitboard::FILE[pos] != 0) {	// Not rightmost column
 			// If an enemy piece at target
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(pos+7)) {
+			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos+7)) {
 				kill_targets.push_back(pos+7);
 				break;
 			// Else if there is no friendly piece at the target position
-			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(pos+7)) {
+			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos+7)) {
 				moves->push_back(Move(cs->BISHOP, start[i], pos+7));
 			// Else there is a friendly piece at target position
 			} else {

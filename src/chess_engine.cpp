@@ -101,7 +101,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		}
 		#endif
 
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			
 			score = -negamaxSearch(cs, 0, depth-1, -beta, -alpha);
 
@@ -145,7 +145,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		} else if (cs->lastMove().promoted != -1) {
 			depthTarget += 1;
 		// Extend if move was a check
-		// } else if (isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING]->getFirstPos())) {
+		// } else if (isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
 			// depthTarget += 2;
 		} else {
 			return EvalScore(evalBoard(cs, cs->turn));
@@ -191,7 +191,8 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		}
 		#endif
 
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING]->getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+			
 			score = -negamaxSearch(cs, depth+1, depthTarget, -beta, -alpha);
 
 			hasValidMove = true;
@@ -221,7 +222,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	if (!hasValidMove) {
 		// If the active player's king is not being attacked
 		// then the situation is stalemate
-		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING]->getFirstPos())) {
+		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
 			return EvalScore(0);
 		}
 

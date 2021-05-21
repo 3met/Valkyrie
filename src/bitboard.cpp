@@ -67,12 +67,12 @@ void Bitboard::setPos(U8 pos, bool value) {
 }
 
 /* Returns the value of the bit position */
-inline bool Bitboard::getPos(U8 pos) {
+inline bool Bitboard::getPos(U8 pos) const {
 	return (board >> pos) & 1;
 }
 
 /* Returns the all positions with a positive value */
-vector<U8> Bitboard::getPosVector() {
+vector<U8> Bitboard::getPosVector() const {
 	vector<U8> v;
 
 	for (U8 i=0; i<64; ++i) {

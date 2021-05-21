@@ -21,7 +21,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 	}
 
 	// Get all pawn locations
-	start = cs->pieces[cs->turn][cs->PAWN]->getPosVector();
+	start = cs->pieces[cs->turn][cs->PAWN].getPosVector();
 
 	for (i=0; i<start.size(); ++i) {
 		// Get potential squares
@@ -35,19 +35,19 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 			move_board.setPos(start[i]-8, true);
 
 		// Remove if blocked by enemy piece
-		move_board.board &= ~(cs->pieces[!cs->turn][cs->ALL_PIECES]->board);
+		move_board.board &= ~(cs->pieces[!cs->turn][cs->ALL_PIECES].board);
 		
 		// Remove if blocked by friendly piece
 		if (move_board.board != 0) {
-			move_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES]->board);
+			move_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);
 		}
 
 		if (cs->turn == cs->WHITE) {
 			// Try two squares up if can move up one and on home row
 			if (move_board.board != 0 && Bitboard::RANK[start[i]] == 1) {
 				// Add square if not occupied
-				if (!cs->pieces[cs->WHITE][cs->ALL_PIECES]->getPos(start[i]+16)
-					&& !cs->pieces[cs->BLACK][cs->ALL_PIECES]->getPos(start[i]+16)) {
+				if (!cs->pieces[cs->WHITE][cs->ALL_PIECES].getPos(start[i]+16)
+					&& !cs->pieces[cs->BLACK][cs->ALL_PIECES].getPos(start[i]+16)) {
 					move_board.setPos(start[i]+16, true);
 				}
 			}
@@ -62,8 +62,8 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		} else {	// Black's turn
 			// Try two squares up if can move up one and on home row
 			if (move_board.board != 0 && Bitboard::RANK[start[i]] == 6) {
-				if (!cs->pieces[cs->WHITE][cs->ALL_PIECES]->getPos(start[i]-16)
-					&& !cs->pieces[cs->BLACK][cs->ALL_PIECES]->getPos(start[i]-16)) {
+				if (!cs->pieces[cs->WHITE][cs->ALL_PIECES].getPos(start[i]-16)
+					&& !cs->pieces[cs->BLACK][cs->ALL_PIECES].getPos(start[i]-16)) {
 					move_board.setPos(start[i]-16, true);
 				}
 			}
@@ -79,7 +79,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Remove any kill positions without enemy pieces
 		// Does not remove en passant square
-		kill_board.board &= cs->pieces[!cs->turn][cs->ALL_PIECES]->board | enPassantBoard.board;
+		kill_board.board &= cs->pieces[!cs->turn][cs->ALL_PIECES].board | enPassantBoard.board;
 
 		// All squares that can be killed/moved to
 		move_targets = move_board.getPosVector(2);

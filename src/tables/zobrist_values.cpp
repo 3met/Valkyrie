@@ -25,10 +25,10 @@ ZobristValues::ZobristValues() {
 
 	whiteToMove = distribution(generator);
 
-	wKCastle = distribution(generator);
-	wQCastle = distribution(generator);
-	bKCastle = distribution(generator);
-	bQCastle = distribution(generator);
+	castlePerms[0][0] = distribution(generator);
+	castlePerms[0][1] = distribution(generator);
+	castlePerms[1][0] = distribution(generator);
+	castlePerms[1][1] = distribution(generator);
 
 	for (i=0; i<8; ++i) {
 		enPassant[i] = distribution(generator);	// En Passant file

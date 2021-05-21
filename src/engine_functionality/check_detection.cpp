@@ -31,11 +31,11 @@ inline bool checkDiagonalAttacker(ChessState* cs, bool turn, pair<bool, S8> rayP
    "turn" represents the attacking color */
 bool ChessEngine::isPosAttacked(ChessState* cs, bool turn, U8 pos) {
 	// Check if attacked by knight
-	if ((NMoveDB[pos].board & cs->pieces[turn][cs->KNIGHT]->board) != 0) {
+	if ((NMoveDB[pos].board & cs->pieces[turn][cs->KNIGHT].board) != 0) {
 		return true;
 	}
 	// Check if attacked by king
-	if ((KMoveDB[pos].board & cs->pieces[turn][cs->KING]->board) != 0) {
+	if ((KMoveDB[pos].board & cs->pieces[turn][cs->KING].board) != 0) {
 		return true;
 	}
 
@@ -82,20 +82,20 @@ bool ChessEngine::isPosAttacked(ChessState* cs, bool turn, U8 pos) {
 	if (turn == cs->WHITE) {
 		if (Bitboard::RANK[pos] >= 2) {
 			// Right and left pawn attacks
-			if (Bitboard::FILE[pos] >= 1 && cs->wP.getPos(pos-9)) {
+			if (Bitboard::FILE[pos] >= 1 && cs->pieces[cs->WHITE][cs->PAWN].getPos(pos-9)) {
 				return true;
 			}
-			if (Bitboard::FILE[pos] <= 6 && cs->wP.getPos(pos-7)) {
+			if (Bitboard::FILE[pos] <= 6 && cs->pieces[cs->WHITE][cs->PAWN].getPos(pos-7)) {
 				return true;
 			}
 		}
 	} else {	// Black's attacking
 		if (Bitboard::RANK[pos] <= 5) {
 			// Right and left pawn attacks
-			if (Bitboard::FILE[pos] >= 1 && cs->bP.getPos(pos+7)) {
+			if (Bitboard::FILE[pos] >= 1 && cs->pieces[cs->BLACK][cs->PAWN].getPos(pos+7)) {
 				return true;
 			}
-			if (Bitboard::FILE[pos] <= 6 && cs->bP.getPos(pos+9)) {
+			if (Bitboard::FILE[pos] <= 6 && cs->pieces[cs->BLACK][cs->PAWN].getPos(pos+9)) {
 				return true;
 			}
 		}
