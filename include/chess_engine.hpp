@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef CHESS_ENGINE_HPP
 #define CHESS_ENGINE_HPP
 

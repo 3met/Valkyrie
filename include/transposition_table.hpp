@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef TRANSPOSITION_TABLE_HPP
 #define TRANSPOSITION_TABLE_HPP
 

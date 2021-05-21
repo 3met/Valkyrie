@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef BITBOARD_HPP
 #define BITBOARD_HPP
 

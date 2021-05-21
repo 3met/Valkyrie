@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef OPENING_TABLE_HPP
 #define OPENING_TABLE_HPP
 

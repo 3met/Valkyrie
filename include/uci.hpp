@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef UCI_HPP
 #define UCI_HPP
 

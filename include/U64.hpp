@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef U64_HPP
 #define U64_HPP
 

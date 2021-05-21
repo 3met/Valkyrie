@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef S8_HPP
 #define S8_HPP
 

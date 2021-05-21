@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef CHESS_STATE_HPP
 #define CHESS_STATE_HPP
 

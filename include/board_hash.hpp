@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef BOARD_HASH_HPP
 #define BOARD_HASH_HPP
 

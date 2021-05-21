@@ -1,4 +1,5 @@
 
+#pragma once
 #ifndef ZOBRIST_VALUES_HPP
 #define ZOBRIST_VALUES_HPP
 
