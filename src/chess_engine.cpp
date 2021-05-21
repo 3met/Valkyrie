@@ -62,7 +62,6 @@ void ChessEngine::load() {
 	isLoaded = true;
 }
 
-
 // ----- Primary Operations -----
 pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	
@@ -75,7 +74,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		throw ChessState::NoMoves();
 	}
 
-	sortMoves(&moves);
+	this->sortMoves(&moves);
 
 	EvalScore alpha(-1, true, 0);	// -INF; best score current color can achive 
 	EvalScore beta(1, true, 0);	// INF; best score other color can achive
@@ -168,6 +167,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	HashScore hashScore;	// Transposition table entry
 
 	for (U8 i=0; i<moves.size(); ++i) {
+
 		cs->move(moves[i]);
 
 		#ifdef USE_TRANS_TABLE
@@ -176,14 +176,14 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			hashScore = this->transTable.get(cs);
 
-			if (hashScore.depth >= depth) {
-				if (score >= beta) {
+			if (hashScore.depth >= (depthTarget - depth)) {
+				if (hashScore.score >= beta) {
 					cs->reverseMove();
 					return beta;
 				}
 
-				if (score > alpha) {
-					alpha = score;
+				if (hashScore.score > alpha) {
+					alpha = hashScore.score;
 					cs->reverseMove();
 					continue;
 				}
@@ -202,7 +202,13 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			}
 
 			#ifdef USE_TRANS_TABLE
-			this->transTable.add(cs, score, depth);
+			if (this->transTable.contains(cs)) {
+				hashScore = this->transTable.get(cs);
+
+				if (hashScore.depth < (depthTarget - depth)) {
+					this->transTable.add(cs, score, depth);
+				}
+			}
 			#endif
 
 			if (score >= beta) {
