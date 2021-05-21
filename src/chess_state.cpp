@@ -28,10 +28,10 @@ ChessState::ChessState(const ChessState* cs) {
 
 	turn = cs->turn;
 	
-	wKCastle = cs->wKCastle;	// Castle perms
-	wQCastle = cs->wQCastle;
-	bKCastle = cs->bKCastle;
-	bQCastle = cs->bQCastle;
+	castlePerms[WHITE][KING_SIDE] = cs->castlePerms[WHITE][KING_SIDE];	// Castle perms
+	castlePerms[WHITE][QUEEN_SIDE] = cs->castlePerms[WHITE][QUEEN_SIDE];
+	castlePerms[BLACK][KING_SIDE] = cs->castlePerms[BLACK][KING_SIDE];
+	castlePerms[BLACK][QUEEN_SIDE] = cs->castlePerms[BLACK][QUEEN_SIDE];
 	
 	halfmoveClock = cs->halfmoveClock;
 	turnNumber = cs->turnNumber;
@@ -44,6 +44,10 @@ const char ChessState::piece_names[2][6] = {	// Note: must match piece indexing
 	{'P', 'N', 'B', 'R', 'Q', 'K'},
 	{'p', 'n', 'b', 'r', 'q', 'k'},
 };
+
+const U8 ChessState::KING_START[2] = {4, 60};	// {white, black}
+
+const U8 ChessState::ROOK_START[2][2] = {{7, 0}, {63, 56}};	// {{WK, WQ}, {BK, BQ}}
 
 // |~| ----- Query Method -----
 S8 ChessState::getPieceType(bool colour, U8 pos) {
@@ -105,10 +109,10 @@ void ChessState::clear() {
 
 	turn = WHITE;
 	
-	wKCastle = false;	// Castle perms
-	wQCastle = false;
-	bKCastle = false;
-	bQCastle = false;
+	this->castlePerms[this->WHITE][this->KING_SIDE] = false;	// Castle perms
+	this->castlePerms[this->WHITE][this->QUEEN_SIDE] = false;
+	this->castlePerms[this->BLACK][this->KING_SIDE] = false;
+	this->castlePerms[this->BLACK][this->QUEEN_SIDE] = false;
 
 	turnLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
 	turnLostCastlePerms[WHITE][QUEEN_SIDE] = -1;
@@ -206,16 +210,16 @@ void ChessState::loadFEN(string FEN) {
 		do {
 			switch (FEN[FEN_index]) {
 				case 'K':
-					wKCastle = true;
+					this->castlePerms[this->WHITE][KING_SIDE] = true;
 					break;
 				case 'Q':
-					wQCastle = true;
+					this->castlePerms[this->WHITE][QUEEN_SIDE] = true;
 					break;
 				case 'k':
-					bKCastle = true;
+					this->castlePerms[this->BLACK][KING_SIDE] = true;
 					break;
 				case 'q':
-					bQCastle = true;
+					this->castlePerms[this->BLACK][QUEEN_SIDE] = true;
 					break;
 				default:
 					cout << "ERROR: Invalid FEN"
@@ -312,7 +316,6 @@ Move ChessState::notationToMove(string notation) {
 				promoted);
 }
 
-
 /* ----- Playing Functions ----- */
 void ChessState::move(Move m) {
 	/* 	Moves a piece on the board.
@@ -347,90 +350,55 @@ void ChessState::move(Move m) {
 	// Account for castling in king movement
 	if (m.piece == KING) {
 		// Update castle permissions
-		if (*castlePerms[turn][KING_SIDE]) {
-			*castlePerms[turn][KING_SIDE] = false;
+		if (castlePerms[turn][KING_SIDE]) {
+			castlePerms[turn][KING_SIDE] = false;
 			turnLostCastlePerms[turn][KING_SIDE] = moveNumber;
 		}
-		if (*castlePerms[turn][QUEEN_SIDE]) {
-			*castlePerms[turn][QUEEN_SIDE] = false;
+		if (castlePerms[turn][QUEEN_SIDE]) {
+			castlePerms[turn][QUEEN_SIDE] = false;
 			turnLostCastlePerms[turn][QUEEN_SIDE] = moveNumber;
 		}
 
-		// Updated rook position if King castled
-		if (turn == WHITE) {
-			// Hard-coded castle positions
-			if (m.start == 4) {
-				if (m.end == 6) {
-					wR.setPos(7, false);
-					wR.setPos(5, true);
-				} else if (m.end == 2) {
-					wR.setPos(0, false);
-					wR.setPos(3, true);
-				}
-			}
-		} else {	// Black's turn
-			if (m.start == 60) {
-				if (m.end == 62) {
-					bR.setPos(63, false);
-					bR.setPos(61, true);
-				} else if (m.end == 58) {
-					bR.setPos(56, false);
-					bR.setPos(59, true);
-				}
+		// Update rook positions if castled
+		if (m.start == KING_START[turn]) {
+			// If king side castled
+			if (m.end == KING_START[turn]+2) {
+				pieces[turn][ROOK]->setPos(KING_START[turn]+3, false);
+				pieces[turn][ROOK]->setPos(KING_START[turn]+1, true);
+			// If queen side castled
+			} else if (m.end == KING_START[turn]-2) {
+				pieces[turn][ROOK]->setPos(KING_START[turn]-4, false);
+				pieces[turn][ROOK]->setPos(KING_START[turn]-1, true);
 			}
 		}
 	}
 
 	// Account for castling in rook movement
+	// Removing relevant castling perms if rook moves
 	if (m.piece == ROOK) {
-		if (turn == WHITE) {
-			// Removing relevant castling perms if rook moves
-			if (m.start == 7 && wKCastle) {
-				wKCastle = false;
-				turnLostCastlePerms[WHITE][KING_SIDE] = moveNumber;
-			} else if (m.start == 0 && wQCastle) {
-				wQCastle = false;
-				turnLostCastlePerms[WHITE][QUEEN_SIDE] = moveNumber;
-			}
-		} else {	// Black's turn
-			if (m.start == 63 && bKCastle) {
-				bKCastle = false;
-				turnLostCastlePerms[BLACK][KING_SIDE] = moveNumber;
-			} else if (m.start == 56 && bQCastle) {
-				bQCastle = false;
-				turnLostCastlePerms[BLACK][QUEEN_SIDE] = moveNumber;
-			}
+		// King's side
+		if (m.start == ROOK_START[turn][KING_SIDE]
+			&& castlePerms[turn][KING_SIDE]) {
+			
+			castlePerms[turn][KING_SIDE] = false;
+			turnLostCastlePerms[turn][KING_SIDE] = moveNumber;
+		// Queen's side
+		} else if (ROOK_START[turn][KING_SIDE]
+			&& castlePerms[turn][QUEEN_SIDE]) {
+			
+			castlePerms[turn][QUEEN_SIDE] = false;
+			turnLostCastlePerms[turn][QUEEN_SIDE] = moveNumber;
 		}
 	}
 
 	// Account for castling in rook death
 	if (m.killed == ROOK) {
-		if (turn == WHITE) {
-			if (*castlePerms[!turn][KING_SIDE]
-				&& m.end == 63) {
-
-				*castlePerms[!turn][KING_SIDE] = false;
-				turnLostCastlePerms[!turn][KING_SIDE] = moveNumber;	
-			}
-			if (*castlePerms[!turn][QUEEN_SIDE]
-				&& m.end == 56) {
-				
-				*castlePerms[!turn][QUEEN_SIDE] = false;
-				turnLostCastlePerms[!turn][QUEEN_SIDE] = moveNumber;	
-			}
-		} else {	// Black's turn
-			if (*castlePerms[!turn][KING_SIDE]
-				&& m.end == 7) {
-
-				*castlePerms[!turn][KING_SIDE] = false;
-				turnLostCastlePerms[!turn][KING_SIDE] = moveNumber;	
-			}
-			if (*castlePerms[!turn][QUEEN_SIDE]
-				&& m.end == 0) {
-				
-				*castlePerms[!turn][QUEEN_SIDE] = false;
-				turnLostCastlePerms[!turn][QUEEN_SIDE] = moveNumber;	
-			}
+		if (castlePerms[!turn][KING_SIDE] && m.end == ROOK_START[!turn][KING_SIDE]) {
+			castlePerms[!turn][KING_SIDE] = false;
+			turnLostCastlePerms[!turn][KING_SIDE] = moveNumber;	
+		} else if (castlePerms[!turn][QUEEN_SIDE] && m.end == ROOK_START[!turn][QUEEN_SIDE]) {
+			castlePerms[!turn][QUEEN_SIDE] = false;
+			turnLostCastlePerms[!turn][QUEEN_SIDE] = moveNumber;	
 		}
 	}
 
@@ -513,46 +481,33 @@ void ChessState::reverseMove() {
 
 	// Reverse rook movement in castling
 	if (m->piece == KING) {
-		if (turn == WHITE) {
-			// Hard-coded castle positions
-			if (m->start == 4) {
-				if (m->end == 6) {
-					wR.setPos(7, true);
-					wR.setPos(5, false);
-				} else if (m->end == 2) {
-					wR.setPos(0, true);
-					wR.setPos(3, false);
-				}
-			}
-		} else {	// Black's turn
-			if (m->start == 60) {
-				if (m->end == 62) {
-					bR.setPos(63, true);
-					bR.setPos(61, false);
-				} else if (m->end == 58) {
-					bR.setPos(56, true);
-					bR.setPos(59, false);
-				}
+		if (m->start == KING_START[turn]) {
+			if (m->end == KING_START[turn]+2) {
+				pieces[turn][ROOK]->setPos(KING_START[turn]+3, true);
+				pieces[turn][ROOK]->setPos(KING_START[turn]+1, false);
+			} else if (m->end == KING_START[turn]-2) {
+				pieces[turn][ROOK]->setPos(KING_START[turn]-4, true);
+				pieces[turn][ROOK]->setPos(KING_START[turn]-1, false);
 			}
 		}
 	}
 
 	// Update castle permissions
 	if (turnLostCastlePerms[turn][KING_SIDE] == moveNumber) {
-		*castlePerms[turn][KING_SIDE] = true;
+		castlePerms[turn][KING_SIDE] = true;
 		turnLostCastlePerms[turn][KING_SIDE] = -1;
 	}
 	if (turnLostCastlePerms[turn][QUEEN_SIDE] == moveNumber) {
-		*castlePerms[turn][QUEEN_SIDE] = true;
+		castlePerms[turn][QUEEN_SIDE] = true;
 		turnLostCastlePerms[turn][QUEEN_SIDE] = -1;
 	}
 	// One can lose castle perms regardless of turn
 	if (turnLostCastlePerms[!turn][KING_SIDE] == moveNumber) {
-		*castlePerms[!turn][KING_SIDE] = true;
+		castlePerms[!turn][KING_SIDE] = true;
 		turnLostCastlePerms[!turn][KING_SIDE] = -1;
 	}
 	if (turnLostCastlePerms[!turn][QUEEN_SIDE] == moveNumber) {
-		*castlePerms[!turn][QUEEN_SIDE] = true;
+		castlePerms[!turn][QUEEN_SIDE] = true;
 		turnLostCastlePerms[!turn][QUEEN_SIDE] = -1;
 	}
 

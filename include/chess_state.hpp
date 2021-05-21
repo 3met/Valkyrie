@@ -24,7 +24,7 @@ public:
 	~ChessState();
 
 	enum colour {
-		WHITE = 0,	// White must remain 0 for turn indexing to work
+		WHITE = 0,	// White must remain 0 for indexing to work
 		BLACK = 1,
 	};
 	enum pieceType {
@@ -71,14 +71,9 @@ public:
 
 	bool turn;	// False for white; true for black
 	
-	bool wKCastle;	// Castle perms
-	bool wQCastle;
-	bool bKCastle;
-	bool bQCastle;
-	bool* castlePerms[2][2] = {
-		{&wKCastle, &wQCastle},	// Order based on castleSide enum
-		{&bKCastle, &bQCastle},
-	};
+	static const U8 KING_START[2];	// [color]
+	static const U8 ROOK_START[2][2];	// [color][king/queen side]
+	bool castlePerms[2][2];	// [color][king/queen side]
 	short turnLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
 	
 	S8 enPassant;	// Pos behind pawn, else -1

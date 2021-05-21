@@ -45,16 +45,16 @@ void BoardHash::makeHash(const ChessState* cs) {
 	}
 
 	// Add castling permissions to hash
-	if (cs->wKCastle) {
+	if (cs->castlePerms[cs->WHITE][cs->KING_SIDE]) {
 		hash ^= zobristValues.wKCastle;
 	}	
-	if (cs->wQCastle) {
+	if (cs->castlePerms[cs->WHITE][cs->QUEEN_SIDE]) {
 		hash ^= zobristValues.wQCastle;
 	}	
-	if (cs->bKCastle) {
+	if (cs->castlePerms[cs->BLACK][cs->KING_SIDE]) {
 		hash ^= zobristValues.bKCastle;
 	}	
-	if (cs->bQCastle) {
+	if (cs->castlePerms[cs->BLACK][cs->QUEEN_SIDE]) {
 		hash ^= zobristValues.bQCastle;
 	}
 

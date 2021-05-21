@@ -33,7 +33,7 @@ void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 	}
 
 	// Castling Moves
-	if (*cs->castlePerms[cs->turn][cs->KING_SIDE]
+	if (cs->castlePerms[cs->turn][cs->KING_SIDE]
 		&& !cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(start+1)	// Ensure no pieces are in the way
 		&& !cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(start+2)
 		&& !cs->pieces[!cs->turn][cs->ALL_PIECES]->getPos(start+1)
@@ -44,7 +44,7 @@ void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 
 		moves->push_back(Move(cs->KING, start, start+2));
 	}
-	if (*cs->castlePerms[cs->turn][cs->QUEEN_SIDE]
+	if (cs->castlePerms[cs->turn][cs->QUEEN_SIDE]
 		&& !cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(start-1)	// Ensure no pieces are in the way
 		&& !cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(start-2)
 		&& !cs->pieces[cs->turn][cs->ALL_PIECES]->getPos(start-3)
