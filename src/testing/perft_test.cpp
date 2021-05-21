@@ -3,6 +3,7 @@
 #include "chess_state.hpp"
 #include "testing.hpp"
 
+/* Returns true if passed, else false */
 bool perftTest() {
 	ChessEngine engine;
 	ChessState cs;
