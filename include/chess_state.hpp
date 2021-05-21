@@ -112,6 +112,7 @@ public:
 	void reverseMove();
 
 	// Output Methods
+	string stringFEN();
 	void show();
 	void show(bool show_coords);
 };

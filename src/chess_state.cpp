@@ -285,6 +285,83 @@ void ChessState::loadFEN(string FEN) {
 	turnNumber = stoi(FEN.substr(FEN_index-(nLength-1), nLength));
 }
 
+string ChessState::stringFEN() {
+	string FEN;
+	char board[64];
+	U8 i, j;
+
+	for (i=0; i<64; ++i) {
+		board[i] = '.';
+	}
+
+	for (i=0; i<6; ++i) {
+		this->mapBoardToChar(*pieces[0][i], board, piece_names[0][i]);
+		this->mapBoardToChar(*pieces[1][i], board, piece_names[1][i]);
+	}
+
+	int gap = 0;
+	for (i=0; i<64; ++i) {
+		if (board[Bitboard::SHOW_ORDER[i]] == '.') {
+			gap += 1;
+		} else {
+			if (gap > 0) {
+				FEN += to_string(gap);
+				gap = 0;
+			}
+			FEN += board[Bitboard::SHOW_ORDER[i]];
+		}
+
+		if (i != 0 && (i+1) % 8 == 0) {	
+			if (gap > 0) {
+				FEN += to_string(gap);
+				gap = 0;
+			}
+
+			if (i != 63) {
+				FEN += '/';
+			}
+		}
+	}
+
+	FEN += ' ';
+
+	if (this->turn == this->WHITE) {
+		FEN += 'w';
+	} else {
+		FEN += 'b';
+	}
+
+	FEN += ' ';
+
+	if (castlePerms[WHITE][KING_SIDE]) {
+		FEN += 'K';
+	}
+	if (castlePerms[WHITE][QUEEN_SIDE]) {
+		FEN += 'Q';
+	}
+	if (castlePerms[BLACK][KING_SIDE]) {
+		FEN += 'k';
+	}
+	if (castlePerms[BLACK][QUEEN_SIDE]) {
+		FEN += 'q';
+	}
+
+	FEN += ' ';
+
+	if (enPassant == -1) {
+		FEN += '-';
+	} else {
+		FEN += Move::posToCoord(enPassant);
+	}
+
+	FEN += ' ';
+	FEN += to_string(halfmoveClock);
+	FEN += ' ';
+	FEN += to_string(turnNumber);
+
+	return FEN;
+}
+
 Move ChessState::notationToMove(string notation) {
 	// Converts chess notation to Move object (a7b8q ==> Move)
 	U8 start = Move::coordToPos(notation.substr(0, 2));
@@ -573,6 +650,7 @@ void ChessState::show(bool show_coords) {
 	if (show_coords) {
 		cout << "  +----------------" << endl;
 		cout << "    a b c d e f g h" << endl;
+		cout << "FEN: " << this->stringFEN() << endl;
 		cout << "-------------------" << endl;
 	}
 }
