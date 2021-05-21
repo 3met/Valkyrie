@@ -9,25 +9,11 @@ using namespace std;
 
 UCI::UCI() {};
 
-UCI::UCI(ChessState* cs, ChessEngine* engine) {
-	this->cs = cs;
-	this->engine = engine;
-}
-
 UCI::~UCI() {};
 
 // --- Static Members ---
 const string UCI::ENGINE_NAME = "Chess Engine v1";
 const string UCI::ENGINE_AUTHOR = "Emet Behrendt";
-
-// --- Get and Set Methods ---
-void UCI::setState(ChessState* cs) {
-	this->cs = cs;
-}
-
-void UCI::setEngine(ChessEngine* engine) {
-	this->engine = engine;
-}
 
 // --- Main Methods ---
 void runEngine(ChessEngine* engine) {
@@ -43,7 +29,7 @@ void UCI::run() {
 		getline(cin, input);
 
 		if (input == "stop") {
-			engine->canSearch = false;
+			engine.canSearch = false;
 			thEngine.join();
 		} else if (input.substr(0, 2) == "go") {
 			this->inputGo(input);

@@ -12,8 +12,8 @@ using namespace std;
 
 class UCI {
 private:
-	ChessState* cs;
-	ChessEngine* engine;
+	ChessState cs;
+	ChessEngine engine;
 
 	// UCI Commands
 	void inputIsready();
@@ -28,15 +28,11 @@ private:
 
 public:
 	UCI();
-	UCI(ChessState* cs, ChessEngine* engine);
 	~UCI();
 
 	// Engine Information
 	static const string ENGINE_NAME;
 	static const string ENGINE_AUTHOR;
-
-	inline void setState(ChessState* cs);
-	inline void setEngine(ChessEngine* engine);
 
 	void run();
 };

@@ -56,69 +56,8 @@ int main() {
 		return 1;
 	}
 
-	ChessState cs;
-	ChessEngine engine;
-
-	UCI uci(&cs, &engine);
-
+	UCI uci;
 	uci.run();
-
-	// cout << "Loading Engine..." << endl;
-
-	// pair<Move, EvalScore> m;
-	// char buffer[10];
-	// string playerInput;
-	// cout << "Engine Loading Complete" << endl << endl;
-
-	// int count = 10;
-	// int depth = 3;
-
-	// cout << perftTest() << endl;
-
-
-	// cout << "===== Initial =====" << endl;
-	// cout << "Count: " << count << endl;
-	// cout << "Depth: " << depth << endl;
-	// cs.show();
-	
-	// for (int i=0; i<count; ++i) {
-		// cout << endl << "===== Turn #" << i+1 << " =====" << endl;
-
-		// start_t = clock();
-		// m = engine.bestMove(&cs, depth);
-		// end_t = clock();	// TEMP
-		// total_time = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;	// TEMP
-		
-		// cout << "Calc. Time: " << total_time << endl;
-		// cout << "Score: " << m.second << endl;
-		// cout << "Move: " << m.first << endl;
-		// cs.move(m.first);
-		// cs.show();
-
-		// while (true) {
-		// 	cout << endl << "Enter move:" << endl;
-		// 	cout << ">>> ";
-		// 	cin >> playerInput;
-
-		// 	if (playerInput == "reverse") {
-		// 		cs.reverseMove();
-		// 		cs.reverseMove();
-		// 		cout << endl << "Move Reversed." << endl;
-		// 		cs.show();
-		// 		continue;
-		// 	}
-
-		// 	break;
-		// }
-
-		// if (playerInput == "exit") {
-		// 	break;
-		// }
-
-		// Move m2 = cs.notationToMove(playerInput);
-
-		// cs.move(m2);
-	// }
 	
 	return 0;
 }

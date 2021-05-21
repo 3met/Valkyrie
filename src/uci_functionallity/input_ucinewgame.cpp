@@ -3,5 +3,7 @@
 
 /* Prepare the chess engine for a new game */
 void UCI::inputUcinewgame() {
-	this->engine->transTable.clear();
+	#ifdef USE_TRANS_TABLE
+	this->engine.transTable.clear();
+	#endif
 }

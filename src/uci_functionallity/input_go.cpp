@@ -6,9 +6,9 @@
 
 void UCI::inputGo(string input) {
 
-	this->engine->canSearch = true;
+	this->engine.canSearch = true;
 
-	Move m = this->engine->searchOnTimer(this->cs, 10000, 1000);
+	Move m = this->engine.searchOnTimer(this->cs, 10000, 1000);
 
 	cout << "bestmove " << m << endl;
 }

@@ -22,9 +22,9 @@ void UCI::inputPosition(string input) {
 			pos += 1;
 		}
 		fen.erase(fen.size()-1, 1);	// Erase last space character
-		this->cs->loadFEN(fen);
+		this->cs.loadFEN(fen);
 	} else if (inVec[1] == "startpos") {
-		this->cs->reset();
+		this->cs.reset();
 	}
 
 	// Make moves if listed
@@ -32,7 +32,7 @@ void UCI::inputPosition(string input) {
 		pos += 1;
 
 		while (pos != inVec.size()) {
-			cs->move(cs->notationToMove(inVec[pos]));
+			cs.move(cs.notationToMove(inVec[pos]));
 			pos += 1;
 		}		
 	}
