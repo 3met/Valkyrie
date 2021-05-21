@@ -12,7 +12,7 @@ OpeningTable::OpeningTable() {};
 OpeningTable::~OpeningTable() {};
 
 void OpeningTable::add(const ChessState* cs, vector<Move>* moves) {
-	this->add(BoardHash(cs), moves);
+	this->add(cs->bh, moves);
 }
 
 void OpeningTable::add(const BoardHash bh, vector<Move>* moves) {
@@ -20,7 +20,7 @@ void OpeningTable::add(const BoardHash bh, vector<Move>* moves) {
 }
 
 bool OpeningTable::contains(const ChessState* cs) {
-	return this->contains(BoardHash(cs));
+	return this->contains(cs->bh);
 }
 
 bool OpeningTable::contains(const BoardHash bh) {
@@ -32,7 +32,7 @@ bool OpeningTable::contains(const BoardHash bh) {
 }
 
 vector<Move> OpeningTable::get(const ChessState* cs) {
-	return this->get(BoardHash(cs));
+	return this->get(cs->bh);
 }
 
 vector<Move> OpeningTable::get(const BoardHash bh) {

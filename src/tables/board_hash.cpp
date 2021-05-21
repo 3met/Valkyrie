@@ -1,6 +1,7 @@
 
 #include <vector>
 #include "board_hash.hpp"
+#include "chess_state.hpp"
 #include "U8.hpp"
 #include "zobrist_values.hpp"
 
@@ -10,8 +11,10 @@ BoardHash::BoardHash() {
 	hash = 0;
 };
 
-BoardHash::BoardHash(const ChessState* cs) {
-	this->makeHash(cs);
+BoardHash::BoardHash(const Bitboard pieces[2][7], const bool turn,
+	const bool castlePerms[2][2], const U8 enPassant) {
+
+	this->makeHash(pieces, turn, castlePerms, enPassant);
 }
 
 BoardHash::~BoardHash() {};
@@ -20,7 +23,9 @@ ZobristValues BoardHash::zobristValues;
 
 /* Create Zobrist hash from previously generated numbers
  * using passed games state */
-void BoardHash::makeHash(const ChessState* cs) {
+void BoardHash::makeHash(const Bitboard pieces[2][7], const bool turn,
+	const bool castlePerms[2][2], const U8 enPassant) {
+
 	vector<U8> pieceLocations;
 	U8 i, j, k;
 
@@ -31,7 +36,7 @@ void BoardHash::makeHash(const ChessState* cs) {
 	for (i=0; i<2; ++i) {	// Loop through colors
 		for (j=0; j<6; ++j) {	// Loop through pieces
 			// Location of all pieces of current type
-			pieceLocations = cs->pieces[i][j].getPosVector();
+			pieceLocations = pieces[i][j].getPosVector();
 			// Hash located pieces
 			for (k=0; k<pieceLocations.size(); ++k) {
 				hash ^= zobristValues.pieces[i][j][pieceLocations[k]];
@@ -40,26 +45,46 @@ void BoardHash::makeHash(const ChessState* cs) {
 	}
 
 	// Add player turn to hash
-	if (cs->turn == cs->WHITE) {
+	if (turn == ChessState::WHITE) {
 		hash ^= zobristValues.whiteToMove;
 	}
 
 	// Add castling permissions to hash
-	if (cs->castlePerms[cs->WHITE][cs->KING_SIDE]) {
-		hash ^= zobristValues.castlePerms[cs->WHITE][cs->KING_SIDE];
+	if (castlePerms[ChessState::WHITE][ChessState::KING_SIDE]) {
+		hash ^= zobristValues.castlePerms[ChessState::WHITE][ChessState::KING_SIDE];
 	}	
-	if (cs->castlePerms[cs->WHITE][cs->QUEEN_SIDE]) {
-		hash ^= zobristValues.castlePerms[cs->WHITE][cs->QUEEN_SIDE];
+	if (castlePerms[ChessState::WHITE][ChessState::QUEEN_SIDE]) {
+		hash ^= zobristValues.castlePerms[ChessState::WHITE][ChessState::QUEEN_SIDE];
 	}	
-	if (cs->castlePerms[cs->BLACK][cs->KING_SIDE]) {
-		hash ^= zobristValues.castlePerms[cs->BLACK][cs->KING_SIDE];
+	if (castlePerms[ChessState::BLACK][ChessState::KING_SIDE]) {
+		hash ^= zobristValues.castlePerms[ChessState::BLACK][ChessState::KING_SIDE];
 	}	
-	if (cs->castlePerms[cs->BLACK][cs->QUEEN_SIDE]) {
-		hash ^= zobristValues.castlePerms[cs->BLACK][cs->QUEEN_SIDE];
+	if (castlePerms[ChessState::BLACK][ChessState::QUEEN_SIDE]) {
+		hash ^= zobristValues.castlePerms[ChessState::BLACK][ChessState::QUEEN_SIDE];
 	}
 
 	// Add en passant state to the hash
-	if (cs->enPassant != -1) {
-		hash ^= zobristValues.enPassant[cs->enPassant % 8];
+	if (enPassant != -1) {
+		hash ^= zobristValues.enPassant[enPassant % 8];
 	}
+}
+
+/* The following methods update the hash without needing to
+   completely re-hash it. */
+
+void BoardHash::updatePiece(bool color, U8 pieceType, U8 pos) {
+	hash ^= zobristValues.pieces[color][pieceType][pos];
+}
+
+void BoardHash::updateTurn() {
+	hash ^= zobristValues.whiteToMove;
+}
+
+void BoardHash::updateCastlePerms(bool color, bool side) {
+	hash ^= zobristValues.castlePerms[color][side];
+}
+
+void BoardHash::updateEnPassant(const U8 oldPos, const U8 newPos) {
+	hash ^= zobristValues.enPassant[oldPos % 8];
+	hash ^= zobristValues.enPassant[newPos % 8];
 }

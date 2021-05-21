@@ -7,6 +7,7 @@
 #include <string>
 #include <utility>
 #include "bitboard.hpp"
+#include "board_hash.hpp"
 #include "move.hpp"
 #include "U8.hpp"
 #include "S8.hpp"
@@ -68,6 +69,8 @@ public:
 
 	vector<Move> moveList;	// List of moves that lead to current game state
 
+	BoardHash bh;	// Current chess board hash
+
 	// TODO: add Threefold repetition
 	// https://en.wikipedia.org/wiki/Threefold_repetition
 
@@ -85,7 +88,7 @@ public:
 	// Setup Methods
 	void reset();
 	void clear();
-	void place(short color, short piece, short pos);
+	void place(bool color, U8 piece, U8 pos);
 	pair<bool, U8> charToPiece(char piece);
 	void loadFEN(string FEN);
 	Move notationToMove(string notation);

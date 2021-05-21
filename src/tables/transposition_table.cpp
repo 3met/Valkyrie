@@ -9,8 +9,7 @@ void TranspositonTable::clear() {
 
 /* Adds entry to the table */
 void TranspositonTable::add(const ChessState* cs, EvalScore score, U8 depth) {
-	BoardHash bh(cs);
-	this->add(&bh, score, depth);
+	this->add(&cs->bh, score, depth);
 }
 
 void TranspositonTable::add(const BoardHash* bh, EvalScore score, U8 depth) {
@@ -18,8 +17,7 @@ void TranspositonTable::add(const BoardHash* bh, EvalScore score, U8 depth) {
 }
 
 bool TranspositonTable::contains(const ChessState* cs) {
-	BoardHash bh(cs);
-	return this->contains(&bh);
+	return this->contains(&cs->bh);
 }
 
 bool TranspositonTable::contains(const BoardHash* bh) {
@@ -30,8 +28,7 @@ bool TranspositonTable::contains(const BoardHash* bh) {
 }
 
 HashScore TranspositonTable::get(const ChessState* cs) {
-	BoardHash bh(cs);
-	return this->get(&bh);
+	return this->get(&cs->bh);
 }
 
 HashScore TranspositonTable::get(const BoardHash* bh) {

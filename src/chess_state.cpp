@@ -27,6 +27,8 @@ ChessState::ChessState(const ChessState* cs) {
 	halfmoveClock = cs->halfmoveClock;
 	turnNumber = cs->turnNumber;
 	moveNumber = cs->moveNumber;
+
+	bh = cs->bh;
 }
 
 ChessState::~ChessState() {};
@@ -82,6 +84,8 @@ void ChessState::reset() {
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
 	turnNumber = 1;	// Game turn number
 	moveNumber = 1;
+
+	this->bh.makeHash(pieces, turn, castlePerms, enPassant);
 }
 
 /* Clears the board and resets game data */
@@ -100,10 +104,10 @@ void ChessState::clear() {
 
 	turn = WHITE;
 	
-	this->castlePerms[this->WHITE][this->KING_SIDE] = false;	// Castle perms
-	this->castlePerms[this->WHITE][this->QUEEN_SIDE] = false;
-	this->castlePerms[this->BLACK][this->KING_SIDE] = false;
-	this->castlePerms[this->BLACK][this->QUEEN_SIDE] = false;
+	castlePerms[WHITE][KING_SIDE] = false;	// Castle perms
+	castlePerms[WHITE][QUEEN_SIDE] = false;
+	castlePerms[BLACK][KING_SIDE] = false;
+	castlePerms[BLACK][QUEEN_SIDE] = false;
 
 	moveLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
 	moveLostCastlePerms[WHITE][QUEEN_SIDE] = -1;
@@ -115,13 +119,17 @@ void ChessState::clear() {
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
 	turnNumber = 1;	// Game turn number
 	moveNumber = 1;
+
+	this->bh.makeHash(pieces, turn, castlePerms, enPassant);
 }
 
-void ChessState::place(short color, short piece, short pos) {
+void ChessState::place(bool color, U8 pieceType, U8 pos) {
 	/* Place piece on the board */
 
-	pieces[color][piece].setPos(pos, true);
+	pieces[color][pieceType].setPos(pos, true);
 	this->updateAllBitboard(color);
+
+	bh.updatePiece(color, pieceType, pos);
 }
 
 pair<bool, U8> ChessState::charToPiece(char piece) {
@@ -274,6 +282,8 @@ void ChessState::loadFEN(string FEN) {
 	}
 
 	turnNumber = stoi(FEN.substr(FEN_index-(nLength-1), nLength));
+
+	this->bh.makeHash(pieces, turn, castlePerms, enPassant);
 }
 
 string ChessState::stringFEN() {
@@ -399,20 +409,26 @@ void ChessState::move(Move m) {
 			// Remove piece killed by en passant
 			if (turn == WHITE) {
 				pieces[BLACK][PAWN].setPos(m.end-8, false);
+				bh.updatePiece(BLACK, PAWN, m.end-8);
 			} else {	// Black's turn
 				pieces[WHITE][PAWN].setPos(m.end+8, false);
+				bh.updatePiece(WHITE, PAWN, m.end+8);
 			}
 		} else {
 			pieces[!turn][m.killed].setPos(m.end, false);
+			bh.updatePiece(!turn, m.killed, m.end);
 		}
 	}
 
 	// Updates moving piece location on bitboard
 	pieces[turn][m.piece].setPos(m.start, false);
+	bh.updatePiece(turn, m.piece, m.start);
 	if (m.promoted == -1) {
 		pieces[turn][m.piece].setPos(m.end, true);
+		bh.updatePiece(turn, m.piece, m.end);
 	} else {
 		pieces[turn][m.promoted].setPos(m.end, true);
+		bh.updatePiece(turn, m.promoted, m.end);
 	}
 
 	// Account for castling in king movement
@@ -421,10 +437,12 @@ void ChessState::move(Move m) {
 		if (castlePerms[turn][KING_SIDE]) {
 			castlePerms[turn][KING_SIDE] = false;
 			moveLostCastlePerms[turn][KING_SIDE] = moveNumber;
+			bh.updateCastlePerms(turn, KING_SIDE);
 		}
 		if (castlePerms[turn][QUEEN_SIDE]) {
 			castlePerms[turn][QUEEN_SIDE] = false;
 			moveLostCastlePerms[turn][QUEEN_SIDE] = moveNumber;
+			bh.updateCastlePerms(turn, QUEEN_SIDE);
 		}
 
 		// Update rook positions if castled
@@ -433,10 +451,14 @@ void ChessState::move(Move m) {
 			if (m.end == KING_START[turn]+2) {
 				pieces[turn][ROOK].setPos(KING_START[turn]+3, false);
 				pieces[turn][ROOK].setPos(KING_START[turn]+1, true);
+				bh.updatePiece(turn, ROOK, KING_START[turn]+3);
+				bh.updatePiece(turn, ROOK, KING_START[turn]+1);
 			// If queen side castled
 			} else if (m.end == KING_START[turn]-2) {
 				pieces[turn][ROOK].setPos(KING_START[turn]-4, false);
 				pieces[turn][ROOK].setPos(KING_START[turn]-1, true);
+				bh.updatePiece(turn, ROOK, KING_START[turn]-4);
+				bh.updatePiece(turn, ROOK, KING_START[turn]-1);
 			}
 		}
 	}
@@ -450,12 +472,14 @@ void ChessState::move(Move m) {
 			
 			castlePerms[turn][KING_SIDE] = false;
 			moveLostCastlePerms[turn][KING_SIDE] = moveNumber;
+			bh.updateCastlePerms(turn, KING_SIDE);
 		// Queen's side
 		} else if (ROOK_START[turn][KING_SIDE]
 			&& castlePerms[turn][QUEEN_SIDE]) {
 			
 			castlePerms[turn][QUEEN_SIDE] = false;
 			moveLostCastlePerms[turn][QUEEN_SIDE] = moveNumber;
+			bh.updateCastlePerms(turn, QUEEN_SIDE);
 		}
 	}
 
@@ -464,9 +488,11 @@ void ChessState::move(Move m) {
 		if (castlePerms[!turn][KING_SIDE] && m.end == ROOK_START[!turn][KING_SIDE]) {
 			castlePerms[!turn][KING_SIDE] = false;
 			moveLostCastlePerms[!turn][KING_SIDE] = moveNumber;	
+			bh.updateCastlePerms(!turn, KING_SIDE);
 		} else if (castlePerms[!turn][QUEEN_SIDE] && m.end == ROOK_START[!turn][QUEEN_SIDE]) {
 			castlePerms[!turn][QUEEN_SIDE] = false;
 			moveLostCastlePerms[!turn][QUEEN_SIDE] = moveNumber;	
+			bh.updateCastlePerms(!turn, QUEEN_SIDE);
 		}
 	}
 
@@ -475,18 +501,23 @@ void ChessState::move(Move m) {
 		if (turn == WHITE) {
 			// If pawn moved two squares forward
 			if (Bitboard::RANK[m.start] == 1 && Bitboard::RANK[m.end] == 3) {
-				enPassant = m.end - 8;
+				bh.updateEnPassant(enPassant, m.end-8);
+				enPassant = m.end-8;
 			} else {
+				bh.updateEnPassant(enPassant, -1);
 				enPassant = -1;
 			}
 		} else {	// If black's turn
 			if (Bitboard::RANK[m.start] == 6 && Bitboard::RANK[m.end] == 4) {
-				enPassant = m.end + 8;
+				bh.updateEnPassant(enPassant, m.end+8);
+				enPassant = m.end+8;
 			} else {
+				bh.updateEnPassant(enPassant, -1);
 				enPassant = -1;
 			}
 		}
 	} else {
+		bh.updateEnPassant(enPassant, -1);
 		enPassant = -1;
 	}
 	enPassantHistory.push_back(enPassant);
@@ -506,6 +537,7 @@ void ChessState::move(Move m) {
 
 	// Update turn color
 	turn = !turn;
+	bh.updateTurn();
 }
 
 void ChessState::reverseMove() {
