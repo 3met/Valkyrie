@@ -5,6 +5,7 @@
 
 #include <map>
 #include "board_hash.hpp"
+#include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "U8.hpp"
 
