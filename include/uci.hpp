@@ -22,6 +22,8 @@ private:
 	void inputPrint();
 	void inputGo(string input);
 	void inputUcinewgame();
+	void inputPerft(string input);
+	void inputDivide(string input);
 
 	// Miscellaneous
 	static void splitString(string str, vector<string>* strVec);
