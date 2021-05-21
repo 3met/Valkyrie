@@ -70,8 +70,10 @@ public:
 	~ChessEngine();
 
 	// Transposition table
+	#ifdef USE_TRANS_TABLE
 	bool useTransTable = true;
 	TranspositonTable transTable;
+	#endif
 
 	// UCI accessable functions
 	bool isLoaded = false;
