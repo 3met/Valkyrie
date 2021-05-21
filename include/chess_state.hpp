@@ -16,7 +16,7 @@ using namespace std;
 class ChessState {
 private:
 	void mapBoardToChar(Bitboard b, char arr[64], char target);
-	void updateAllBitboard(bool colour);
+	void updateAllBitboard(bool color);
 
 public:
 	ChessState();
