@@ -16,14 +16,16 @@ private:
 	ChessEngine engine;
 
 	// UCI Commands
+	void inputClear();
+	void inputDivide(string input);
+	void inputGo(string input);
 	void inputIsready();
-	void inputUCI();
+	void inputMove(string input);
+	void inputPerft(string input);
 	void inputPosition(string input);
 	void inputPrint();
-	void inputGo(string input);
+	void inputUCI();
 	void inputUcinewgame();
-	void inputPerft(string input);
-	void inputDivide(string input);
 
 	// Miscellaneous
 	static void splitString(string str, vector<string>* strVec);
