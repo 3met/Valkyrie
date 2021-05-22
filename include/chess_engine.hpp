@@ -100,10 +100,10 @@ public:
 	
 	// Move Selection
 	Move searchOnTimer(ChessState cs, int timeLeft, int timeInc);
-	void searchNodes();
-	void searchDepth();
-	void searchExactTime();
-	void searchInfinite();
+	Move searchInfinite(ChessState cs);
+	Move searchNodes(ChessState cs);
+	Move searchDepth(ChessState cs);
+	Move searchExactTime(ChessState cs);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
 	void sortMoves(vector<Move>* moves);
