@@ -2,5 +2,5 @@
 #include "uci.hpp"
 
 void UCI::inputStop() {
-	engine->canSearch = false;
+	engine.canSearch = false;
 }
