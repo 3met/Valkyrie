@@ -83,6 +83,11 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	HashScore hashScore;	// Transposition table entry
 
 	for (short i=0; i<moves.size(); ++i) {
+
+		if (this->canSearch == false && bestIndex != -1) {
+			return make_pair(moves[bestIndex], alpha);
+		}
+
 		cs->move(moves[i]);
 
 		#ifdef USE_TRANS_TABLE
@@ -125,12 +130,8 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	if (bestIndex == -1) {
 		throw ChessState::NoMoves();
 	}
-	
-	if (cs->turn == cs->WHITE) {
-		return make_pair(moves[bestIndex], alpha);
-	} else {
-		return make_pair(moves[bestIndex], -alpha);
-	}
+
+	return make_pair(moves[bestIndex], alpha);
 }
 
 
