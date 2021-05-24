@@ -10,10 +10,10 @@ using namespace std;
 	Order:
 		Captures ordered by decreasing value of piece killed
 		Pawn promotions
-		Leftover moves in order of 
+		Leftover moves
 */
 
-bool moveCmp(Move const &a, Move const &b) {
+bool moveCmp(const Move& a, const Move& b) {
 	if (a.killed > b.killed) {
 		return true;
 	} else if (b.killed > a.killed) {
