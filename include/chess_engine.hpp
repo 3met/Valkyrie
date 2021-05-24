@@ -3,7 +3,7 @@
 #ifndef CHESS_ENGINE_HPP
 #define CHESS_ENGINE_HPP
 
-#define USE_TRANS_TABLE
+// #define USE_TRANS_TABLE
 
 #include <map>
 #include <utility>
@@ -75,14 +75,16 @@ public:
 	TranspositonTable transTable;
 	#endif
 
-	// UCI accessable functions
+	// UCI accessable members
+	// Status Variables
 	bool isLoaded = false;
 	bool canSearch = false;
+	int searchTime = 0;
+	// Information Variables
 	int nodesTotal = 0;
 	int nodesPerSecond = 0;
 	short currDepth = 0;
 	short currSelDepth = 0;
-	int searchTime = 0;
 
 	// Move Generation
 	void genPMoves(ChessState* cs, vector<Move>* moves);
