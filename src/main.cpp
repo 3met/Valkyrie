@@ -24,19 +24,11 @@ For Consideration:
 
  - Move time function: https://www.desmos.com/calculator/v9kcbgamx3
 
- - Name: Coronation Chess
-
- - TODO: compile with "libwinpthread-1.dll"
+ - Name: Coronation Chess?
 
 */
 
-#include <string>
 #include <iostream>
-#include "bitboard.hpp"
-#include "chess_engine.hpp"
-#include "chess_state.hpp"
-#include "eval_score.hpp"
-#include "move.hpp"
 #include "testing.hpp"
 #include "U64.hpp"
 #include "uci.hpp"
