@@ -4,8 +4,6 @@
 #include "U8.hpp"
 #include "zobrist_values.hpp"
 
-#include <iostream>	// TEMP
-
 using namespace std;
 
 ZobristValues::ZobristValues() {
