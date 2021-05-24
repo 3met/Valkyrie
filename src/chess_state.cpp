@@ -555,6 +555,7 @@ void ChessState::reverseMove() {
 	Move* m = &(*(moveList.end()-1));
 
 	turn = !turn;	// Swaps turn
+	bh.updateTurn();
 
 	if (turn == BLACK) {
 		turnNumber -= 1;
@@ -562,16 +563,24 @@ void ChessState::reverseMove() {
 	moveNumber -= 1;
 
 	// Revert en passant value
+	S8 oldEnPassant = *(enPassantHistory.end()-1);
 	enPassantHistory.pop_back();
-	enPassant = *(enPassantHistory.end()-1);
+	// If en passant variable needs to be updated
+	if (oldEnPassant != *(enPassantHistory.end()-1)) {
+		enPassant = *(enPassantHistory.end()-1);
+		bh.updateEnPassant(oldEnPassant, enPassant);
+	}	
 
 	// Updates piece location on bitboard
 	if (m->promoted == -1) {
 		pieces[turn][m->piece].setPos(m->end, false);
+		bh.updatePiece(turn, m->piece, m->end);
 	} else {
 		pieces[turn][m->promoted].setPos(m->end, false);
+		bh.updatePiece(turn, m->promoted, m->end);
 	}
 	pieces[turn][m->piece].setPos(m->start, true);
+	bh.updatePiece(turn, m->piece, m->start);
 
 	// Adds previously killed piece to bitboard
 	if (m->killed != -1) {
@@ -579,11 +588,14 @@ void ChessState::reverseMove() {
 			// Place killed en passant piece
 			if (turn == WHITE) {
 				pieces[BLACK][PAWN].setPos(m->end-8, true);
+				bh.updatePiece(BLACK, PAWN, m->end-8);
 			} else {	// Black's turn
 				pieces[WHITE][PAWN].setPos(m->end+8, true);
+				bh.updatePiece(WHITE, PAWN, m->end+8);
 			}
 		} else {
 			pieces[!turn][m->killed].setPos(m->end, true);
+			bh.updatePiece(!turn, m->killed, m->end);
 		}
 	}
 
@@ -593,9 +605,13 @@ void ChessState::reverseMove() {
 			if (m->end == KING_START[turn]+2) {
 				pieces[turn][ROOK].setPos(KING_START[turn]+3, true);
 				pieces[turn][ROOK].setPos(KING_START[turn]+1, false);
+				bh.updatePiece(turn, ROOK, KING_START[turn]+3);
+				bh.updatePiece(turn, ROOK, KING_START[turn]+1);
 			} else if (m->end == KING_START[turn]-2) {
 				pieces[turn][ROOK].setPos(KING_START[turn]-4, true);
 				pieces[turn][ROOK].setPos(KING_START[turn]-1, false);
+				bh.updatePiece(turn, ROOK, KING_START[turn]-4);
+				bh.updatePiece(turn, ROOK, KING_START[turn]-1);
 			}
 		}
 	}
@@ -604,19 +620,23 @@ void ChessState::reverseMove() {
 	if (moveLostCastlePerms[turn][KING_SIDE] == moveNumber) {
 		castlePerms[turn][KING_SIDE] = true;
 		moveLostCastlePerms[turn][KING_SIDE] = -1;
+		bh.updateCastlePerms(turn, KING_SIDE);
 	}
 	if (moveLostCastlePerms[turn][QUEEN_SIDE] == moveNumber) {
 		castlePerms[turn][QUEEN_SIDE] = true;
 		moveLostCastlePerms[turn][QUEEN_SIDE] = -1;
+		bh.updateCastlePerms(turn, QUEEN_SIDE);
 	}
 	// One can lose castle perms regardless of turn
 	if (moveLostCastlePerms[!turn][KING_SIDE] == moveNumber) {
 		castlePerms[!turn][KING_SIDE] = true;
 		moveLostCastlePerms[!turn][KING_SIDE] = -1;
+		bh.updateCastlePerms(!turn, KING_SIDE);
 	}
 	if (moveLostCastlePerms[!turn][QUEEN_SIDE] == moveNumber) {
 		castlePerms[!turn][QUEEN_SIDE] = true;
 		moveLostCastlePerms[!turn][QUEEN_SIDE] = -1;
+		bh.updateCastlePerms(!turn, QUEEN_SIDE);
 	}
 
 	// Remove reversed move from move list
