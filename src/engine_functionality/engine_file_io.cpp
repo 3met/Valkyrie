@@ -15,7 +15,6 @@ string DATA_DIR = "../data/";
 void ChessEngine::readMoveTable(Bitboard moveTable[64], string fileName) {
 	ifstream db_file;
 
-	// Load king move database
 	db_file.open(DATA_DIR + fileName);
 	if (!db_file) {
 		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
@@ -33,7 +32,6 @@ void ChessEngine::readMoveTable(Bitboard moveTable[64], string fileName) {
 void ChessEngine::readBonusTable(map<U8, S8>* bonusTable, string fileName) {
 	ifstream db_file;
 
-	// Load king move database
 	db_file.open(DATA_DIR + fileName);
 	if (!db_file) {
 		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
@@ -51,10 +49,9 @@ void ChessEngine::readBonusTable(map<U8, S8>* bonusTable, string fileName) {
 void ChessEngine::readOpeningBook(OpeningTable* openingTable, string fileName) {
 	ifstream db_file;
 
-	// Load king move database
 	db_file.open(DATA_DIR + fileName);
 	if (!db_file) {
-		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
+		cout << "Error: Unable to read " << DATA_DIR << fileName << endl;
 		return;
 	} else {
 		S8 i;
@@ -63,20 +60,22 @@ void ChessEngine::readOpeningBook(OpeningTable* openingTable, string fileName) {
 		string line;
 		U8 lineIndex;
 		size_t found;
-		// Min percent of total moves removes outliers
+		// Min percent of total moves used to removes outliers
 		float minPopularity = 0.05;
 		int total;
 		vector<int> moveCounts;
 
 		while (getline(db_file, line)) {
+			// Load FEN
+			cs.loadFEN(line);
+
 			moves.clear();
-			lineIndex = 0;
 			moveCounts.clear();
 			total = 0;
-
-			cs.loadFEN(line);
+			lineIndex = 0;
 			getline(db_file, line);	// Moves
 
+			// Get moves paired with FEN
 			while (true) {
 				// Find begining of move
 				found = line.find_first_of("abcdefgh", lineIndex);
@@ -99,15 +98,15 @@ void ChessEngine::readOpeningBook(OpeningTable* openingTable, string fileName) {
 				lineIndex = found;
 			}
 
-			if (moves.size() != 0) {
-				// Remove move outliers
-				for (i=moves.size()-1; i>=0; --i) {
-					if (moveCounts[i] < total * minPopularity) {
-						moves.erase(moves.begin() + i);
-					}
+			// Remove move outliers
+			for (i=moves.size()-1; i>=0; --i) {
+				if (moveCounts[i] < total * minPopularity) {
+					moves.erase(moves.begin() + i);
 				}
-
-				openingTable->add(&cs, &moves);
+			}
+			// Add moves to opening table
+			if (moves.size() != 0) {
+				openingTable->add(&cs.bh, &moves);
 			}
 		}
 	}
