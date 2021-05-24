@@ -12,12 +12,12 @@ void UCI::inputGo(string input) {
 	std::vector<std::string> inVec;
 	UCI::splitString(input, &inVec);	
 
-	//
+	// "go" command variables
 	std::vector<Move> searchMoves;
-	int wTime = -1;
-	int bTime = -1;
-	int wInc = -1;
-	int bInc = -1;
+	int wTime = 0;
+	int bTime = 0;
+	int wInc = 0;
+	int bInc = 0;
 	S8 depth = -1;
 	U64 nodes = 0;
 	bool infinite = false;
