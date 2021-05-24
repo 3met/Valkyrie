@@ -23,8 +23,9 @@ class TranspositonTable {
 private:
 	map<BoardHash, HashScore> table;
 public:
-	// Clears table	
-	void clear();
+	
+	void clear();	// Clears table
+	size_t size();
 
 	void add(const ChessState* cs, EvalScore score, U8 depth);
 	void add(const BoardHash* bh, EvalScore score, U8 depth);
