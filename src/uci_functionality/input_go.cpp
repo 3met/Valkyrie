@@ -69,5 +69,6 @@ void UCI::inputGo(string input) {
 	} else {
 		m = engine.searchOnTimer(this->cs, bTime, bInc);
 	}
+	cout << "info nodes " << engine.nodesTotal << endl;
 	cout << "bestmove " << m << endl;
 }

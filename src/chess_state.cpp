@@ -682,6 +682,7 @@ void ChessState::show(bool show_coords) {
 		cout << "  +----------------" << endl;
 		cout << "    a b c d e f g h" << endl;
 		cout << "FEN: " << this->stringFEN() << endl;
+		cout << "BoardHash: " << this->bh.hash << endl;
 		cout << "-------------------" << endl;
 	}
 }

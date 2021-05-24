@@ -15,6 +15,11 @@
 #define USE_BACKWARD_PAWNS
 #define USE_BLOCKED_PAWNS
 
+#include <chrono>
+using namespace std::chrono;
+extern high_resolution_clock::time_point evalStart, evalEnd;
+extern long long int evalTotal;
+
 /* A measure of how far the game has progressed
  * 0		--> opening position
  * 1-63 	--> opening
@@ -171,6 +176,10 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
  * The magnatude of the number represents the size of the advantage */
 short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 
+	nodesTotal += 1;
+
+	evalStart = high_resolution_clock::now();
+
 	U8 i;
 
 	// Positions of all the pieces
@@ -195,6 +204,11 @@ short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 		}
 	};
 
-	return evalSide(cs, perspective, pieces) - evalSide(cs, !perspective, pieces);;
+	short rating = evalSide(cs, perspective, pieces) - evalSide(cs, !perspective, pieces);;
+
+	evalEnd = high_resolution_clock::now();
+	evalTotal += duration_cast<microseconds>(evalEnd - evalStart).count();
+
+	return rating;
 }
 

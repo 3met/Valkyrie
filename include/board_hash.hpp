@@ -10,7 +10,6 @@
 /* Zobrist Board Hash */
 class BoardHash {
 private:
-	U64 hash;
 	static ZobristValues zobristValues;
 
 public:
@@ -19,9 +18,11 @@ public:
 		const bool castlePerms[2][2], const U8 enPassant);
 	~BoardHash();
 
+	U64 hash;
+
 	friend bool operator<(const BoardHash& a, const BoardHash& b) {
 		return a.hash < b.hash;
-	}
+	};
 
 	void makeHash(const Bitboard pieces[2][7], const bool turn,
 		const bool castlePerms[2][2], const U8 enPassant);

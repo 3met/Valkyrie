@@ -15,17 +15,22 @@ private:
 	ChessState cs;
 	ChessEngine engine;
 
-	// UCI Commands
-	void inputClear();
+	// --- UCI Commands ---
+	// Calculation Commands
 	void inputDivide(string input);
 	void inputGo(string input);
-	void inputIsready();
-	void inputMove(string input);
 	void inputPerft(string input);
+	void inputStop();
+	// Set State Commands
+	void inputMove(string input);
 	void inputPosition(string input);
-	void inputPrint();
-	void inputUCI();
 	void inputUcinewgame();
+	// Output Commands
+	void inputIsready();
+	void inputUCI();
+	// Debugging Commands
+	void inputClear();
+	void inputPrint();
 
 	// Miscellaneous
 	static void splitString(string str, vector<string>* strVec);
@@ -39,6 +44,7 @@ public:
 	static const string ENGINE_AUTHOR;
 
 	void run();
+	void runCommand(string input);
 };
 
 #endif

@@ -22,6 +22,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	// Start timer
 	auto start = high_resolution_clock::now();
 	
+	this->nodesTotal = 0;
 	this->canSearch = true;
 
 	// Check if position in opening book
@@ -77,7 +78,8 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 Move ChessEngine::searchInfinite(ChessState cs) {
 	// Start timer
 	auto start = high_resolution_clock::now();
-	
+
+	this->nodesTotal = 0;
 	this->canSearch = true;
 
 	pair<Move, EvalScore> ratedMove;

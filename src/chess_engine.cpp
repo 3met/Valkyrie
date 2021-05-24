@@ -138,6 +138,8 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta) {
 
 	if (depth == depthTarget) {
+		return EvalScore(evalBoard(cs, cs->turn));	// TEMP
+
 		// Extend if last move was a kill
 		if (cs->lastMove().killed != -1) {
 			depthTarget += 1;
