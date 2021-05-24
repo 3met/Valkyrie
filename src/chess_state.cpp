@@ -81,6 +81,8 @@ void ChessState::reset() {
 	moveLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
 
 	enPassant = -1;
+	enPassantHistory.clear();
+	enPassantHistory.push_back(enPassant);
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
 	turnNumber = 1;	// Game turn number
 	moveNumber = 1;
@@ -116,6 +118,7 @@ void ChessState::clear() {
 
 	enPassant = -1;
 	enPassantHistory.clear();
+	enPassantHistory.push_back(enPassant);
 	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
 	turnNumber = 1;	// Game turn number
 	moveNumber = 1;
@@ -192,6 +195,10 @@ void ChessState::loadFEN(string FEN) {
 		++i;
 	}
 
+	// Set universal bitboards
+	this->updateAllBitboard(WHITE);
+	this->updateAllBitboard(BLACK);
+
 	++FEN_index;	// Skip over space
 
 	// Read turn
@@ -243,6 +250,9 @@ void ChessState::loadFEN(string FEN) {
 
 	// Return if no more to read
 	if (FEN_index == FEN.size()-1) {
+		halfmoveClock = 0;
+		turnNumber = 1;
+		this->bh.makeHash(pieces, turn, castlePerms, enPassant);
 		return;
 	}
 
@@ -264,6 +274,8 @@ void ChessState::loadFEN(string FEN) {
 
 	// Return if no more to read
 	if (FEN_index == FEN.size()-1) {
+		turnNumber = 1;
+		this->bh.makeHash(pieces, turn, castlePerms, enPassant);
 		return;
 	}
 
@@ -569,7 +581,7 @@ void ChessState::reverseMove() {
 	if (oldEnPassant != *(enPassantHistory.end()-1)) {
 		enPassant = *(enPassantHistory.end()-1);
 		bh.updateEnPassant(oldEnPassant, enPassant);
-	}	
+	}
 
 	// Updates piece location on bitboard
 	if (m->promoted == -1) {
