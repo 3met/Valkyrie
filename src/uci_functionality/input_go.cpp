@@ -71,4 +71,7 @@ void UCI::inputGo(string input) {
 	}
 	cout << "info nodes " << engine.nodesTotal << endl;
 	cout << "bestmove " << m << endl;
+	#ifdef USE_TRANS_TABLE
+	cout << "trans table size: " << engine.transTable.size() << endl;
+	#endif
 }

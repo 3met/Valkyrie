@@ -91,16 +91,20 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		cs->move(moves[i]);
 
 		#ifdef USE_TRANS_TABLE
-		if (this->useTransTable && this->transTable.contains(cs)) {
-			hashScore = this->transTable.get(cs);
+		// Use hash table value if it exists
+		if (this->transTable.contains(&cs->bh)) {
+			hashScore = this->transTable.get(&cs->bh);
 			
 			if (hashScore.depth >= depth) {
 				if (score > alpha) {
 					alpha = score;
 					bestIndex = i;
-					cs->reverseMove();
-					continue;
 				}
+
+				// Continue to next move at this point because the hash 
+				// table data has already looked further than we plan to
+				cs->reverseMove();
+				continue;
 			}
 		}
 		#endif
@@ -114,7 +118,9 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			}
 
 			#ifdef USE_TRANS_TABLE
-			this->transTable.add(cs, score, depth);
+			// This calculation must be the best value b/c there was no
+			// previous calculation good enough to use in its place
+			this->transTable.add(&cs->bh, score, depth);
 			#endif
 
 			if (score > alpha) {
@@ -138,7 +144,18 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta) {
 
 	if (depth == depthTarget) {
-		return EvalScore(evalBoard(cs, cs->turn));	// TEMP
+
+		#ifdef USE_TRANS_TABLE
+			if (this->transTable.contains(&cs->bh)) {
+				return this->transTable.get(&cs->bh).score;
+			} else {
+				EvalScore e = EvalScore(evalBoard(cs, cs->turn));
+				this->transTable.add(&cs->bh, e, 0);
+				return e;
+			}
+		#else
+			return EvalScore(evalBoard(cs, cs->turn));	// TEMP
+		#endif
 
 		// Extend if last move was a kill
 		if (cs->lastMove().killed != -1) {
@@ -174,10 +191,11 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		cs->move(moves[i]);
 
 		#ifdef USE_TRANS_TABLE
-		if (this->transTable.contains(cs)) {
+		// Use trans table value if is exists
+		if (this->transTable.contains(&cs->bh)) {
 			hasValidMove = true;
 
-			hashScore = this->transTable.get(cs);
+			hashScore = this->transTable.get(&cs->bh);
 
 			if (hashScore.depth >= (depthTarget - depth)) {
 				if (hashScore.score >= beta) {
@@ -187,9 +205,12 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 				if (hashScore.score > alpha) {
 					alpha = hashScore.score;
-					cs->reverseMove();
-					continue;
 				}
+
+				// Continue to next move at this point because the hash 
+				// table data has already looked further than we plan to
+				cs->reverseMove();
+				continue;
 			}
 		}
 		#endif
@@ -205,13 +226,9 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			}
 
 			#ifdef USE_TRANS_TABLE
-			if (this->transTable.contains(cs)) {
-				hashScore = this->transTable.get(cs);
-
-				if (hashScore.depth < (depthTarget - depth)) {
-					this->transTable.add(cs, score, depth);
-				}
-			}
+			// This calculation must be the best value b/c there was no
+			// previous calculation good enough to use in its place
+			this->transTable.add(&cs->bh, score, (depthTarget - depth));
 			#endif
 
 			if (score >= beta) {

@@ -3,7 +3,7 @@
 #ifndef CHESS_ENGINE_HPP
 #define CHESS_ENGINE_HPP
 
-// #define USE_TRANS_TABLE
+#define USE_TRANS_TABLE
 
 #include <map>
 #include <utility>
@@ -71,7 +71,6 @@ public:
 
 	// Transposition table
 	#ifdef USE_TRANS_TABLE
-	bool useTransTable = true;
 	TranspositonTable transTable;
 	#endif
 
