@@ -223,7 +223,7 @@ void ChessState::loadFEN(string FEN) {
 				default:
 					cout << "ERROR: Invalid FEN"
 						<< " (\"" << FEN[FEN_index] << "\""
-						<< " is an castle character)" << endl;
+						<< " is an invalid castle character)" << endl;
 			}
 
 			++FEN_index;
@@ -354,7 +354,6 @@ string ChessState::stringFEN() {
 	if (addDash) {
 		FEN += '-';
 	}
-
 
 	FEN += ' ';
 
