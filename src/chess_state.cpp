@@ -334,18 +334,27 @@ string ChessState::stringFEN() {
 
 	FEN += ' ';
 
+	bool addDash = true;
 	if (castlePerms[WHITE][KING_SIDE]) {
 		FEN += 'K';
+		addDash = false;
 	}
 	if (castlePerms[WHITE][QUEEN_SIDE]) {
 		FEN += 'Q';
+		addDash = false;
 	}
 	if (castlePerms[BLACK][KING_SIDE]) {
 		FEN += 'k';
+		addDash = false;
 	}
 	if (castlePerms[BLACK][QUEEN_SIDE]) {
 		FEN += 'q';
+		addDash = false;
 	}
+	if (addDash) {
+		FEN += '-';
+	}
+
 
 	FEN += ' ';
 
