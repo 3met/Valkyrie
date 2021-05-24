@@ -43,10 +43,6 @@ For Consideration:
 
 using namespace std;
 
-#include <time.h>	// TEMP
-clock_t start_t, end_t;
-double total_time = 0;
-
 int main() {
 	cout << "Chess Engine | By Emet Behrendt" << endl;
 
