@@ -46,7 +46,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 		ratedMove = this->bestMove(&cs, i);
 		moveList.push_back(ratedMove.first);
 
-		cout << "info score " << ratedMove.second << endl;
+		cout << "info score cp " << ratedMove.second << endl;
 
 		// Check if time remains
 		auto stop = high_resolution_clock::now();
