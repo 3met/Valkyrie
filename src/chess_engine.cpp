@@ -96,8 +96,8 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			hashScore = this->transTable.get(&cs->bh);
 			
 			if (hashScore.depth >= depth) {
-				if (score > alpha) {
-					alpha = score;
+				if (hashScore.score > alpha) {
+					alpha = hashScore.score;
 					bestIndex = i;
 				}
 
@@ -143,7 +143,10 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta) {
 
+	// Check for recursion termination
 	if (depth == depthTarget) {
+
+		return EvalScore(evalBoard(cs, cs->turn));	// TEMP
 
 		#ifdef USE_TRANS_TABLE
 			if (this->transTable.contains(&cs->bh)) {
