@@ -24,6 +24,7 @@ private:
 	// Set State Commands
 	void inputMove(string input);
 	void inputPosition(string input);
+	void inputReverse();
 	void inputUcinewgame();
 	// Output Commands
 	void inputIsready();

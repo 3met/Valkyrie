@@ -39,6 +39,8 @@ void UCI::runCommand(string input) {
 		this->inputIsready();
 	} else if (input.substr(0, 5) == "move ") {
 		this->inputMove(input);
+	} else if (input == "reverse") {
+		this->inputReverse();
 	} else if (input.substr(0, 6) == "perft ") {
 		this->inputPerft(input);
 	} else if (input.substr(0, 7) == "divide ") {
