@@ -1,17 +1,22 @@
 
 #include <chrono>
 #include <cmath>
+#include <random>
+#include <utility>
 #include <vector>
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
+#include "eval_score.hpp"
 #include "move.hpp"
 
 // TEMP
 #include <iostream>
-#include <utility>
-#include "eval_score.hpp"
 
 using namespace std::chrono;
+
+// Generating random numbers
+random_device rd;	// Seed
+mt19937 gen(rd());
 
 /* Needs to be run in it's own thread
    in order to execute properly.
@@ -21,14 +26,16 @@ using namespace std::chrono;
 Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	// Start timer
 	auto start = high_resolution_clock::now();
-	
+	// Set Stats
 	this->nodesTotal = 0;
 	this->canSearch = true;
 
 	// Check if position in opening book
 	if (this->openingTable.contains(&cs.bh)) {
-		std::vector<Move> moves = this->openingTable.get(&cs.bh);;
-		return moves[rand() % moves.size()];
+		std::vector<Move> moves = this->openingTable.get(&cs.bh);
+		
+		uniform_int_distribution<> distr(0, moves.size()-1);
+		return moves[distr(gen)];
 	}
 
 	// Max time to choose move
