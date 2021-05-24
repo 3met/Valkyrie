@@ -35,7 +35,7 @@ ostream& operator<< (ostream &out, EvalScore const& obj) {
 		}
 		out << 'M' << short(obj.movesToMate);
 	} else {
-		out << float(obj.eval)/100;
+		out << obj.eval;
 	}
     
     return out;
