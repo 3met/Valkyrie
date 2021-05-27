@@ -103,7 +103,7 @@ public:
 	Move searchOnTimer(ChessState cs, int timeLeft, int timeInc);
 	Move searchInfinite(ChessState cs);
 	Move searchNodes(ChessState cs);
-	Move searchDepth(ChessState cs);
+	Move searchDepth(ChessState cs, U8 depth);
 	Move searchExactTime(ChessState cs);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);

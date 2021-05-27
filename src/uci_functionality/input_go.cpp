@@ -64,13 +64,17 @@ void UCI::inputGo(string input) {
 	Move m;
 	if (infinite) {
 		m = engine.searchInfinite(this->cs);
+	} else if (depth != -1) {
+		m = engine.searchDepth(this->cs, depth);
 	} else if (cs.turn == cs.WHITE) {
 		m = engine.searchOnTimer(this->cs, wTime, wInc);
 	} else {
 		m = engine.searchOnTimer(this->cs, bTime, bInc);
 	}
+
 	cout << "info nodes " << engine.nodesTotal << endl;
 	cout << "bestmove " << m << endl;
+
 	#ifdef USE_TRANS_TABLE
 	cout << "trans table size: " << engine.transTable.size() << endl;
 	#endif

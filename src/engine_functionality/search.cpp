@@ -8,6 +8,7 @@
 #include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
+#include "S8.hpp"
 
 // TEMP
 #include <iostream>
@@ -57,14 +58,16 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 
 		// Check if time remains
 		auto stop = high_resolution_clock::now();
-		auto duration = duration_cast<milliseconds>(stop - start);
-		if (duration.count() >= maxTime) {
+		auto duration = duration_cast<milliseconds>(stop - start).count();
+		// Break if more than 95% of the target time has passed
+		if (duration >= maxTime*0.95) {
 			break;
 		}
 
 		// Break early if past 3 searches have the same result
-		if (moveList.size() >= 3 && moveList[i-1] == moveList[i-2]
-			&& moveList[i-2] == moveList[i-3]) {
+		// and more than half the target search time has passed
+		if (duration > maxTime*0.5 && moveList.size() >= 3
+			&& moveList[i-1] == moveList[i-2] && moveList[i-2] == moveList[i-3]) {
 
 			break;
 		}
@@ -77,6 +80,44 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	}
 
 	return moveList[i-1];
+}
+
+/* Seaches to a specific depth as specified */
+Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
+
+	// Start timer
+	auto start = high_resolution_clock::now();
+
+	// Set Stats
+	this->nodesTotal = 0;
+	this->canSearch = true;
+
+	pair<Move, EvalScore> ratedMove;
+	Move m;
+	short i = 1;
+	// Loop to increase depth until time is up
+	while (i <= depth) {
+
+		currDepth = i;
+		cout << "info depth " << i << endl;
+
+		ratedMove = this->bestMove(&cs, i);
+		m = ratedMove.first;
+
+		cout << "info score cp " << ratedMove.second << endl;
+
+		if (this->canSearch == false) {
+			break;
+		}
+
+		i += 1;
+	}
+
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<milliseconds>(stop - start).count();
+	cout << "info time " << duration << endl;
+
+	return m;
 }
 
 /* Searches for the best move until "canSearch"
