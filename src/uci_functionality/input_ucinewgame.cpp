@@ -8,7 +8,5 @@ void UCI::inputUcinewgame() {
 
 	this->engine.canSearch = false;
 
-	#ifdef USE_TRANS_TABLE
 	this->engine.transTable.clear();
-	#endif
 }

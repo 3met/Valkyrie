@@ -3,8 +3,6 @@
 #ifndef CHESS_ENGINE_HPP
 #define CHESS_ENGINE_HPP
 
-#define USE_TRANS_TABLE
-
 #include <map>
 #include <utility>
 #include <vector>
@@ -70,9 +68,7 @@ public:
 	~ChessEngine();
 
 	// Transposition table
-	#ifdef USE_TRANS_TABLE
 	TranspositonTable transTable;
-	#endif
 
 	// UCI accessable members
 	// Status Variables

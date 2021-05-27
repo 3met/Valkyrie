@@ -90,7 +90,6 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 		cs->move(moves[i]);
 
-		#ifdef USE_TRANS_TABLE
 		// Use hash table value if it exists
 		if (this->transTable.contains(&cs->bh)) {
 			hashScore = this->transTable.get(&cs->bh);
@@ -107,7 +106,6 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 				continue;
 			}
 		}
-		#endif
 
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			
@@ -117,11 +115,9 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 				score.movesToMate += 1;
 			}
 
-			#ifdef USE_TRANS_TABLE
 			// This calculation must be the best value b/c there was no
 			// previous calculation good enough to use in its place
 			this->transTable.add(&cs->bh, score, depth);
-			#endif
 
 			if (score > alpha) {
 				alpha = score;
@@ -148,17 +144,13 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 		return EvalScore(evalBoard(cs, cs->turn));	// TEMP
 
-		#ifdef USE_TRANS_TABLE
-			if (this->transTable.contains(&cs->bh)) {
-				return this->transTable.get(&cs->bh).score;
-			} else {
-				EvalScore e = EvalScore(evalBoard(cs, cs->turn));
-				this->transTable.add(&cs->bh, e, 0);
-				return e;
-			}
-		#else
-			return EvalScore(evalBoard(cs, cs->turn));	// TEMP
-		#endif
+		if (this->transTable.contains(&cs->bh)) {
+			return this->transTable.get(&cs->bh).score;
+		} else {
+			EvalScore e = EvalScore(evalBoard(cs, cs->turn));
+			this->transTable.add(&cs->bh, e, 0);
+			return e;
+		}
 
 		// Extend if last move was a kill
 		if (cs->lastMove().killed != -1) {
@@ -193,7 +185,6 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 		cs->move(moves[i]);
 
-		#ifdef USE_TRANS_TABLE
 		// Use trans table value if is exists
 		if (this->transTable.contains(&cs->bh)) {
 			hasValidMove = true;
@@ -216,7 +207,6 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 				continue;
 			}
 		}
-		#endif
 
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			
@@ -228,11 +218,9 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 				score.movesToMate += 1;
 			}
 
-			#ifdef USE_TRANS_TABLE
 			// This calculation must be the best value b/c there was no
 			// previous calculation good enough to use in its place
 			this->transTable.add(&cs->bh, score, (depthTarget - depth));
-			#endif
 
 			if (score >= beta) {
 				cs->reverseMove();

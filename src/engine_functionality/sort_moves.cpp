@@ -1,6 +1,5 @@
 
 #include <algorithm>
-#include <iostream>
 #include "chess_engine.hpp"
 #include "move.hpp"
 
