@@ -60,9 +60,9 @@ private:
 	};
 
 	// File IO methods
-	void readMoveTable(Bitboard moveTable[64], string fileName);
-	void readBonusTable(map<U8, S8>* bonusTable, string fileName);
-	void readOpeningBook(OpeningTable* openingTable, string fileName);
+	bool readMoveTable(Bitboard moveTable[64], string fileName);
+	bool readBonusTable(map<U8, S8>* bonusTable, string fileName);
+	bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
 public:
 	ChessEngine();

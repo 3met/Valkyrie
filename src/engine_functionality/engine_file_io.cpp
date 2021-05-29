@@ -12,13 +12,13 @@
 
 string DATA_DIR = "../data/";
 
-void ChessEngine::readMoveTable(Bitboard moveTable[64], string fileName) {
+bool ChessEngine::readMoveTable(Bitboard moveTable[64], string fileName) {
 	ifstream db_file;
 
 	db_file.open(DATA_DIR + fileName);
 	if (!db_file) {
 		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
-		return;
+		return false;
 	} else {
 		U64 a, b;
 		for (U8 i=0; i<64; ++i) {	
@@ -27,15 +27,16 @@ void ChessEngine::readMoveTable(Bitboard moveTable[64], string fileName) {
 		}
 	}
 	db_file.close();
+	return true;
 }
 
-void ChessEngine::readBonusTable(map<U8, S8>* bonusTable, string fileName) {
+bool ChessEngine::readBonusTable(map<U8, S8>* bonusTable, string fileName) {
 	ifstream db_file;
 
 	db_file.open(DATA_DIR + fileName);
 	if (!db_file) {
 		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
-		return;
+		return false;
 	} else {
 		short val;
 		for (U8 i=0; i<64; ++i) {	
@@ -44,15 +45,16 @@ void ChessEngine::readBonusTable(map<U8, S8>* bonusTable, string fileName) {
 		}
 	}
 	db_file.close();
+	return true;
 }
 
-void ChessEngine::readOpeningBook(OpeningTable* openingTable, string fileName) {
+bool ChessEngine::readOpeningBook(OpeningTable* openingTable, string fileName) {
 	ifstream db_file;
 
 	db_file.open(DATA_DIR + fileName);
 	if (!db_file) {
 		cout << "Error: Unable to read " << DATA_DIR << fileName << endl;
-		return;
+		return false;
 	} else {
 		S8 i;
 		ChessState cs;
@@ -111,4 +113,5 @@ void ChessEngine::readOpeningBook(OpeningTable* openingTable, string fileName) {
 		}
 	}
 	db_file.close();
+	return true;
 }

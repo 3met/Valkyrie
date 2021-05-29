@@ -48,18 +48,23 @@ const short ChessEngine::materialValsHB[6] = {
 void ChessEngine::load() {
 	isLoaded = false;
 
-	srand(time(0));
+	bool success = true;
 
-	readMoveTable(KMoveDB, "move-tables/king/moves.dat");
-	readMoveTable(NMoveDB, "move-tables/knight/moves.dat");
+	success &= readMoveTable(KMoveDB, "move-tables/king/moves.dat");
+	success &= readMoveTable(NMoveDB, "move-tables/knight/moves.dat");
 
-	readBonusTable(&knightBonus, "bonus-tables/knight/table.tab");
-	readBonusTable(&bishopBonus, "bonus-tables/bishop/table.tab");
-	readBonusTable(&queenBonus, "bonus-tables/queen/table.tab");
+	success &= readBonusTable(&knightBonus, "bonus-tables/knight/table.tab");
+	success &= readBonusTable(&bishopBonus, "bonus-tables/bishop/table.tab");
+	success &= readBonusTable(&queenBonus, "bonus-tables/queen/table.tab");
 
-	readOpeningBook(&openingTable, "opening_book.dat");
+	success &= readOpeningBook(&openingTable, "opening_book.dat");
 
-	isLoaded = true;
+	if (success) {
+		isLoaded = true;
+	} else {
+		cout << "Error: Engine failed to load" << endl;
+		isLoaded = false;
+	}
 }
 
 // ----- Primary Operations -----
