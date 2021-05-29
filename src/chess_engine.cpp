@@ -50,12 +50,12 @@ void ChessEngine::load() {
 
 	srand(time(0));
 
-	readMoveTable(KMoveDB, "king-moves.movetable");
-	readMoveTable(NMoveDB, "knight-moves.movetable");
+	readMoveTable(KMoveDB, "move-tables/king/moves.dat");
+	readMoveTable(NMoveDB, "move-tables/knight/moves.dat");
 
-	readBonusTable(&knightBonus, "knight-bonus.bonustable");
-	readBonusTable(&bishopBonus, "bishop-bonus.bonustable");
-	readBonusTable(&queenBonus, "queen-bonus.bonustable");
+	readBonusTable(&knightBonus, "bonus-tables/knight/table.tab");
+	readBonusTable(&bishopBonus, "bonus-tables/bishop/table.tab");
+	readBonusTable(&queenBonus, "bonus-tables/queen/table.tab");
 
 	readOpeningBook(&openingTable, "opening_book.dat");
 
