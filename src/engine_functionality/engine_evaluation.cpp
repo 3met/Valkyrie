@@ -21,12 +21,13 @@ extern high_resolution_clock::time_point evalStart, evalEnd;
 extern long long int evalTotal;
 
 /* A measure of how far the game has progressed
- * 0		--> opening position
- * 1-63 	--> opening
- * 64-127 	--> early-mid game
- * 128-191	--> mid-late game
- * 192-254	--> late game
- * 255		--> game over (checkmate/stalemate)	*/
+ * 0		==> starting position
+ * 1-51 	==> opening
+ * 52-102 	==> early game
+ * 103-153	==> mid game
+ * 154-204	==> late game
+ * 205-254	==> end game
+ * 255		==> game over (checkmate/stalemate)	*/
 U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
 	U8 i;
 	U8 gameStage;
@@ -150,6 +151,7 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 	// --- Adjust for Passed Pawns ---
 	// Hidden Passed Pawn
 
+
 	// Distance from opposing king
 
 	// Distance to promotion bonus
@@ -160,6 +162,7 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 
 
 	// Retain pawn protection
+
 
 	// Distance from enemy pieces
 
