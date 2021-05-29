@@ -12,22 +12,6 @@ using namespace std;
 		Leftover moves
 */
 
-bool moveCmp(const Move& a, const Move& b) {
-	if (a.killed > b.killed) {
-		return true;
-	} else if (b.killed > a.killed) {
-		return false;
-	}
-
-	if (a.promoted > b.promoted) {
-		return true;
-	} else if (b.promoted > a.promoted) {
-		return false;
-	}
-
-	return a.start > b.start;	// Default
-}
-
 void ChessEngine::sortMoves(vector<Move>* moves) {
-	sort(moves->begin(), moves->end(), moveCmp);
+	sort(moves->begin(), moves->end(), this->moveCompare);
 }

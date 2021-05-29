@@ -12,6 +12,7 @@
 #include "transposition_table.hpp"
 #include "chess_state.hpp"
 #include "move.hpp"
+#include "move_compare.hpp"
 #include "U64.hpp"
 #include "U8.hpp"
 #include "S8.hpp"
@@ -41,13 +42,13 @@ private:
 	Bitboard KMoveDB[64];
 	Bitboard NMoveDB[64];
 
-	// Opening book database
-	OpeningTable openingTable;
-
 	// Position bonuses
 	map<U8, S8> knightBonus;
 	map<U8, S8> bishopBonus;
 	map<U8, S8> queenBonus;
+
+	// Opening book database
+	OpeningTable openingTable;
 
 	// Material value systems
 	const static short materialValsSTD[6];
@@ -69,6 +70,9 @@ public:
 
 	// Transposition table
 	TranspositonTable transTable;
+
+	// Move comparison class
+	MoveCompare moveCompare = MoveCompare(&transTable);
 
 	// UCI accessable members
 	// Status Variables
