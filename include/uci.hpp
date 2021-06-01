@@ -32,6 +32,7 @@ private:
 	// Debugging Commands
 	void inputClear();
 	void inputPrint();
+	void inputEval();
 
 	// Miscellaneous
 	static void splitString(string str, vector<string>* strVec);
