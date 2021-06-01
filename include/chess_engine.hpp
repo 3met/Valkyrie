@@ -43,9 +43,9 @@ private:
 	Bitboard NMoveDB[64];
 
 	// Position bonuses
-	map<U8, S8> knightBonus;
-	map<U8, S8> bishopBonus;
-	map<U8, S8> queenBonus;
+	S8 knightBonus[64];
+	S8 bishopBonus[64];
+	S8 queenBonus[64];
 
 	// Opening book database
 	OpeningTable openingTable;
@@ -61,7 +61,7 @@ private:
 
 	// File IO methods
 	bool readMoveTable(Bitboard moveTable[64], string fileName);
-	bool readBonusTable(map<U8, S8>* bonusTable, string fileName);
+	bool readBonusTable(S8 bonusTable[64], string fileName);
 	bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
 public:

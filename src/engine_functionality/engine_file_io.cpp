@@ -30,7 +30,7 @@ bool ChessEngine::readMoveTable(Bitboard moveTable[64], string fileName) {
 	return true;
 }
 
-bool ChessEngine::readBonusTable(map<U8, S8>* bonusTable, string fileName) {
+bool ChessEngine::readBonusTable(S8 bonusTable[64], string fileName) {
 	ifstream db_file;
 
 	db_file.open(DATA_DIR + fileName);
@@ -41,7 +41,7 @@ bool ChessEngine::readBonusTable(map<U8, S8>* bonusTable, string fileName) {
 		short val;
 		for (U8 i=0; i<64; ++i) {	
 			db_file >> val;
-			(*bonusTable)[Bitboard::SHOW_ORDER[i]] = val;
+			bonusTable[Bitboard::SHOW_ORDER[i]] = val;
 		}
 	}
 	db_file.close();
