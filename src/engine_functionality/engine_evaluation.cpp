@@ -30,18 +30,25 @@ extern long long int evalTotal;
  * 255		==> game over (checkmate/stalemate)	*/
 U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
 	U8 i;
-	U8 gameStage;
-	S8 pieceCount = 0;
+	U8 gameStage = 255;
 	
-	// Account for number of pieces
-	for (i=0; i<6; ++i) {
-		pieceCount += pieces[0][i].size();
-		pieceCount += pieces[1][i].size();
-	}
-	gameStage = 255 - (pieceCount * 7);
+	gameStage -= pieces[0][cs->PAWN].size() * 4;
+	gameStage -= pieces[1][cs->PAWN].size() * 4;
+	gameStage -= pieces[0][cs->KNIGHT].size() * 10;
+	gameStage -= pieces[1][cs->KNIGHT].size() * 10;
+	gameStage -= pieces[0][cs->BISHOP].size() * 10;
+	gameStage -= pieces[1][cs->BISHOP].size() * 10;
+	gameStage -= pieces[0][cs->ROOK].size() * 16;
+	gameStage -= pieces[1][cs->ROOK].size() * 16;
+	gameStage -= pieces[0][cs->QUEEN].size() * 24;
+	gameStage -= pieces[1][cs->QUEEN].size() * 24;
 
 	// Account for development of pieces
-	gameStage = min(gameStage + cs->turnNumber, 254);
+	if (gameStage + cs->turnNumber > 254) {
+		gameStage = 254;
+	} else {
+		gameStage += cs->turnNumber;
+	}
 
 	return gameStage;
 }
