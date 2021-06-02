@@ -21,16 +21,14 @@ extern high_resolution_clock::time_point evalStart, evalEnd;
 extern long long int evalTotal;
 
 /* A measure of how far the game has progressed
- * 0		==> starting position
- * 1-51 	==> opening
- * 52-102 	==> early game
- * 103-153	==> mid game
- * 154-204	==> late game
- * 205-254	==> end game
- * 255		==> game over (checkmate/stalemate)	*/
+ * 0-50		==> opening
+ * 51-101	==> early game
+ * 102-152	==> mid game
+ * 153-203	==> late game
+ * 204-255	==> end game */
 U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
 	U8 i;
-	U8 gameStage = 255;
+	U8 gameStage = 0;
 	
 	gameStage -= pieces[0][cs->PAWN].size() * 4;
 	gameStage -= pieces[1][cs->PAWN].size() * 4;
@@ -41,14 +39,7 @@ U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
 	gameStage -= pieces[0][cs->ROOK].size() * 16;
 	gameStage -= pieces[1][cs->ROOK].size() * 16;
 	gameStage -= pieces[0][cs->QUEEN].size() * 24;
-	gameStage -= pieces[1][cs->QUEEN].size() * 24;
-
-	// Account for development of pieces
-	if (gameStage + cs->turnNumber > 254) {
-		gameStage = 254;
-	} else {
-		gameStage += cs->turnNumber;
-	}
+	gameStage -= pieces[1][cs->QUEEN].size() * 24;	
 
 	return gameStage;
 }
