@@ -22,8 +22,6 @@ For Consideration:
  - Pawn structure rating lookup
  - End search function early
 
- - Move time function: https://www.desmos.com/calculator/v9kcbgamx3
-
  - Name: Coronation Chess?
 
 */

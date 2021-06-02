@@ -13,7 +13,6 @@ Perft Tests:
 http://talkchess.com/forum3/viewtopic.php?t=47318
 */
 
-
 U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 
 	if (depth == 0) {

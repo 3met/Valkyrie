@@ -1,11 +1,8 @@
 
-#include <algorithm>
-#include <iostream>
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "U8.hpp"
-#include "S8.hpp"
 
 // Factors used in static evaluation
 #define USE_MATERIAL_VALUE
@@ -14,11 +11,6 @@
 #define USE_ISOLATED_PAWNS
 #define USE_BACKWARD_PAWNS
 #define USE_BLOCKED_PAWNS
-
-#include <chrono>
-using namespace std::chrono;
-extern high_resolution_clock::time_point evalStart, evalEnd;
-extern long long int evalTotal;
 
 /* A measure of how far the game has progressed
  * 0-50		==> opening
@@ -186,8 +178,6 @@ short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 
 	nodesTotal += 1;
 
-	evalStart = high_resolution_clock::now();
-
 	U8 i;
 
 	// Positions of all the pieces
@@ -213,9 +203,6 @@ short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 	};
 
 	short rating = evalSide(cs, perspective, pieces) - evalSide(cs, !perspective, pieces);;
-
-	evalEnd = high_resolution_clock::now();
-	evalTotal += duration_cast<microseconds>(evalEnd - evalStart).count();
 
 	return rating;
 }

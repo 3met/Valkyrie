@@ -3,9 +3,6 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
-#include <iostream>	// TEMP
-using namespace std;	// TEMP
-
 void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 	/* Generates all legal king moves */
 	

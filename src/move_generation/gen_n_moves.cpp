@@ -1,8 +1,7 @@
+
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "U8.hpp"
-
-#include <iostream>	// TEMP
 
 /* Generates all legal knight moves */
 void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {

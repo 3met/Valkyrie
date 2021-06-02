@@ -1,7 +1,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <string>
 #include "bitboard.hpp"
 #include "chess_engine.hpp"

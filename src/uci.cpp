@@ -6,13 +6,6 @@
 #include <thread>
 #include "uci.hpp"
 
-#include <chrono>	// TEMP
-using namespace std::chrono;
-high_resolution_clock::time_point moveStart, moveEnd;
-long long int moveTotal = 0;
-high_resolution_clock::time_point evalStart, evalEnd;
-long long int evalTotal = 0;
-
 using namespace std;
 
 UCI::UCI() {};
@@ -49,8 +42,8 @@ void UCI::runCommand(string input) {
 		this->inputDivide(input);
 	} else if (input == "print") {
 		this->inputPrint();
-		cout << "MOVE: " << moveTotal << endl;
-		cout << "EVAL: " << evalTotal << endl;
+		// cout << "MOVE: " << moveTotal << endl;
+		// cout << "EVAL: " << evalTotal << endl;
 	} else if (input == "clear" || input == "cls") {
 		this->inputClear();
 	} else {

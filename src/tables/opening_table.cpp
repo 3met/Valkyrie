@@ -1,5 +1,4 @@
 
-#include <iostream>
 #include <vector>
 #include "board_hash.hpp"
 #include "chess_state.hpp"

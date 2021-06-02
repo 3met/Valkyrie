@@ -3,7 +3,6 @@
 #ifndef CHESS_ENGINE_HPP
 #define CHESS_ENGINE_HPP
 
-#include <map>
 #include <utility>
 #include <vector>
 #include "bitboard.hpp"

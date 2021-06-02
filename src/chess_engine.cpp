@@ -9,15 +9,11 @@
 #include <iostream>
 #include <stdexcept>
 #include <stdlib.h>
-#include <time.h>
 #include <utility>
-#include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
-#include "opening_table.hpp"
-#include "U64.hpp"
 
 using namespace std;
 

@@ -8,7 +8,6 @@
 #include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
-#include "S8.hpp"
 
 // TEMP
 #include <iostream>

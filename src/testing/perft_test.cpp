@@ -1,7 +1,6 @@
 
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
-#include "testing.hpp"
 
 /* Returns true if passed, else false */
 bool perftTest() {
@@ -135,6 +134,3 @@ bool perftTest() {
 
 	return true;
 }
-
-
-
