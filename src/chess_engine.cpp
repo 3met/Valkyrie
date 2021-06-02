@@ -46,8 +46,8 @@ void ChessEngine::load() {
 
 	bool success = true;
 
-	success &= readMoveTable(KMoveDB, "move-tables/king/moves.dat");
-	success &= readMoveTable(NMoveDB, "move-tables/knight/moves.dat");
+	success &= readBitboardTable(KMoveDB, "move-tables/king/moves.dat");
+	success &= readBitboardTable(NMoveDB, "move-tables/knight/moves.dat");
 
 	success &= readBonusTable(knightBonus, "bonus-tables/knight/table.tab");
 	success &= readBonusTable(bishopBonus, "bonus-tables/bishop/table.tab");

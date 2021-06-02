@@ -11,7 +11,7 @@
 
 string DATA_DIR = "../data/";
 
-bool ChessEngine::readMoveTable(Bitboard moveTable[64], string fileName) {
+bool ChessEngine::readBitboardTable(Bitboard table[64], string fileName) {
 	ifstream db_file;
 
 	db_file.open(DATA_DIR + fileName);
@@ -19,10 +19,10 @@ bool ChessEngine::readMoveTable(Bitboard moveTable[64], string fileName) {
 		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
 		return false;
 	} else {
-		U64 a, b;
+		U64 val;
 		for (U8 i=0; i<64; ++i) {	
-			db_file >> a >> b;
-			moveTable[i] = Bitboard(b);
+			db_file >> val;
+			table[i] = Bitboard(val);
 		}
 	}
 	db_file.close();

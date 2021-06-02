@@ -64,7 +64,7 @@ private:
 	};
 
 	// File IO methods
-	bool readMoveTable(Bitboard moveTable[64], string fileName);
+	bool readBitboardTable(Bitboard table[64], string fileName);
 	bool readBonusTable(S8 bonusTable[64], string fileName, const U8 READ_ORDER[64]=Bitboard::SHOW_ORDER);
 	bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
