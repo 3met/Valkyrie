@@ -50,7 +50,7 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 	U8 i;
 	short rating = 0;
 	U8 gameStage = rateGameStage(cs, pieces);
-	
+
 	#ifdef USE_MATERIAL_VALUE
 		// --- Adjustment for Material Amount --- 
 		// Account for general material value
@@ -85,6 +85,18 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 		// Queen placement
 		for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
 			rating += queenBonus[pieces[side][cs->KNIGHT][i]];
+		}
+		// King placement
+		if (gameStage <= 51) {
+			rating += kingOpeningBonus[side][pieces[side][cs->KING][0]];
+		} else if (gameStage <= 102) {
+			rating += kingEarlyBonus[side][pieces[side][cs->KING][0]];
+		} else if (gameStage <= 153) {
+			rating += kingMidBonus[side][pieces[side][cs->KING][0]];
+		} else if (gameStage <= 204) {
+			rating += kingLateBonus[side][pieces[side][cs->KING][0]];
+		} else {
+			rating += kingEndBonus[side][pieces[side][cs->KING][0]];
 		}
 	#endif
 
@@ -149,18 +161,13 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 	// --- Adjust for Passed Pawns ---
 	// Hidden Passed Pawn
 
-
 	// Distance from opposing king
 
 	// Distance to promotion bonus
 
 
 	// --- Adjust for King Safty ---
-	// Stay in corner during middle game
-
-
 	// Retain pawn protection
-
 
 	// Distance from enemy pieces
 

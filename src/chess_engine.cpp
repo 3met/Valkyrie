@@ -57,6 +57,17 @@ void ChessEngine::load() {
 	success &= readBonusTable(bishopBonus, "bonus-tables/bishop/table.tab");
 	success &= readBonusTable(queenBonus, "bonus-tables/queen/table.tab");
 
+	success &= readBonusTable(kingOpeningBonus[0], "bonus-tables/king/opening-game-table.tab");
+	success &= readBonusTable(kingOpeningBonus[1], "bonus-tables/king/opening-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(kingEarlyBonus[0], "bonus-tables/king/early-game-table.tab");
+	success &= readBonusTable(kingEarlyBonus[1], "bonus-tables/king/early-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(kingMidBonus[0], "bonus-tables/king/mid-game-table.tab");
+	success &= readBonusTable(kingMidBonus[1], "bonus-tables/king/mid-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(kingLateBonus[0], "bonus-tables/king/late-game-table.tab");
+	success &= readBonusTable(kingLateBonus[1], "bonus-tables/king/late-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(kingEndBonus[0], "bonus-tables/king/end-game-table.tab");
+	success &= readBonusTable(kingEndBonus[1], "bonus-tables/king/end-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+
 	success &= readOpeningBook(&openingTable, "opening_book.dat");
 
 	if (success) {

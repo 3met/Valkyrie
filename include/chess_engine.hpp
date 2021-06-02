@@ -46,6 +46,11 @@ private:
 	S8 knightBonus[64];
 	S8 bishopBonus[64];
 	S8 queenBonus[64];
+	S8 kingOpeningBonus[2][64];	// Flipped for black and white
+	S8 kingEarlyBonus[2][64];
+	S8 kingMidBonus[2][64];
+	S8 kingLateBonus[2][64];
+	S8 kingEndBonus[2][64];
 
 	// Opening book database
 	OpeningTable openingTable;
@@ -61,7 +66,7 @@ private:
 
 	// File IO methods
 	bool readMoveTable(Bitboard moveTable[64], string fileName);
-	bool readBonusTable(S8 bonusTable[64], string fileName);
+	bool readBonusTable(S8 bonusTable[64], string fileName, const U8 READ_ORDER[64]=Bitboard::SHOW_ORDER);
 	bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
 public:
