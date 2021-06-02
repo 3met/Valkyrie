@@ -127,6 +127,8 @@ U8 Bitboard::getFirstPos() {
 void Bitboard::show() {
 	/* Displays Bitboard on Console */
 
+	cout << "---------------" << endl;
+
 	for (U8 i=0; i<64; ++i) {
 		cout << ((board >> SHOW_ORDER[i]) & 1) << ' ';
 
@@ -134,4 +136,6 @@ void Bitboard::show() {
 			cout << endl;
 		}
 	}
+
+	cout << "---------------" << endl;
 }
