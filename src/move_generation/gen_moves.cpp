@@ -11,5 +11,4 @@ void ChessEngine::genAllMoves(ChessState* cs, vector<Move>* moves) {
 	genRMoves(cs, moves);
 	genQMoves(cs, moves);
 	genKMoves(cs, moves);
-
 }
