@@ -140,7 +140,6 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 
 		bestMove = this->bestMove(&cs, i).first;
 
-
 		if (this->canSearch == false) {
 			break;
 		}
