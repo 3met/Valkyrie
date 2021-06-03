@@ -29,6 +29,47 @@ bool ChessEngine::readBitboardTable(Bitboard table[64], string fileName) {
 	return true;
 }
 
+bool ChessEngine::readMagicTable(U8 magicShifts[64], Bitboard magics[64], string fileName) {
+	ifstream db_file;
+
+	db_file.open(DATA_DIR + fileName);
+	if (!db_file) {
+		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
+		return false;
+	} else {
+		short shift;
+		U64 magic;
+		for (U8 i=0; i<64; ++i) {	
+			db_file >> shift >> magic;
+			magicShifts[i] = shift;
+			magics[i] = Bitboard(magic);
+		}
+	}
+	db_file.close();
+	return true;
+}
+
+bool ChessEngine::readAttackTable(Bitboard* attackTable[64], string directory) {
+	ifstream db_file;
+
+	for (U8 i=0; i<64; ++i) {
+		db_file.open(DATA_DIR + directory + to_string(i) + ".tab");
+		if (!db_file) {
+			cout << "Fatal Error: Unable to read " << DATA_DIR << directory << to_string(i) << ".tab" << endl;
+			return false;
+		} else {
+			U64 val;
+			attackTable[i] = new Bitboard[4096];
+			for (short j=0; j<4096; ++j) {
+				db_file >> val;
+				attackTable[i][j] = Bitboard(val);
+			}
+		}
+		db_file.close();
+	}
+	return true;
+}
+
 bool ChessEngine::readBonusTable(S8 bonusTable[64], string fileName, const U8 READ_ORDER[64]) {
 	ifstream db_file;
 

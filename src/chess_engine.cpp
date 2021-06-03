@@ -46,13 +46,22 @@ void ChessEngine::load() {
 
 	bool success = true;
 
-	success &= readBitboardTable(KMoveDB, "move-tables/king/moves.dat");
+	// Load knight and king moves
 	success &= readBitboardTable(NMoveDB, "move-tables/knight/moves.dat");
+	success &= readBitboardTable(KMoveDB, "move-tables/king/moves.dat");
+	// Load magic bitboard data
+	success &= readBitboardTable(bishopMasks, "magic-bitboards/bishop/masks.tab");
+	success &= readBitboardTable(rookMasks, "magic-bitboards/rook/masks.tab");
+	success &= readMagicTable(bishopMagicShifts, bishopMagics, "magic-bitboards/bishop/magics.tab");
+	success &= readMagicTable(rookMagicShifts, rookMagics, "magic-bitboards/rook/magics.tab");
+	success &= readAttackTable(bishopAttackTable, "magic-bitboards/bishop/attack-tables/");
+	success &= readAttackTable(rookAttackTable, "magic-bitboards/rook/attack-tables/");
 
+	// Load knight, bishop, and queen bonus tables
 	success &= readBonusTable(knightBonus, "bonus-tables/knight/table.tab");
 	success &= readBonusTable(bishopBonus, "bonus-tables/bishop/table.tab");
 	success &= readBonusTable(queenBonus, "bonus-tables/queen/table.tab");
-
+	// Load king bonus tables
 	success &= readBonusTable(kingOpeningBonus[0], "bonus-tables/king/opening-game-table.tab");
 	success &= readBonusTable(kingOpeningBonus[1], "bonus-tables/king/opening-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(kingEarlyBonus[0], "bonus-tables/king/early-game-table.tab");
@@ -63,7 +72,7 @@ void ChessEngine::load() {
 	success &= readBonusTable(kingLateBonus[1], "bonus-tables/king/late-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(kingEndBonus[0], "bonus-tables/king/end-game-table.tab");
 	success &= readBonusTable(kingEndBonus[1], "bonus-tables/king/end-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
-
+	// Load built-in opening book
 	success &= readOpeningBook(&openingTable, "opening_book.dat");
 
 	if (success) {

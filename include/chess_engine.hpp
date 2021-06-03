@@ -40,6 +40,15 @@ private:
 	// King and knight move databases
 	Bitboard KMoveDB[64];
 	Bitboard NMoveDB[64];
+	// Fancy magic bitboard data
+	Bitboard rookMasks[64];
+	Bitboard rookMagics[64];
+	U8 rookMagicShifts[64];
+	Bitboard* rookAttackTable[64];
+	Bitboard bishopMasks[64];
+	Bitboard bishopMagics[64];
+	U8 bishopMagicShifts[64];
+	Bitboard* bishopAttackTable[64];
 
 	// Position bonuses
 	S8 knightBonus[64];
@@ -65,6 +74,8 @@ private:
 
 	// File IO methods
 	bool readBitboardTable(Bitboard table[64], string fileName);
+	bool readMagicTable(U8 magicShifts[64], Bitboard magics[64], string fileName);
+	bool readAttackTable(Bitboard* attackTable[64], string directory);
 	bool readBonusTable(S8 bonusTable[64], string fileName, const U8 READ_ORDER[64]=Bitboard::SHOW_ORDER);
 	bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
