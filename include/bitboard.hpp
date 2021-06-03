@@ -26,6 +26,7 @@ public:
 	void setPos(U8 pos, bool value);
 	bool getPos(U8 pos) const;
 	vector<U8> getPosVector() const;
+	void getPosVector(vector<U8>* v) const;
 	vector<U8> getPosVector(U8 limit);
 	U8 getFirstPos();
 
