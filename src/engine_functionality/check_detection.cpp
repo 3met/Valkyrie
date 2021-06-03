@@ -6,29 +6,6 @@
 
 /* Check if a ray-movement hit an attacker
    "turn" represents the color of the attacker */
-inline bool checkCardinalAttacker(ChessState* cs, bool turn, pair<bool, S8> rayPiece) {
-	if (rayPiece.second != -1 && rayPiece.first == turn) {
-		S8 pieceType = cs->getPieceType(turn, rayPiece.second);
-		if (pieceType == ChessState::ROOK || pieceType == ChessState::QUEEN) {
-			return true;
-		}
-	}
-	return false;
-}
-
-inline bool checkDiagonalAttacker(ChessState* cs, bool turn, pair<bool, S8> rayPiece) {
-	if (rayPiece.second != -1 && rayPiece.first == turn) {
-		S8 pieceType = cs->getPieceType(turn, rayPiece.second);
-		if (pieceType == ChessState::BISHOP || pieceType == ChessState::QUEEN) {
-			return true;
-		}
-	}
-	return false;
-}
-
-/* Returns whether a square is being attacked pseudo-legally
-   Useful for detecting check and castling ability.
-   "turn" represents the attacking color */
 bool ChessEngine::isPosAttacked(ChessState* cs, bool turn, U8 pos) {
 	// Check if attacked by knight
 	if ((NMoveDB[pos].board & cs->pieces[turn][cs->KNIGHT].board) != 0) {
@@ -39,42 +16,31 @@ bool ChessEngine::isPosAttacked(ChessState* cs, bool turn, U8 pos) {
 		return true;
 	}
 
-	// Bool is color, S8 is piece position
-	pair<bool, S8> rayPiece;
+	// --- Bishop-like moves ---
+	Bitboard occ(cs->pieces[0][6].board | cs->pieces[1][6].board);
+	// Find all potential squares
+	occ.board &= bishopMasks[pos].board;
+	occ.board *= bishopMagics[pos].board;
+	occ.board >>= bishopMagicShifts[pos];
+	occ = bishopAttackTable[pos][occ.board];
+	// Returns true if a diagonal move away from attacking bishop or queen
+	if ((occ.board & cs->pieces[turn][cs->BISHOP].board) != 0
+		|| (occ.board & cs->pieces[turn][cs->QUEEN].board) != 0) {
 
-	// Check if attacked cardinally
-	rayPiece = nextPieceCardinal(cs, pos, UP);
-	if (checkCardinalAttacker(cs, turn, rayPiece)) {
-		return true;
-	}
-	rayPiece = nextPieceCardinal(cs, pos, RIGHT);
-	if (checkCardinalAttacker(cs, turn, rayPiece)) {
-		return true;
-	}
-	rayPiece = nextPieceCardinal(cs, pos, DOWN);
-	if (checkCardinalAttacker(cs, turn, rayPiece)) {
-		return true;
-	}
-	rayPiece = nextPieceCardinal(cs, pos, LEFT);
-	if (checkCardinalAttacker(cs, turn, rayPiece)) {
 		return true;
 	}
 
-	// Check if attacked diagonally
-	rayPiece = nextPieceDiagonal(cs, pos, UP_RIGHT);
-	if (checkDiagonalAttacker(cs, turn, rayPiece)) {
-		return true;
-	}
-	rayPiece = nextPieceDiagonal(cs, pos, DOWN_RIGHT);
-	if (checkDiagonalAttacker(cs, turn, rayPiece)) {
-		return true;
-	}
-	rayPiece = nextPieceDiagonal(cs, pos, DOWN_LEFT);
-	if (checkDiagonalAttacker(cs, turn, rayPiece)) {
-		return true;
-	}
-	rayPiece = nextPieceDiagonal(cs, pos, UP_LEFT);
-	if (checkDiagonalAttacker(cs, turn, rayPiece)) {
+	// --- Rook-like moves ---
+	occ.board = cs->pieces[0][6].board | cs->pieces[1][6].board;
+	// Find all potential squares
+	occ.board &= rookMasks[pos].board;
+	occ.board *= rookMagics[pos].board;
+	occ.board >>= rookMagicShifts[pos];
+	occ = rookAttackTable[pos][occ.board];
+	// Returns true if a diagonal move away from attacking bishop or queen
+	if ((occ.board & cs->pieces[turn][cs->ROOK].board) != 0
+		|| (occ.board & cs->pieces[turn][cs->QUEEN].board) != 0) {
+
 		return true;
 	}
 
