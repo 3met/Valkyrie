@@ -314,7 +314,7 @@ vector<U8> Bitboard::getFirstPosVec() {
 	}
 
 	cout << "Warning: No bit found in \"getFirstPosVec()\"" << endl;
-	return 0;
+	return vector<U8>(1, 0);
 }
 
 
