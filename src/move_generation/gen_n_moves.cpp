@@ -1,6 +1,7 @@
 
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
+#include "S8.hpp"
 #include "U8.hpp"
 
 /* Generates all legal knight moves */
@@ -9,10 +10,10 @@ void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 	vector<U8> start;
 	Bitboard target_board;
 	vector<U8> targets;
-	short killed;
+	S8 killed;
 	
 	// Get all knight locations
-	start = cs->pieces[cs->turn][cs->KNIGHT].getPosVector();
+	cs->pieces[cs->turn][cs->KNIGHT].getPosVector(&start);
 
 	for (i=0; i<start.size(); ++i) {
 		// Get potential squares

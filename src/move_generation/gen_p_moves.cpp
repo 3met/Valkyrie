@@ -1,9 +1,8 @@
 
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
+#include "S8.hpp"
 #include "U8.hpp"
-
-#include <iostream>	// TEMP
 
 /* Generates all legal pawn moves */
 void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
@@ -13,7 +12,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 	Bitboard kill_board;
 	vector<U8> move_targets;
 	vector<U8> kill_targets;
-	short killed;
+	S8 killed;
 	Bitboard enPassantBoard;
 	
 	// Set en passant square

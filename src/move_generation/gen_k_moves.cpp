@@ -1,6 +1,7 @@
 
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
+#include "S8.hpp"
 #include "U8.hpp"
 
 void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
@@ -11,11 +12,11 @@ void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 	// Get surrounding squares
 	Bitboard target_board = KMoveDB[start];
 	// Remove squares with same coloured pieces
-	target_board.board = target_board.board & (~cs->pieces[cs->turn][cs->ALL_PIECES].board);
+	target_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);
 	// Positions of all target squares
 	vector<U8> targets = target_board.getPosVector();
 
-	short killed;
+	S8 killed;
 	// Add moves to vector
 	for (U8 i=0; i<targets.size(); ++i) {
 		// Check for killing a piece
