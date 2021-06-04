@@ -4,96 +4,43 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
+
 void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
-	/* Generates all legal rook moves */
+	// Get rook locations
+	vector<U8> start;
+	cs->pieces[cs->turn][cs->ROOK].getPosVector(&start);
 
 	U8 i, j;
-	U8 pos;
-	vector<U8> start;
-	vector<short> kill_targets;
-	short killed;
-	
-	// Get all rook locations
-	start = cs->pieces[cs->turn][cs->ROOK].getPosVector();
-
+	Bitboard occ;
+	Bitboard targets;
+	vector<U8> end;
 	for (i=0; i<start.size(); ++i) {
-		kill_targets.clear();
+		// Find all potential squares
+		occ.board = cs->pieces[0][6].board | cs->pieces[1][6].board;
+		occ.board &= rookMasks[start[i]].board;
+		occ.board *= rookMagics[start[i]].board;
+		occ.board >>= rookMagicShifts[start[i]];
+		occ = rookAttackTable[start[i]][occ.board];
+		// Remove friendly targets
+		occ.board &= ~(cs->pieces[cs->turn][6].board);
+		// Seperate enemy targets
+		targets.board = occ.board & cs->pieces[!cs->turn][6].board;
+		// Remove enemies from occ
+		occ.board &= ~(cs->pieces[!cs->turn][6].board);
 
-		// Upward moves
-		pos = start[i];
-		while (Bitboard::RANK[pos] != 7) {	// Not top rank
-			// If an enemy piece at target position
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos+8)) {
-				kill_targets.push_back(pos+8);
-				break;
-			// Else if there is no friendly piece at the target position
-			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos+8)) {
-				moves->push_back(Move(cs->ROOK, start[i], pos+8));
-			// Else there is a friendly piece at target position
-			} else {
-				break;
+		// Add non-kill moves
+		if (occ.board != 0) {
+			end = occ.getPosVecCardinal(start[i]);
+			for (j=0; j<end.size(); ++j) {
+				moves->push_back(Move(cs->ROOK, start[i], end[j]));
 			}
-			pos += 8;
 		}
-
-		// Downward moves
-		pos = start[i];
-		while (Bitboard::RANK[pos] != 0) {	// Not bottom row
-			// If an enemy piece at target
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos-8)) {
-				kill_targets.push_back(pos-8);
-				break;
-			// Else if there is no friendly piece at the target position
-			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos-8)) {
-				moves->push_back(Move(cs->ROOK, start[i], pos-8));
-			// Else there is a friendly piece at target position
-			} else {
-				break;
+		// Add kill moves
+		if (targets.board != 0) {
+			end = targets.getPosVecCardinal(start[i]);
+			for (j=0; j<end.size(); ++j) {
+				moves->push_back(Move(cs->ROOK, start[i], end[j], cs->getPieceType(!cs->turn, end[j])));
 			}
-			pos -= 8;
-		}
-
-		// Leftward moves
-		pos = start[i];
-		while (Bitboard::FILE[pos] != 0) {	// Not leftmost column
-			// If an enemy piece at target
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos-1)) {
-				kill_targets.push_back(pos-1);
-				break;
-			// Else if there is no friendly piece at the target position
-			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos-1)) {
-				moves->push_back(Move(cs->ROOK, start[i], pos-1));
-			// Else there is a friendly piece at target position
-			} else {
-				break;
-			}
-			pos -= 1;
-		}
-
-		// Rightward moves
-		pos = start[i];
-		while (Bitboard::FILE[pos] != 7) {	// Not rightmost column
-			// If an enemy piece at target
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(pos+1)) {
-				kill_targets.push_back(pos+1);
-				break;
-			// Else if there is no friendly piece at the target position
-			} else if (!cs->pieces[cs->turn][cs->ALL_PIECES].getPos(pos+1)) {
-				moves->push_back(Move(cs->ROOK, start[i], pos+1));
-			// Else there is a friendly piece at target position
-			} else {
-				break;
-			}
-			pos += 1;
-		}
-
-		// TODO: Make sure king is safe after move
-
-		// All possible kill moves
-		for (j=0; j<kill_targets.size(); ++j) {
-			// Check for killing a piece
-			killed = cs->getPieceType(!cs->turn, kill_targets[j]);
-			moves->push_back(Move(cs->ROOK, start[i], kill_targets[j], killed));
 		}
 	}
 }
