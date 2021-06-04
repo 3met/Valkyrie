@@ -189,7 +189,7 @@ short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 			cs->pieces[0][2].getPosVector(),
 			cs->pieces[0][3].getPosVector(),
 			cs->pieces[0][4].getPosVector(),
-			cs->pieces[0][5].getPosVector(1),
+			cs->pieces[0][5].getFirstPosVec(),
 		},
 		// Black
 		{
@@ -198,7 +198,7 @@ short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 			cs->pieces[1][2].getPosVector(),
 			cs->pieces[1][3].getPosVector(),
 			cs->pieces[1][4].getPosVector(),
-			cs->pieces[1][5].getPosVector(1),
+			cs->pieces[1][5].getFirstPosVec(),
 		}
 	};
 
