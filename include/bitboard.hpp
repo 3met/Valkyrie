@@ -40,6 +40,7 @@ public:
 	// Other Get/Set
 	U8 fillPosArray(U8 arr[]);
 	U8 getFirstPos();
+	vector<U8> getFirstPosVec();
 
 	U64 posToBoard(short pos);
 

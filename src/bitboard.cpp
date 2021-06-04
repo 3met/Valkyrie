@@ -305,6 +305,19 @@ U8 Bitboard::getFirstPos() {
 	return 0;
 }
 
+/* Return the position of the first "true" bit */
+vector<U8> Bitboard::getFirstPosVec() {
+	for (U8 i=0; i<64; ++i) {
+		if (this->getPos(i)) {
+			return vector<U8>(1, i);
+		}
+	}
+
+	cout << "Warning: No bit found in \"getFirstPosVec()\"" << endl;
+	return 0;
+}
+
+
 // |~| ----- Output Methods -----
 void Bitboard::show() {
 	/* Displays Bitboard on Console */
