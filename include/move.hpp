@@ -12,9 +12,9 @@ using namespace std;
 class Move {
 public:
 	Move();
-	Move(U8 piece, U8 start, U8 end);
-	Move(U8 piece, U8 start, U8 end, S8 killed);
-	Move(U8 piece, U8 start, U8 end, S8 killed, S8 promoted);
+	Move(S8 piece, U8 start, U8 end);
+	Move(S8 piece, U8 start, U8 end, S8 killed);
+	Move(S8 piece, U8 start, U8 end, S8 killed, S8 promoted);
 	~Move();
 
 	static const char positions[64];
@@ -22,7 +22,7 @@ public:
 	friend ostream& operator<<(ostream& os, const Move& m);
 	friend bool operator==(const Move& a, const Move& b);
 
-	U8 piece;	// Piece being moved
+	S8 piece;	// Piece being moved; -1 for null move
 	U8 start;	// Start pos
 	U8 end;		// End pos
 	S8 killed;	// Piece killed; else -1
