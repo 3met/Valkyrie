@@ -8,6 +8,8 @@
 #include "U64.hpp"
 
 void UCI::inputGo(string input) {
+	this->isSearching = true;
+
 	// Break down input into words
 	std::vector<std::string> inVec;
 	UCI::splitString(input, &inVec);	
@@ -74,6 +76,7 @@ void UCI::inputGo(string input) {
 
 	cout << "info nodes " << engine.nodesTotal << endl;
 	cout << "bestmove " << m << endl;
-
 	cout << "trans table size: " << engine.transTable.size() << endl;
+
+	this->isSearching = false;
 }

@@ -15,6 +15,8 @@ private:
 	ChessState cs;
 	ChessEngine engine;
 
+	bool isSearching = false;
+
 	// --- UCI Commands ---
 	// Calculation Commands
 	void inputDivide(string input);

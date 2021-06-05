@@ -5,5 +5,10 @@ void UCI::inputIsready() {
 	if (!engine.isLoaded) {
 		engine.load();
 	}
-	cout << "readyok" << endl;
+	
+	if (engine.isLoaded && !this->isSearching) {
+		cout << "readyok" << endl;
+	} else {
+		cout << "notready" << endl;
+	}
 }
