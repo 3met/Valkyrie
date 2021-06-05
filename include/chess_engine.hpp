@@ -89,7 +89,7 @@ public:
 	// Move comparison class
 	MoveCompare moveCompare = MoveCompare(&transTable);
 
-	// UCI accessable members
+	// UCI accessible members
 	// Status Variables
 	bool isLoaded = false;
 	bool canSearch = false;
