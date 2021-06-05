@@ -78,7 +78,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 		i += 1;
 	}
 
-	return moveList[i-1];
+	return *(moveList.end()-1);
 }
 
 /* Seaches to a specific depth as specified */
