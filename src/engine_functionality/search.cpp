@@ -51,8 +51,12 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 		cout << "info depth " << i << endl;
 
 		ratedMove = this->bestMove(&cs, i);
-		moveList.push_back(ratedMove.first);
-
+		if (ratedMove.first.piece == -1) {	// Look for null move
+			break;
+		} else {
+			moveList.push_back(ratedMove.first);
+		}
+		
 		cout << "info score cp " << ratedMove.second << endl;
 
 		// Check if time remains
@@ -68,10 +72,6 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 		if (duration > maxTime*0.5 && moveList.size() >= 3
 			&& moveList[i-1] == moveList[i-2] && moveList[i-2] == moveList[i-3]) {
 
-			break;
-		}
-
-		if (this->canSearch == false) {
 			break;
 		}
 
@@ -101,13 +101,12 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 		cout << "info depth " << i << endl;
 
 		ratedMove = this->bestMove(&cs, i);
+		if (ratedMove.first.piece == -1) {	// Look for null move
+			break;
+		}
 		m = ratedMove.first;
 
 		cout << "info score cp " << ratedMove.second << endl;
-
-		if (this->canSearch == false) {
-			break;
-		}
 
 		i += 1;
 	}
@@ -130,7 +129,7 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 	this->canSearch = true;
 
 	pair<Move, EvalScore> ratedMove;
-	Move bestMove;
+	Move m;
 	short i = 2;
 	// Loop to increase depth until time is up
 	while (true) {
@@ -138,15 +137,16 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 		currDepth = i;
 		cout << "info depth " << i << endl;
 
-		bestMove = this->bestMove(&cs, i).first;
-
-		if (this->canSearch == false) {
+		ratedMove = this->bestMove(&cs, i);
+		if (ratedMove.first.piece == -1) {	// Look for null move
 			break;
+		} else {
+			m = ratedMove.first;
 		}
 
 		i += 1;
 	}
 
-	return bestMove;
+	return m;
 }
 
