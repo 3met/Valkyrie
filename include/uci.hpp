@@ -33,6 +33,7 @@ private:
 	void inputUCI();
 	// Debugging Commands
 	void inputClear();
+	void inputTest(string input);
 	void inputPrint();
 	void inputEval();
 

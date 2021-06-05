@@ -32,18 +32,18 @@ void UCI::runCommand(string input) {
 		this->inputIsready();
 	} else if (input.substr(0, 5) == "move ") {
 		this->inputMove(input);
-	} else if (input == "eval") {
-		this->inputEval();
 	} else if (input == "reverse") {
 		this->inputReverse();
+	} else if (input == "eval") {
+		this->inputEval();
 	} else if (input.substr(0, 6) == "perft ") {
 		this->inputPerft(input);
 	} else if (input.substr(0, 7) == "divide ") {
 		this->inputDivide(input);
+	} else if (input.substr(0, 5) == "test ") {
+		this->inputTest(input);
 	} else if (input == "print") {
 		this->inputPrint();
-		// cout << "MOVE: " << moveTotal << endl;
-		// cout << "EVAL: " << evalTotal << endl;
 	} else if (input == "clear" || input == "cls") {
 		this->inputClear();
 	} else {
