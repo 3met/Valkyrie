@@ -17,6 +17,26 @@ Bitboard::Bitboard(U64 b) {
 
 Bitboard::~Bitboard() {};
 
+// Lowest significant bit for each possible byte
+const U8 Bitboard::LOWEST_BIT_TABLE[256] = {
+	0, 0, 1, 0, 2, 0, 1, 0,	3, 0, 1, 0, 2, 0, 1, 0,
+	4, 0, 1, 0, 2, 0, 1, 0,	3, 0, 1, 0, 2, 0, 1, 0,
+	5, 0, 1, 0, 2, 0, 1, 0,	3, 0, 1, 0, 2, 0, 1, 0,
+	4, 0, 1, 0, 2, 0, 1, 0,	3, 0, 1, 0, 2, 0, 1, 0,
+	6, 0, 1, 0, 2, 0, 1, 0,	3, 0, 1, 0, 2, 0, 1, 0,
+	4, 0, 1, 0, 2, 0, 1, 0,	3, 0, 1, 0, 2, 0, 1, 0,
+	5, 0, 1, 0, 2, 0, 1, 0,	3, 0, 1, 0, 2, 0, 1, 0,
+	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+	7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+	5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+	6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+	5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+};
+
 // Order that the positions are displayed
 const U8 Bitboard::SHOW_ORDER[64] = {
 	56,	57,	58,	59,	60,	61,	62,	63,
@@ -218,21 +238,23 @@ inline bool Bitboard::getPos(U8 pos) const {
 }
 
 /* Returns the all positions with a positive value */
+void Bitboard::getPosVector(vector<U8>* v) const {
+	if (this->board) {
+		Bitboard bb(this->board);
+
+		while (bb.board != 0) {
+			v->push_back(bb.popLSB());
+		}
+	}
+}
+
+/* Returns the all positions with a positive value */
 vector<U8> Bitboard::getPosVector() const {
 	vector<U8> v;
 
 	getPosVector(&v);
 
 	return v;
-}
-
-/* Returns the all positions with a positive value */
-void Bitboard::getPosVector(vector<U8>* v) const {
-	for (U8 i=0; i<64; ++i) {
-		if (this->getPos(i)) {
-			v->push_back(i);
-		}
-	}
 }
 
 /* Returns the all positions with a positive value */
@@ -317,11 +339,40 @@ vector<U8> Bitboard::getFirstPosVec() {
 	return vector<U8>(1, 0);
 }
 
+/* Pop lowest significant bit */
+inline U8 Bitboard::LSB() {
+	U8* bytes = (U8*)(&this->board);
+
+	if (bytes[0]) {
+		return LOWEST_BIT_TABLE[bytes[0]];
+	} else if (bytes[1]) {
+		return LOWEST_BIT_TABLE[bytes[1]] + 8;
+	} else if (bytes[2]) {
+		return LOWEST_BIT_TABLE[bytes[2]] + 16;
+	} else if (bytes[3]) {
+		return LOWEST_BIT_TABLE[bytes[3]] + 24;
+	} else if (bytes[4]) {
+		return LOWEST_BIT_TABLE[bytes[4]] + 32;
+	} else if (bytes[5]) {
+		return LOWEST_BIT_TABLE[bytes[5]] + 40;
+	} else if (bytes[6]) {
+		return LOWEST_BIT_TABLE[bytes[6]] + 48;
+	} else {
+		return LOWEST_BIT_TABLE[bytes[7]] + 56;  
+	}
+}
+
+
+/* Pop lowest significant bit */
+inline U8 Bitboard::popLSB() {
+	U8 lsb = this->LSB();
+	this->board &= this->board - 1;
+	return lsb;
+}
 
 // |~| ----- Output Methods -----
+/* Displays Bitboard on Console */
 void Bitboard::show() {
-	/* Displays Bitboard on Console */
-
 	cout << "---------------" << endl;
 
 	for (U8 i=0; i<64; ++i) {

@@ -10,6 +10,8 @@
 using namespace std;
 
 class Bitboard {
+private:
+	const static U8 LOWEST_BIT_TABLE[256];	// Lowest significant bit for each possible byte
 public:
 	Bitboard();
 	Bitboard(U64 b);
@@ -36,13 +38,14 @@ public:
 	void getFilePosVec(U8 pos, vector<U8>* v);
 	void getPosVecCardinal(U8 pos, vector<U8>* v);
 	vector<U8> getPosVecCardinal(U8 pos);
-
 	// Other Get/Set
 	U8 fillPosArray(U8 arr[]);
 	U8 getFirstPos();
 	vector<U8> getFirstPosVec();
 
-	U64 posToBoard(short pos);
+	// Miscellaneous Methods
+	U8 LSB();	// Lowest significant bit
+	U8 popLSB();	// Pop lowest significant bit (LSB)
 
 	// Output Methods
 	void show();
