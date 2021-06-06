@@ -67,21 +67,3 @@ void UCI::run() {
 		futures.push_back(async(&UCI::runCommand, this, input));
 	}
 }
-
-
-// void UCI::run() {
-// 	string input;
-// 	thread* thEngine;
-
-// 	while (true) {
-// 		getline(cin, input);
-
-// 		if (input == "quit") {
-// 			engine.canSearch = false;
-// 			thEngine->join();
-// 			break;
-// 		}
-
-// 		thEngine = new thread(&UCI::runCommand, this, input);
-// 	}
-// }

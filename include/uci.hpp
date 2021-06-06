@@ -38,6 +38,8 @@ private:
 	void inputEval();
 
 	// Miscellaneous
+	void outputInfo();
+	void streamOutputInfo(bool* continueStream);
 	static void splitString(string str, vector<string>* strVec);
 
 public:

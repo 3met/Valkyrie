@@ -9,9 +9,6 @@
 #include "eval_score.hpp"
 #include "move.hpp"
 
-// TEMP
-#include <iostream>
-
 using namespace std::chrono;
 
 // Generating random numbers
@@ -24,9 +21,13 @@ mt19937 gen(rd());
    left on the clock. "timeInc" is the time 
    increment per move. */
 Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
+	
 	// Start timer
 	auto start = high_resolution_clock::now();
+
 	// Set Stats
+	this->startTime = start;
+	this->currDepth = 0;
 	this->nodesTotal = 0;
 	this->canSearch = true;
 
@@ -34,6 +35,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	if (this->openingTable.contains(&cs.bh)) {
 		std::vector<Move> moves = this->openingTable.get(&cs.bh);
 		
+		++nSearches;
 		uniform_int_distribution<> distr(0, moves.size()-1);
 		return moves[distr(gen)];
 	}
@@ -47,18 +49,16 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	// Loop to increase depth until time is up
 	while (true) {
 
-		currDepth = i;
-		cout << "info depth " << i << endl;
+		this->currDepth = i;
 
 		ratedMove = this->bestMove(&cs, i);
 		if (ratedMove.first.piece == -1) {	// Look for null move
 			break;
-		} else {
-			moveList.push_back(ratedMove.first);
 		}
-		
-		cout << "info score cp " << ratedMove.second << endl;
 
+		moveList.push_back(ratedMove.first);
+		this->currScore = ratedMove.second;
+		
 		// Check if time remains
 		auto stop = high_resolution_clock::now();
 		auto duration = duration_cast<milliseconds>(stop - start).count();
@@ -78,16 +78,16 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 		i += 1;
 	}
 
+	++nSearches;
 	return *(moveList.end()-1);
 }
 
 /* Seaches to a specific depth as specified */
 Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 
-	// Start timer
-	auto start = high_resolution_clock::now();
-
 	// Set Stats
+	this->startTime = high_resolution_clock::now();
+	this->currDepth = 0;
 	this->nodesTotal = 0;
 	this->canSearch = true;
 
@@ -97,24 +97,20 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 	// Loop to increase depth until time is up
 	while (i <= depth) {
 
-		currDepth = i;
-		cout << "info depth " << i << endl;
+		this->currDepth = i;
 
 		ratedMove = this->bestMove(&cs, i);
 		if (ratedMove.first.piece == -1) {	// Look for null move
 			break;
 		}
-		m = ratedMove.first;
 
-		cout << "info score cp " << ratedMove.second << endl;
+		m = ratedMove.first;
+		this->currScore = ratedMove.second;
 
 		i += 1;
 	}
 
-	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<milliseconds>(stop - start).count();
-	cout << "info time " << duration << endl;
-
+	++nSearches;
 	return m;
 }
 
@@ -122,9 +118,10 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
    is false. Needs to be run in it's own thread
    in order to execute properly. */
 Move ChessEngine::searchInfinite(ChessState cs) {
-	// Start timer
-	auto start = high_resolution_clock::now();
 
+	// Set Stats
+	this->startTime = high_resolution_clock::now();
+	this->currDepth = 0;
 	this->nodesTotal = 0;
 	this->canSearch = true;
 
@@ -134,19 +131,19 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 	// Loop to increase depth until time is up
 	while (true) {
 
-		currDepth = i;
-		cout << "info depth " << i << endl;
+		this->currDepth = i;
 
 		ratedMove = this->bestMove(&cs, i);
 		if (ratedMove.first.piece == -1) {	// Look for null move
 			break;
-		} else {
-			m = ratedMove.first;
 		}
+
+		m = ratedMove.first;
+		this->currScore = ratedMove.second;
 
 		i += 1;
 	}
 
+	++nSearches;
 	return m;
 }
-

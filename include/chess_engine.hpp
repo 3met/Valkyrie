@@ -3,6 +3,7 @@
 #ifndef CHESS_ENGINE_HPP
 #define CHESS_ENGINE_HPP
 
+#include <chrono>
 #include <utility>
 #include <vector>
 #include "bitboard.hpp"
@@ -94,11 +95,13 @@ public:
 	bool isLoaded = false;
 	bool canSearch = false;
 	int searchTime = 0;
+	int nSearches = 0;	// Number of searches preformed
 	// Information Variables
-	int nodesTotal = 0;
-	int nodesPerSecond = 0;
 	short currDepth = 0;
 	short currSelDepth = 0;
+	EvalScore currScore = EvalScore(0);
+	chrono::high_resolution_clock::time_point startTime;
+	U64 nodesTotal = 0;
 
 	// Move Generation
 	void genPMoves(ChessState* cs, vector<Move>* moves);

@@ -64,6 +64,8 @@ void UCI::inputGo(string input) {
 	this->engine.canSearch = true;
 
 	Move m;
+	bool continueStream = true;
+	thread outputThread(&UCI::streamOutputInfo, this, &continueStream);
 	if (infinite) {
 		m = engine.searchInfinite(this->cs);
 	} else if (depth != -1) {
@@ -73,10 +75,13 @@ void UCI::inputGo(string input) {
 	} else {
 		m = engine.searchOnTimer(this->cs, bTime, bInc);
 	}
+	this->outputInfo();
 
-	cout << "info nodes " << engine.nodesTotal << endl;
 	cout << "bestmove " << m << endl;
+	this->isSearching = false;
+
 	cout << "trans table size: " << engine.transTable.size() << endl;
 
-	this->isSearching = false;
+	continueStream = false;
+	outputThread.join();
 }
