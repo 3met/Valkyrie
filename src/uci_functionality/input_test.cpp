@@ -21,5 +21,7 @@ void UCI::inputTest(string input) {
 
 	if (inVec[1] == "perft") {
 		perftTest(verbose);
+	} else if (inVec[1] == "depth") {
+		depthTest(verbose);
 	}
 }

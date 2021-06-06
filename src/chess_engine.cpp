@@ -2,9 +2,7 @@
 /* --- In this File ---
  * 1. ChessEngine Constructor
  * 2. Material value sets
- * 3. Static board evaluation tactics
- * 4. Move ordering (for alpha-beta)
- * 5. Best move calculations (negamax, alpha-beta) */
+ * 3. Best move calculations (negamax, alpha-beta) */
 
 #include <iostream>
 #include <stdexcept>
@@ -81,6 +79,16 @@ void ChessEngine::load() {
 		cout << "Error: Engine failed to load" << endl;
 		isLoaded = false;
 	}
+}
+
+/* Clear all temporary data */
+void ChessEngine::clear() {
+	this->transTable.clear();
+	nSearches = 0;	// Number of searches preformed
+	currDepth = 0;
+	currSelDepth = 0;
+	currScore = EvalScore(0);
+	nodesTotal = 0;
 }
 
 // ----- Primary Operations -----

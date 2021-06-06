@@ -94,7 +94,6 @@ public:
 	// Status Variables
 	bool isLoaded = false;
 	bool canSearch = false;
-	int searchTime = 0;
 	int nSearches = 0;	// Number of searches preformed
 	// Information Variables
 	short currDepth = 0;
@@ -134,5 +133,6 @@ public:
 	pair<bool, S8> nextPieceCardinal(ChessState* cs, U8 pos, U8 direction);
 	pair<bool, S8> nextPieceDiagonal(ChessState* cs, U8 pos, U8 direction);
 	bool isPosAttacked(ChessState* cs, bool turn, U8 pos);
+	void clear();
 };
 #endif

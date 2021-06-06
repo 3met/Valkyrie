@@ -5,5 +5,7 @@
 
 // testing/perft_test.cpp
 bool perftTest(bool verbose=false);
+// testing/depth_test.cpp
+bool depthTest(bool verbose=false);
 
 #endif
