@@ -4,6 +4,7 @@
 #define CHESS_ENGINE_HPP
 
 #include <chrono>
+#include <deque>
 #include <utility>
 #include <vector>
 #include "bitboard.hpp"
@@ -12,7 +13,6 @@
 #include "transposition_table.hpp"
 #include "chess_state.hpp"
 #include "move.hpp"
-#include "move_compare.hpp"
 #include "U64.hpp"
 #include "U8.hpp"
 #include "S8.hpp"
@@ -86,9 +86,17 @@ public:
 
 	// Transposition table
 	TranspositonTable transTable;
-
-	// Move comparison class
-	MoveCompare moveCompare = MoveCompare(&transTable);
+	// Killer Heuristic
+	static const U8 KILL_QUEUE_MAX_SIZE = 2;
+	deque<Move> killerHeuristic[256];
+	inline void addKillerMove(Move* m, U8* depth) {
+		if (killerHeuristic[*depth].size() == KILL_QUEUE_MAX_SIZE) {
+			killerHeuristic[*depth].pop_front();
+			killerHeuristic[*depth].push_back(*m);
+		} else {
+			killerHeuristic[*depth].push_back(*m);
+		}
+	};
 
 	// UCI accessible members
 	// Status Variables
@@ -116,7 +124,7 @@ public:
 	short evalBoard(ChessState* cs, bool perspective);
 	short evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]);
 	
-	// Move Selection
+	// Search Methods
 	Move searchOnTimer(ChessState cs, int timeLeft, int timeInc);
 	Move searchInfinite(ChessState cs);
 	Move searchNodes(ChessState cs);
@@ -124,15 +132,16 @@ public:
 	Move searchExactTime(ChessState cs);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
-	void sortMoves(vector<Move>* moves);
+	void sortMoves(vector<Move>* moves, U8 depth);
+
 
 	// Miscellaneous Methods
 	void load();
-	U64 divide(ChessState* cs, U8 depth);
-	U64 perft(ChessState* cs, U8 depth);
-	pair<bool, S8> nextPieceCardinal(ChessState* cs, U8 pos, U8 direction);
-	pair<bool, S8> nextPieceDiagonal(ChessState* cs, U8 pos, U8 direction);
 	bool isPosAttacked(ChessState* cs, bool turn, U8 pos);
 	void clear();
+
+	// Debugging Methods
+	U64 divide(ChessState* cs, U8 depth);
+	U64 perft(ChessState* cs, U8 depth);
 };
 #endif

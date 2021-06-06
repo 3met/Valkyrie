@@ -83,12 +83,12 @@ void ChessEngine::load() {
 
 /* Clear all temporary data */
 void ChessEngine::clear() {
-	this->transTable.clear();
 	nSearches = 0;	// Number of searches preformed
 	currDepth = 0;
 	currSelDepth = 0;
 	currScore = EvalScore(0);
 	nodesTotal = 0;
+	this->transTable.clear();
 }
 
 // ----- Primary Operations -----
@@ -103,7 +103,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		throw ChessState::NoMoves();
 	}
 
-	this->sortMoves(&moves);
+	this->sortMoves(&moves, 0);
 
 	EvalScore alpha(-1, true, 0);	// -INF; best score current color can achive 
 	EvalScore beta(1, true, 0);	// INF; best score other color can achive
@@ -138,7 +138,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			
-			score = -negamaxSearch(cs, 0, depth-1, -beta, -alpha);
+			score = -negamaxSearch(cs, 1, depth, -beta, -alpha);
 
 			if (score.foundMate) {
 				score.movesToMate += 1;
@@ -204,7 +204,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		throw ChessState::NoMoves();
 	}
 
-	sortMoves(&moves);
+	sortMoves(&moves, depth);
 
 	bool hasValidMove = false;
 	EvalScore score;
@@ -223,6 +223,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			if (hashScore.depth >= (depthTarget - depth)) {
 				if (hashScore.score >= beta) {
 					cs->reverseMove();
+					this->addKillerMove(&moves[i], &depth);
 					return beta;
 				}
 
@@ -253,6 +254,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			if (score >= beta) {
 				cs->reverseMove();
+				this->addKillerMove(&moves[i], &depth);
 				return beta;
 			}
 
