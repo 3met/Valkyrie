@@ -1,8 +1,11 @@
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include "testing.hpp"
 #include "uci.hpp"
+
+using namespace std;
 
 void UCI::inputTest(string input) {
 
@@ -12,12 +15,11 @@ void UCI::inputTest(string input) {
 
 	bool verbose = false;
 
-	if (inVec.size() > 1 && inVec[2] == "verbose") {
+	if (inVec.size() > 2 && inVec[2] == "verbose") {
 		verbose = true;
 	}
 
 	if (inVec[1] == "perft") {
 		perftTest(verbose);
 	}
-
 }
