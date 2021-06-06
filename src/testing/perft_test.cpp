@@ -136,9 +136,7 @@ bool perftTest(bool verbose) {
 		}
 	}
 
-	if (verbose) {
-		cout << "Total Duration: " << int(totalDuration/1000) << " ms" << endl;
-	}
+	cout << "Total Duration: " << int(totalDuration/1000) << " ms" << endl;
 	
 	if (passed) {
 		cout << "Test Result: Pass" << endl;
