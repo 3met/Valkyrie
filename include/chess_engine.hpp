@@ -69,6 +69,9 @@ private:
 	const static short materialValsLK[6];
 	const static short materialValsHB[6];
 
+	// Search Variables
+	U8 maxDepth;
+
 	static bool sortRatedMove(const pair<Move, float> &a, const pair<Move, float> &b) {
 		return a.second < b.second;
 	};
@@ -84,10 +87,12 @@ public:
 	ChessEngine();
 	~ChessEngine();
 
+	// Configurable option
+	U8 KILL_QUEUE_MAX_SIZE = 2;	// For killer heurisitc
+	float MAX_DEPTH_RATIO = 1.5;
+
 	// Transposition table
 	TranspositonTable transTable;
-	// Killer Heuristic
-	static const U8 KILL_QUEUE_MAX_SIZE = 2;
 	deque<Move> killerHeuristic[256];
 	inline void addKillerMove(Move* m, U8* depth) {
 		if (killerHeuristic[*depth].size() == KILL_QUEUE_MAX_SIZE) {

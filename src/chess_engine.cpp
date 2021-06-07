@@ -171,18 +171,11 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	// Check for recursion termination
 	if (depth == depthTarget) {
 
-		return EvalScore(evalBoard(cs, cs->turn));	// TEMP
-
-		if (this->transTable.contains(&cs->bh)) {
-			return this->transTable.get(&cs->bh).score;
-		} else {
-			EvalScore e = EvalScore(evalBoard(cs, cs->turn));
-			this->transTable.add(&cs->bh, e, 0);
-			return e;
-		}
-
+		// Return static if reached max depth
+		if (depthTarget >= this->maxDepth) {
+			return EvalScore(evalBoard(cs, cs->turn));
 		// Extend if last move was a kill
-		if (cs->lastMove().killed != -1) {
+		} else if (cs->lastMove().killed != -1) {
 			depthTarget += 1;
 		// Extend if a pawn was promoted
 		} else if (cs->lastMove().promoted != -1) {

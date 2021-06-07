@@ -30,6 +30,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	this->currDepth = 0;
 	this->nodesTotal = 0;
 	this->canSearch = true;
+	this->currScore = 0;
 
 	// Check if position in opening book
 	if (this->openingTable.contains(&cs.bh)) {
@@ -41,7 +42,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	}
 
 	// Max time to choose move
-	int maxTime = min((timeLeft/20) + timeInc, timeLeft-100);
+	int maxTime = min((timeLeft/20) + timeInc, timeLeft-200);
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
@@ -50,6 +51,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	while (true) {
 
 		this->currDepth = i;
+		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);
 		if (ratedMove.first.piece == -1) {	// Look for null move
@@ -98,6 +100,7 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 	while (i <= depth) {
 
 		this->currDepth = i;
+		this->maxDepth = i;
 
 		ratedMove = this->bestMove(&cs, i);
 		if (ratedMove.first.piece == -1) {	// Look for null move
@@ -132,6 +135,7 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 	while (true) {
 
 		this->currDepth = i;
+		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);
 		if (ratedMove.first.piece == -1) {	// Look for null move
