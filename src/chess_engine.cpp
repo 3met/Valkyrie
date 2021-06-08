@@ -114,7 +114,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	for (short i=0; i<moves.size(); ++i) {
 
 		if (this->canSearch == false) {
-			return make_pair(Move(-1, 0, 0), alpha);
+			return make_pair(Move(), alpha);	// Return null move
 		}
 
 		cs->move(moves[i]);

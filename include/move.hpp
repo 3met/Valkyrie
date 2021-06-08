@@ -11,7 +11,7 @@ using namespace std;
 
 class Move {
 public:
-	Move();
+	Move();		// Creates a null move
 	Move(S8 piece, U8 start, U8 end);
 	Move(S8 piece, U8 start, U8 end, S8 killed);
 	Move(S8 piece, U8 start, U8 end, S8 killed, S8 promoted);

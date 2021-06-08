@@ -6,7 +6,10 @@
 
 using namespace std;
 
-Move::Move() {}
+/* Creates a null move */
+Move::Move() {
+	piece = -1;
+}
 
 Move::Move(S8 p, U8 s, U8 e) {
 	piece = p;
