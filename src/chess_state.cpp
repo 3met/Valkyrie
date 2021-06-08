@@ -301,7 +301,7 @@ void ChessState::loadFEN(string FEN) {
 string ChessState::stringFEN() {
 	string FEN;
 	char board[64];
-	U8 i, j;
+	U8 i;
 
 	for (i=0; i<64; ++i) {
 		board[i] = '.';
@@ -420,8 +420,6 @@ void ChessState::move(Move m) {
 		Assumes move is valid.	*/
 
 	moveList.push_back(m);
-
-	U8 i;
 
 	// Removes potential killed piece from bitboard
 	if (m.killed != -1) {

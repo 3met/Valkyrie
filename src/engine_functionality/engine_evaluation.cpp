@@ -19,7 +19,6 @@
  * 153-203	==> late game
  * 204-255	==> end game */
 U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
-	U8 i;
 	U8 gameStage = 0;
 	
 	gameStage -= pieces[0][cs->PAWN].size() * 4;
@@ -177,8 +176,6 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 
 	nodesTotal += 1;
-
-	U8 i;
 
 	// Positions of all the pieces
 	vector<U8> pieces[2][6] = {

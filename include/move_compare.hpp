@@ -19,7 +19,6 @@ public:
 	MoveCompare(ChessEngine* _engine, U8 _depth) {
 		engine = _engine;
 		depth = _depth;
-		int n = 2 + 2;
 	};
 
 	bool operator()(const Move& a, const Move& b) const {
