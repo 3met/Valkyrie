@@ -89,8 +89,9 @@ void ChessEngine::clear() {
 	currScore = EvalScore(0);
 	nodesTotal = 0;
 	this->transTable.clear();
-	for (short i=0; i<256; ++i) {
+	for (short i=0; i<MAX_SEARCH_DEPTH; ++i) {
 		killerHeuristic[i].clear();
+		pTable[i] = Move();	// Reset to null moves
 	}
 }
 

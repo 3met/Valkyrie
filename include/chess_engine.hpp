@@ -69,8 +69,6 @@ private:
 	const static short materialValsLK[6];
 	const static short materialValsHB[6];
 
-	// Search Variables
-	U8 maxDepth;
 
 	static bool sortRatedMove(const pair<Move, float> &a, const pair<Move, float> &b) {
 		return a.second < b.second;
@@ -83,27 +81,28 @@ private:
 	bool readBonusTable(S8 bonusTable[64], string fileName, const U8 READ_ORDER[64]=Bitboard::SHOW_ORDER);
 	bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
+	// Search Helper Methods
+	void sortMoves(vector<Move>* moves, U8 depth);
+	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
+	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
+
+	// Get + Set Methods
+	void addKillerMove(Move* m, U8* depth);
+
 public:
 	ChessEngine();
 	~ChessEngine();
 
 	// Configurable option
-	U8 KILL_QUEUE_MAX_SIZE = 2;	// For killer heurisitc
-	float MAX_DEPTH_RATIO = 1.5;
+	static const short MAX_SEARCH_DEPTH = 256;
+	U8 KILL_QUEUE_MAX_SIZE = 2;			// For killer heurisitc
+	float MAX_DEPTH_RATIO = 1.5;		// For search extensions
 
-	// Transposition table
-	TranspositonTable transTable;
-
-	// Killer Heuristic
-	deque<Move> killerHeuristic[256];
-	inline void addKillerMove(Move* m, U8* depth) {
-		if (killerHeuristic[*depth].size() == KILL_QUEUE_MAX_SIZE) {
-			killerHeuristic[*depth].pop_front();
-			killerHeuristic[*depth].push_back(*m);
-		} else {
-			killerHeuristic[*depth].push_back(*m);
-		}
-	};
+	// Search Variables
+	U8 maxDepth;
+	TranspositonTable transTable;					// Transposition table
+	deque<Move> killerHeuristic[MAX_SEARCH_DEPTH];	// Killer Heuristic
+	Move pTable[MAX_SEARCH_DEPTH];					// Principal Variation Table
 
 	// UCI accessible members
 	// Status Variables
@@ -137,10 +136,6 @@ public:
 	Move searchNodes(ChessState cs);
 	Move searchDepth(ChessState cs, U8 depth);
 	Move searchExactTime(ChessState cs);
-	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
-	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
-	void sortMoves(vector<Move>* moves, U8 depth);
-
 
 	// Miscellaneous Methods
 	void load();
