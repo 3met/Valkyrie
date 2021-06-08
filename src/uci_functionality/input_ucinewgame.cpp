@@ -8,5 +8,5 @@ void UCI::inputUcinewgame() {
 
 	this->engine.canSearch = false;
 
-	this->engine.transTable.clear();
+	this->engine.clear();
 }
