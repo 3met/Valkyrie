@@ -20,18 +20,21 @@ MoveCompare::MoveCompare(ChessEngine* _engine, U8 _depth) {
 };
 
 bool MoveCompare::operator()(const Move& a, const Move& b) const {
+	// Killed pieces by decreasing value
 	if (a.killed > b.killed) {
 		return true;
 	} else if (b.killed > a.killed) {
 		return false;
 	}
 
+	// Pawn promotions by decreasing value of new piece
 	if (a.promoted > b.promoted) {
 		return true;
 	} else if (b.promoted > a.promoted) {
 		return false;
 	}
 
+	// Killer heuristic moves
 	for (U8 i=0; i<engine->killerHeuristic[depth].size(); ++i) {
 		if (a == engine->killerHeuristic[depth][i]) {
 			return true;
@@ -40,6 +43,7 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 		}
 	}
 
+	// Center bias prioritizes moves toward the center
 	if (centerBias[a.end] < centerBias[b.end]) {
 		return true;
 	} else if (centerBias[b.end] < centerBias[a.end]) {
