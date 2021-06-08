@@ -93,6 +93,8 @@ public:
 
 	// Transposition table
 	TranspositonTable transTable;
+
+	// Killer Heuristic
 	deque<Move> killerHeuristic[256];
 	inline void addKillerMove(Move* m, U8* depth) {
 		if (killerHeuristic[*depth].size() == KILL_QUEUE_MAX_SIZE) {
