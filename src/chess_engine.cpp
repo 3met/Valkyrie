@@ -173,7 +173,6 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 	// Check for recursion termination
 	if (depth == depthTarget) {
-
 		// Return static if reached max depth
 		if (depthTarget >= this->maxDepth) {
 			return EvalScore(evalBoard(cs, cs->turn));
@@ -200,6 +199,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		throw ChessState::NoMoves();
 	}
 
+	// Move ordering
 	sortMoves(&moves, depth);
 
 	bool hasValidMove = false;
