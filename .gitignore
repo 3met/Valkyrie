@@ -1,3 +1,8 @@
+
+# Ignore bin and build directories
+bin
+build
+
 # Prerequisites
 *.d
 
@@ -30,7 +35,3 @@
 *.exe
 *.out
 *.app
-
-# Games Folder
-games/*
-*/todo.txt
