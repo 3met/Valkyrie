@@ -29,7 +29,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// Removes all but kill positions (en passant included)
 		pos_board.board &= buffer.board;
 		// Add moves to vector
-		pos_targets = pos_board.getPosVector();
+		pos_targets = pos_board.getPosVec();
 		for (i=0; i<pos_targets.size(); ++i) {
 			// Type of piece killed
 			killed = cs->getPieceType(!cs->turn, pos_targets[i]);
@@ -57,7 +57,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// Removes all but kill positions (en passant included)
 		pos_board.board &=  buffer.board;
 		// Add moves to vector
-		pos_targets = pos_board.getPosVector();
+		pos_targets = pos_board.getPosVec();
 		for (i=0; i<pos_targets.size(); ++i) {
 			// Type of piece killed
 			killed = cs->getPieceType(!cs->turn, pos_targets[i]);
@@ -86,7 +86,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// Removes all but kill positions (en passant included)
 		pos_board.board &= buffer.board;
 		// Add moves to vector
-		pos_targets = pos_board.getPosVector();
+		pos_targets = pos_board.getPosVec();
 		for (i=0; i<pos_targets.size(); ++i) {
 			// Type of piece killed
 			killed = cs->getPieceType(!cs->turn, pos_targets[i]);
@@ -114,7 +114,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// Removes all but kill positions (en passant included)
 		pos_board.board &= buffer.board;
 		// Add moves to vector
-		pos_targets = pos_board.getPosVector();
+		pos_targets = pos_board.getPosVec();
 		for (i=0; i<pos_targets.size(); ++i) {
 			// Type of piece killed
 			killed = cs->getPieceType(!cs->turn, pos_targets[i]);
@@ -144,7 +144,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// Remove occupied squares
 		pos_board.board &= buffer.board;
 		// Get end positions
-		pos_targets = pos_board.getPosVector();
+		pos_targets = pos_board.getPosVec();
 		for (i=0; i<pos_targets.size(); ++i) {
 			// Check pawn promotion
 			if (Bitboard::RANK[pos_targets[i]] == 7) {
@@ -164,7 +164,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// Remove occupied squares
 		pos_board.board &= buffer.board;
 		// Get end positions
-		pos_targets = pos_board.getPosVector();
+		pos_targets = pos_board.getPosVec();
 		// Add positions to vector
 		for (i=0; i<pos_targets.size(); ++i) {
 			moves->push_back(Move(cs->PAWN, pos_targets[i]-16, pos_targets[i]));
@@ -175,7 +175,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// Remove occupied squares
 		pos_board.board &= buffer.board;
 		// Get end positions
-		pos_targets = pos_board.getPosVector();
+		pos_targets = pos_board.getPosVec();
 
 		for (i=0; i<pos_targets.size(); ++i) {
 			// Check pawn promotion
@@ -196,7 +196,7 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 		// Remove occupied squares
 		pos_board.board &= buffer.board;
 		// Get end positions
-		pos_targets = pos_board.getPosVector();
+		pos_targets = pos_board.getPosVec();
 		// Add positions to vector
 		for (i=0; i<pos_targets.size(); ++i) {
 			moves->push_back(Move(cs->PAWN, pos_targets[i]+16, pos_targets[i]));

@@ -6,7 +6,7 @@
 void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 	// Get piece locations
 	vector<U8> start;
-	cs->pieces[cs->turn][cs->BISHOP].getPosVector(&start);
+	cs->pieces[cs->turn][cs->BISHOP].getPosVec(&start);
 
 	U8 i, j;
 	Bitboard occ;
@@ -28,7 +28,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Add non-kill moves
 		if (occ.board != 0) {
-			end = occ.getPosVector();
+			end = occ.getPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->BISHOP, start[i], end[j]));
 			}
@@ -36,7 +36,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Add kill moves
 		if (targets.board != 0) {
-			end = targets.getPosVector();
+			end = targets.getPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->BISHOP, start[i], end[j], cs->getPieceType(!cs->turn, end[j])));
 			}

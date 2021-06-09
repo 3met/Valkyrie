@@ -13,7 +13,7 @@ void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 	S8 killed;
 	
 	// Get all knight locations
-	cs->pieces[cs->turn][cs->KNIGHT].getPosVector(&start);
+	cs->pieces[cs->turn][cs->KNIGHT].getPosVec(&start);
 
 	for (i=0; i<start.size(); ++i) {
 		// Get potential squares
@@ -21,7 +21,7 @@ void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 		// Remove squares with same coloured pieces
 		target_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);	
 		// Positions of all targets
-		targets = target_board.getPosVector();
+		targets = target_board.getPosVec();
 
 		// Add moves to vector
 		for (j=0; j<targets.size(); ++j) {

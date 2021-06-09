@@ -32,9 +32,9 @@ public:
 	void setPosOff(U8 pos);
 	bool getPos(U8 pos) const;
 	// Get all positive positions in a vector
-	void getPosVector(vector<U8>* v) const;
-	vector<U8> getPosVector() const;
-	vector<U8> getPosVector(U8 limit);
+	void getPosVec(vector<U8>* v) const;
+	vector<U8> getPosVec() const;
+	vector<U8> getPosVec(U8 limit);
 	// Filtered Get/Set
 	void getRankPosVec(U8 pos, vector<U8>* v);
 	void getFilePosVec(U8 pos, vector<U8>* v);

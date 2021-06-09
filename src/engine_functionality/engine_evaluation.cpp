@@ -181,20 +181,20 @@ short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 	vector<U8> pieces[2][6] = {
 		// White
 		{
-			cs->pieces[0][0].getPosVector(),	// Pawn to king
-			cs->pieces[0][1].getPosVector(),
-			cs->pieces[0][2].getPosVector(),
-			cs->pieces[0][3].getPosVector(),
-			cs->pieces[0][4].getPosVector(),
+			cs->pieces[0][0].getPosVec(),	// Pawn to king
+			cs->pieces[0][1].getPosVec(),
+			cs->pieces[0][2].getPosVec(),
+			cs->pieces[0][3].getPosVec(),
+			cs->pieces[0][4].getPosVec(),
 			cs->pieces[0][5].getFirstPosVec(),
 		},
 		// Black
 		{
-			cs->pieces[1][0].getPosVector(),
-			cs->pieces[1][1].getPosVector(),
-			cs->pieces[1][2].getPosVector(),
-			cs->pieces[1][3].getPosVector(),
-			cs->pieces[1][4].getPosVector(),
+			cs->pieces[1][0].getPosVec(),
+			cs->pieces[1][1].getPosVec(),
+			cs->pieces[1][2].getPosVec(),
+			cs->pieces[1][3].getPosVec(),
+			cs->pieces[1][4].getPosVec(),
 			cs->pieces[1][5].getFirstPosVec(),
 		}
 	};

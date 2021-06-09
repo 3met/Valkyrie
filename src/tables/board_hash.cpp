@@ -36,7 +36,7 @@ void BoardHash::makeHash(const Bitboard pieces[2][7], const bool turn,
 	for (i=0; i<2; ++i) {	// Loop through colors
 		for (j=0; j<6; ++j) {	// Loop through pieces
 			// Location of all pieces of current type
-			pieceLocations = pieces[i][j].getPosVector();
+			pieceLocations = pieces[i][j].getPosVec();
 			// Hash located pieces
 			for (k=0; k<pieceLocations.size(); ++k) {
 				hash ^= zobristValues.pieces[i][j][pieceLocations[k]];

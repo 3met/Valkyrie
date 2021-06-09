@@ -8,7 +8,7 @@
 void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
 	// Get rook locations
 	vector<U8> start;
-	cs->pieces[cs->turn][cs->ROOK].getPosVector(&start);
+	cs->pieces[cs->turn][cs->ROOK].getPosVec(&start);
 
 	U8 i, j;
 	Bitboard occ;

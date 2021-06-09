@@ -6,7 +6,7 @@
 void ChessEngine::genQMoves(ChessState* cs, vector<Move>* moves) {
 	// Get piece locations
 	vector<U8> start;
-	cs->pieces[cs->turn][cs->QUEEN].getPosVector(&start);
+	cs->pieces[cs->turn][cs->QUEEN].getPosVec(&start);
 
 	U8 i, j;
 	U64 occ;
@@ -31,14 +31,14 @@ void ChessEngine::genQMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Add non-kill moves
 		if (open.board != 0) {
-			end = open.getPosVector();
+			end = open.getPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->QUEEN, start[i], end[j]));
 			}
 		}
 		// Add kill moves
 		if (targets.board != 0) {
-			end = targets.getPosVector();
+			end = targets.getPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->QUEEN, start[i], end[j], cs->getPieceType(!cs->turn, end[j])));
 			}

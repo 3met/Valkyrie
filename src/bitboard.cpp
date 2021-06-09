@@ -244,7 +244,7 @@ inline bool Bitboard::getPos(U8 pos) const {
 }
 
 /* Returns the all positions with a positive value */
-void Bitboard::getPosVector(vector<U8>* v) const {
+void Bitboard::getPosVec(vector<U8>* v) const {
 	if (this->board) {
 		Bitboard bb(this->board);
 
@@ -255,10 +255,10 @@ void Bitboard::getPosVector(vector<U8>* v) const {
 }
 
 /* Returns the all positions with a positive value */
-vector<U8> Bitboard::getPosVector() const {
+vector<U8> Bitboard::getPosVec() const {
 	vector<U8> v;
 
-	getPosVector(&v);
+	getPosVec(&v);
 
 	return v;
 }
