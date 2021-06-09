@@ -7,15 +7,13 @@
 
 using namespace std;
 
-Bitboard::Bitboard() {
-	board = 0;
-}
+Bitboard::Bitboard() {}
 
 Bitboard::Bitboard(U64 b) {
 	board = b;
 }
 
-Bitboard::~Bitboard() {};
+Bitboard::~Bitboard() {}
 
 // Lowest significant bit for each possible byte
 const U8 Bitboard::LOWEST_BIT_TABLE[256] = {
@@ -220,16 +218,24 @@ const U8 Bitboard::FILE_POSITIONS[64][7] = {
 };
 
 // |~| ----- Get and Set Methods -----
-void Bitboard::setPos(U8 pos, bool value) {
-	/* Set the given position to the given value */
-	U64 n;	// Needs to be same size as board
 
+/* Set the given position to the given value */
+void Bitboard::setPos(U8 pos, bool value) {
 	if (value) {
-		n = 1;
+		board ^= (-U64(1) ^ board) & (1ULL << pos);
 	} else {
-		n = 0;
+		board ^= (-U64(0) ^ board) & (1ULL << pos);
 	}
-	board ^= (-n ^ board) & (1ULL << pos);
+}
+
+/* Set the given position on (1) */
+void Bitboard::setPosOn(U8 pos) {
+	board ^= (-U64(1) ^ board) & (1ULL << pos);
+}
+
+/* Set the given position off (0) */
+void Bitboard::setPosOff(U8 pos) {
+	board ^= (-U64(0) ^ board) & (1ULL << pos);
 }
 
 /* Returns the value of the bit position */
@@ -253,23 +259,6 @@ vector<U8> Bitboard::getPosVector() const {
 	vector<U8> v;
 
 	getPosVector(&v);
-
-	return v;
-}
-
-/* Returns the all positions with a positive value */
-vector<U8> Bitboard::getPosVector(U8 limit) {
-	vector<U8> v;
-
-	for (U8 i=0; i<64; ++i) {
-		if (this->getPos(i)) {
-			v.push_back(i);
-
-			if (v.size() == limit) {
-				break;
-			}
-		}
-	}
 
 	return v;
 }
@@ -301,42 +290,14 @@ vector<U8> Bitboard::getPosVecCardinal(U8 pos) {
 	return v;
 }
 
-/* Fills an array with all positive positions.
-   Returns the number of positions */
-U8 Bitboard::fillPosArray(U8 arr[]) {
-	U8 n = 0;
-	for (U8 i=0; i<64; ++i) {
-		if (this->getPos(i)) {
-			arr[n] = i;
-			++n;
-		}
-	}
-
-	return n;
-}
-
 /* Return the position of the first "true" bit */
 U8 Bitboard::getFirstPos() {
-	for (U8 i=0; i<64; ++i) {
-		if (this->getPos(i)) {
-			return i;
-		}
-	}
-
-	cout << "Warning: No bit found in \"getFirstPos()\"" << endl;
-	return 0;
+	return LSB();
 }
 
 /* Return the position of the first "true" bit */
 vector<U8> Bitboard::getFirstPosVec() {
-	for (U8 i=0; i<64; ++i) {
-		if (this->getPos(i)) {
-			return vector<U8>(1, i);
-		}
-	}
-
-	cout << "Warning: No bit found in \"getFirstPosVec()\"" << endl;
-	return vector<U8>(1, 0);
+	return vector<U8>(1, LSB());
 }
 
 /* Pop lowest significant bit */

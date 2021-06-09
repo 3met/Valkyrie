@@ -11,11 +11,11 @@ void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 	Bitboard pos_board;
 	vector<U8> pos_targets;
 	S8 killed;
-	Bitboard buffer;
+	Bitboard buffer(0);
 	
 	// Set en passant square
 	if (cs->enPassant != -1) {
-		buffer.setPos(cs->enPassant, true);
+		buffer.setPosOn(cs->enPassant);
 	}
 
 	buffer.board |= cs->pieces[!cs->turn][cs->ALL_PIECES].board;

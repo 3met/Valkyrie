@@ -129,7 +129,7 @@ void ChessState::clear() {
 void ChessState::place(bool color, U8 pieceType, U8 pos) {
 	/* Place piece on the board */
 
-	pieces[color][pieceType].setPos(pos, true);
+	pieces[color][pieceType].setPosOn(pos);
 	this->updateAllBitboard(color);
 
 	bh.updatePiece(color, pieceType, pos);
@@ -426,26 +426,26 @@ void ChessState::move(Move m) {
 		if (m.end == enPassant) {
 			// Remove piece killed by en passant
 			if (turn == WHITE) {
-				pieces[BLACK][PAWN].setPos(m.end-8, false);
+				pieces[BLACK][PAWN].setPosOff(m.end-8);
 				bh.updatePiece(BLACK, PAWN, m.end-8);
 			} else {	// Black's turn
-				pieces[WHITE][PAWN].setPos(m.end+8, false);
+				pieces[WHITE][PAWN].setPosOff(m.end+8);
 				bh.updatePiece(WHITE, PAWN, m.end+8);
 			}
 		} else {
-			pieces[!turn][m.killed].setPos(m.end, false);
+			pieces[!turn][m.killed].setPosOff(m.end);
 			bh.updatePiece(!turn, m.killed, m.end);
 		}
 	}
 
 	// Updates moving piece location on bitboard
-	pieces[turn][m.piece].setPos(m.start, false);
+	pieces[turn][m.piece].setPosOff(m.start);
 	bh.updatePiece(turn, m.piece, m.start);
 	if (m.promoted == -1) {
-		pieces[turn][m.piece].setPos(m.end, true);
+		pieces[turn][m.piece].setPosOn(m.end);
 		bh.updatePiece(turn, m.piece, m.end);
 	} else {
-		pieces[turn][m.promoted].setPos(m.end, true);
+		pieces[turn][m.promoted].setPosOn(m.end);
 		bh.updatePiece(turn, m.promoted, m.end);
 	}
 
@@ -467,14 +467,14 @@ void ChessState::move(Move m) {
 		if (m.start == KING_START[turn]) {
 			// If king side castled
 			if (m.end == KING_START[turn]+2) {
-				pieces[turn][ROOK].setPos(KING_START[turn]+3, false);
-				pieces[turn][ROOK].setPos(KING_START[turn]+1, true);
+				pieces[turn][ROOK].setPosOff(KING_START[turn]+3);
+				pieces[turn][ROOK].setPosOn(KING_START[turn]+1);
 				bh.updatePiece(turn, ROOK, KING_START[turn]+3);
 				bh.updatePiece(turn, ROOK, KING_START[turn]+1);
 			// If queen side castled
 			} else if (m.end == KING_START[turn]-2) {
-				pieces[turn][ROOK].setPos(KING_START[turn]-4, false);
-				pieces[turn][ROOK].setPos(KING_START[turn]-1, true);
+				pieces[turn][ROOK].setPosOff(KING_START[turn]-4);
+				pieces[turn][ROOK].setPosOn(KING_START[turn]-1);
 				bh.updatePiece(turn, ROOK, KING_START[turn]-4);
 				bh.updatePiece(turn, ROOK, KING_START[turn]-1);
 			}
@@ -583,13 +583,13 @@ void ChessState::reverseMove() {
 
 	// Updates piece location on bitboard
 	if (m->promoted == -1) {
-		pieces[turn][m->piece].setPos(m->end, false);
+		pieces[turn][m->piece].setPosOff(m->end);
 		bh.updatePiece(turn, m->piece, m->end);
 	} else {
-		pieces[turn][m->promoted].setPos(m->end, false);
+		pieces[turn][m->promoted].setPosOff(m->end);
 		bh.updatePiece(turn, m->promoted, m->end);
 	}
-	pieces[turn][m->piece].setPos(m->start, true);
+	pieces[turn][m->piece].setPosOn(m->start);
 	bh.updatePiece(turn, m->piece, m->start);
 
 	// Adds previously killed piece to bitboard
@@ -597,14 +597,14 @@ void ChessState::reverseMove() {
 		if (m->end == enPassant) {
 			// Place killed en passant piece
 			if (turn == WHITE) {
-				pieces[BLACK][PAWN].setPos(m->end-8, true);
+				pieces[BLACK][PAWN].setPosOn(m->end-8);
 				bh.updatePiece(BLACK, PAWN, m->end-8);
 			} else {	// Black's turn
-				pieces[WHITE][PAWN].setPos(m->end+8, true);
+				pieces[WHITE][PAWN].setPosOn(m->end+8);
 				bh.updatePiece(WHITE, PAWN, m->end+8);
 			}
 		} else {
-			pieces[!turn][m->killed].setPos(m->end, true);
+			pieces[!turn][m->killed].setPosOn(m->end);
 			bh.updatePiece(!turn, m->killed, m->end);
 		}
 	}
@@ -613,13 +613,13 @@ void ChessState::reverseMove() {
 	if (m->piece == KING) {
 		if (m->start == KING_START[turn]) {
 			if (m->end == KING_START[turn]+2) {
-				pieces[turn][ROOK].setPos(KING_START[turn]+3, true);
-				pieces[turn][ROOK].setPos(KING_START[turn]+1, false);
+				pieces[turn][ROOK].setPosOn(KING_START[turn]+3);
+				pieces[turn][ROOK].setPosOff(KING_START[turn]+1);
 				bh.updatePiece(turn, ROOK, KING_START[turn]+3);
 				bh.updatePiece(turn, ROOK, KING_START[turn]+1);
 			} else if (m->end == KING_START[turn]-2) {
-				pieces[turn][ROOK].setPos(KING_START[turn]-4, true);
-				pieces[turn][ROOK].setPos(KING_START[turn]-1, false);
+				pieces[turn][ROOK].setPosOn(KING_START[turn]-4);
+				pieces[turn][ROOK].setPosOff(KING_START[turn]-1);
 				bh.updatePiece(turn, ROOK, KING_START[turn]-4);
 				bh.updatePiece(turn, ROOK, KING_START[turn]-1);
 			}

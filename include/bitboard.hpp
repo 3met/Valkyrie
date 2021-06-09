@@ -28,6 +28,8 @@ public:
 
 	// Get and Set methods
 	void setPos(U8 pos, bool value);
+	void setPosOn(U8 pos);
+	void setPosOff(U8 pos);
 	bool getPos(U8 pos) const;
 	// Get all positive positions in a vector
 	void getPosVector(vector<U8>* v) const;
@@ -39,7 +41,6 @@ public:
 	void getPosVecCardinal(U8 pos, vector<U8>* v);
 	vector<U8> getPosVecCardinal(U8 pos);
 	// Other Get/Set
-	U8 fillPosArray(U8 arr[]);
 	U8 getFirstPos();
 	vector<U8> getFirstPosVec();
 
