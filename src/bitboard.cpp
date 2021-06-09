@@ -239,7 +239,7 @@ void Bitboard::setPosOff(U8 pos) {
 }
 
 /* Returns the value of the bit position */
-inline bool Bitboard::getPos(U8 pos) const {
+bool Bitboard::getPos(U8 pos) const {
 	return board >> pos & 1;
 }
 
@@ -276,7 +276,7 @@ vector<U8> Bitboard::popPosVec() {
 }
 
 
-inline void Bitboard::getRankPosVec(U8 pos, vector<U8>* v) {
+void Bitboard::getRankPosVec(U8 pos, vector<U8>* v) {
 	for (U8 i=0; i<7; ++i) {
 		if (this->getPos(RANK_POSITIONS[pos][i])) {
 			v->push_back(RANK_POSITIONS[pos][i]);
@@ -284,7 +284,7 @@ inline void Bitboard::getRankPosVec(U8 pos, vector<U8>* v) {
 	}
 }
 
-inline void Bitboard::getFilePosVec(U8 pos, vector<U8>* v) {
+void Bitboard::getFilePosVec(U8 pos, vector<U8>* v) {
 	for (U8 i=0; i<7; ++i) {
 		if (this->getPos(FILE_POSITIONS[pos][i])) {
 			v->push_back(FILE_POSITIONS[pos][i]);
