@@ -245,23 +245,36 @@ inline bool Bitboard::getPos(U8 pos) const {
 
 /* Returns the all positions with a positive value */
 void Bitboard::getPosVec(vector<U8>* v) const {
-	if (this->board) {
-		Bitboard bb(this->board);
+	Bitboard bb(this->board);
 
-		while (bb.board != 0) {
-			v->push_back(bb.popLSB());
-		}
+	while (bb.board != 0) {
+		v->push_back(bb.popLSB());
 	}
 }
 
 /* Returns the all positions with a positive value */
 vector<U8> Bitboard::getPosVec() const {
 	vector<U8> v;
-
 	getPosVec(&v);
-
 	return v;
 }
+
+/* Returns the all positions with a positive value 
+   Resets board to zero */
+void Bitboard::popPosVec(vector<U8>* v) {
+	while (this->board != 0) {
+		v->push_back(this->popLSB());
+	}
+}
+
+/* Returns the all positions with a positive value
+   Resets board to zero */
+vector<U8> Bitboard::popPosVec() {
+	vector<U8> v;
+	popPosVec(&v);
+	return v;
+}
+
 
 inline void Bitboard::getRankPosVec(U8 pos, vector<U8>* v) {
 	for (U8 i=0; i<7; ++i) {

@@ -28,7 +28,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Add non-kill moves
 		if (occ.board != 0) {
-			end = occ.getPosVec();
+			end = occ.popPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->BISHOP, start[i], end[j]));
 			}
@@ -36,7 +36,7 @@ void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Add kill moves
 		if (targets.board != 0) {
-			end = targets.getPosVec();
+			end = targets.popPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->BISHOP, start[i], end[j], cs->getPieceType(!cs->turn, end[j])));
 			}

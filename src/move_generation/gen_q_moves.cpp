@@ -31,14 +31,14 @@ void ChessEngine::genQMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Add non-kill moves
 		if (open.board != 0) {
-			end = open.getPosVec();
+			end = open.popPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->QUEEN, start[i], end[j]));
 			}
 		}
 		// Add kill moves
 		if (targets.board != 0) {
-			end = targets.getPosVec();
+			end = targets.popPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->QUEEN, start[i], end[j], cs->getPieceType(!cs->turn, end[j])));
 			}
@@ -60,14 +60,14 @@ void ChessEngine::genQMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Add non-kill moves
 		if (open.board != 0) {
-			end = open.getPosVecCardinal(start[i]);
+			end = open.popPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->QUEEN, start[i], end[j]));
 			}
 		}
 		// Add kill moves
 		if (targets.board != 0) {
-			end = targets.getPosVecCardinal(start[i]);
+			end = targets.popPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->QUEEN, start[i], end[j], cs->getPieceType(!cs->turn, end[j])));
 			}

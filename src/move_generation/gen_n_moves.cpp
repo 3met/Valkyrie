@@ -21,7 +21,7 @@ void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 		// Remove squares with same coloured pieces
 		target_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);	
 		// Positions of all targets
-		targets = target_board.getPosVec();
+		targets = target_board.popPosVec();
 
 		// Add moves to vector
 		for (j=0; j<targets.size(); ++j) {

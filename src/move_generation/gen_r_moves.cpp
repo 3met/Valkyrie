@@ -30,14 +30,14 @@ void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
 
 		// Add non-kill moves
 		if (occ.board != 0) {
-			end = occ.getPosVecCardinal(start[i]);
+			end = occ.popPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->ROOK, start[i], end[j]));
 			}
 		}
 		// Add kill moves
 		if (targets.board != 0) {
-			end = targets.getPosVecCardinal(start[i]);
+			end = targets.popPosVec();
 			for (j=0; j<end.size(); ++j) {
 				moves->push_back(Move(cs->ROOK, start[i], end[j], cs->getPieceType(!cs->turn, end[j])));
 			}

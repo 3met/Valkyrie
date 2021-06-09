@@ -667,7 +667,7 @@ void ChessState::updateAllBitboard(bool color) {
 
 /* ----- Output Functions -----*/
 void ChessState::mapBoardToChar(Bitboard b, char arr[64], char target) {
-	vector<U8> v = b.getPosVec();
+	vector<U8> v = b.popPosVec();
 	for (U8 i=0; i<v.size(); ++i) {
 		arr[v[i]] = target;
 	}
