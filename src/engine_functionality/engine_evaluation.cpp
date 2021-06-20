@@ -203,4 +203,3 @@ short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 
 	return rating;
 }
-
