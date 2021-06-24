@@ -15,8 +15,8 @@
 #include "pv_table.hpp"
 #include "transposition_table.hpp"
 #include "S8.hpp"
-#include "U64.hpp"
 #include "U8.hpp"
+#include "U64.hpp"
 
 using namespace std;
 
@@ -82,6 +82,15 @@ private:
 	bool readBonusTable(S8 bonusTable[64], string fileName, const U8 READ_ORDER[64]=Bitboard::SHOW_ORDER);
 	bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
+	// Move Generation
+	void genPMoves(ChessState* cs, vector<Move>* moves);
+	void genNMoves(ChessState* cs, vector<Move>* moves);
+	void genBMoves(ChessState* cs, vector<Move>* moves);
+	void genRMoves(ChessState* cs, vector<Move>* moves);
+	void genQMoves(ChessState* cs, vector<Move>* moves);
+	void genKMoves(ChessState* cs, vector<Move>* moves);
+	void genAllMoves(ChessState* cs, vector<Move>* moves);
+
 	// Search Helper Methods
 	void sortMoves(vector<Move>* moves, U8 depth);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
@@ -116,15 +125,6 @@ public:
 	EvalScore currScore = EvalScore(0);
 	chrono::high_resolution_clock::time_point startTime;
 	U64 nodesTotal = 0;
-
-	// Move Generation
-	void genPMoves(ChessState* cs, vector<Move>* moves);
-	void genNMoves(ChessState* cs, vector<Move>* moves);
-	void genBMoves(ChessState* cs, vector<Move>* moves);
-	void genRMoves(ChessState* cs, vector<Move>* moves);
-	void genQMoves(ChessState* cs, vector<Move>* moves);
-	void genKMoves(ChessState* cs, vector<Move>* moves);
-	void genAllMoves(ChessState* cs, vector<Move>* moves);
 
 	// Evaluation Methods
 	U8 rateGameStage(ChessState* cs, vector<U8> pieces[2][6]);

@@ -14,6 +14,10 @@ class Bitboard {
 private:
 	const static U8 LOWEST_BIT_TABLE[256];	// Lowest significant bit for each possible byte
 
+	// Miscellaneous Methods
+	U8 LSB();		// Lowest significant bit
+	U8 popLSB();	// Pop lowest significant bit (LSB)
+
 public:
 	Bitboard();
 	Bitboard(U64 b);
@@ -41,10 +45,6 @@ public:
 	// Other Get/Set
 	U8 getFirstPos();
 	vector<U8> getFirstPosVec();
-
-	// Miscellaneous Methods
-	U8 LSB();		// Lowest significant bit
-	U8 popLSB();	// Pop lowest significant bit (LSB)
 
 	// Output Methods
 	void show();
