@@ -46,8 +46,8 @@ Move ChessState::lastMove() {
 	return *(moveList.end()-1);
 }
 
+// Returns the type of piece at the given position
 S8 ChessState::getPieceType(bool color, U8 pos) {
-	/* Returns the type of piece at the given position */
 
 	for (U8 i=0; i<6; ++i) {
 		if (pieces[color][i].getPos(pos)) {
@@ -58,7 +58,7 @@ S8 ChessState::getPieceType(bool color, U8 pos) {
 	return -1;
 }
 
-// Updates the all pieces bitboard for the passed colour
+// Updates the all pieces bitboard for the passed color
 void ChessState::updateAllBitboard(bool color) {
 	pieces[color][ALL_PIECES] = 0;
 	for (U8 i=0; i<6; ++i) {
@@ -66,8 +66,8 @@ void ChessState::updateAllBitboard(bool color) {
 	}
 }
 
+// Converts chess notation to Move object (a7b8q ==> Move)
 Move ChessState::notationToMove(string notation) {
-	// Converts chess notation to Move object (a7b8q ==> Move)
 	U8 start = Move::coordToPos(notation.substr(0, 2));
 	U8 end = Move::coordToPos(notation.substr(2, 2));
 	U8 pieceType = getPieceType(turn, start);
@@ -91,13 +91,13 @@ Move ChessState::notationToMove(string notation) {
 	}
 	
 	return Move(pieceType,
-				start,
-				end,
-				killed,
-				promoted);
+		start,
+		end,
+		killed,
+		promoted);
 }
 
-/* Returns color and types of piece */
+// Returns color and types of piece
 pair<bool, U8> ChessState::charToPiece(char piece) {
 	switch (piece) {
 		case 'P':

@@ -3,6 +3,7 @@
 
 using namespace std;
 
+// Ranks by distance from center
 const U8 MoveCompare::centerBias[64] {
 	8, 7, 6, 5, 5, 6, 7, 8,
 	7, 5, 4, 3, 3, 4, 5, 7,
@@ -19,7 +20,7 @@ MoveCompare::MoveCompare(ChessEngine* _engine, U8 _depth) {
 	this->depth = _depth;
 };
 
-/* Operator to compare moves for move ordering */
+// Operator to compare moves for move ordering
 bool MoveCompare::operator()(const Move& a, const Move& b) const {
 	// PV Table Matches
 	if (depth > 0) {

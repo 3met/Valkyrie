@@ -10,16 +10,17 @@ using namespace std;
 OpeningTable::OpeningTable() {};
 OpeningTable::~OpeningTable() {};
 
-/* Clears Opening Table */
+// Clears Opening Table
 void OpeningTable::clear() {
 	this->table.clear();
 }
 
-/* Returns number of table entries */
+// Returns number of table entries
 size_t OpeningTable::size() {
 	return this->table.size();
 }
 
+// Get opening moves for given chess state
 void OpeningTable::add(const ChessState* cs, vector<Move>* moves) {
 	this->add(&cs->bh, moves);
 }
@@ -28,6 +29,7 @@ void OpeningTable::add(const BoardHash* bh, vector<Move>* moves) {
 	table[*bh] = *moves;
 }
 
+// Check if opening moves exist for given chess state
 bool OpeningTable::contains(const ChessState* cs) {
 	return this->contains(&cs->bh);
 }
@@ -40,6 +42,7 @@ bool OpeningTable::contains(const BoardHash* bh) {
 	}
 }
 
+// Get opening moves for given chess state
 vector<Move> OpeningTable::get(const ChessState* cs) {
 	return this->get(&cs->bh);
 }
