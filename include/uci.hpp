@@ -6,10 +6,11 @@
 #include <string>
 #include <vector>
 #include "chess_engine.hpp"
-#include "chess_engine.hpp"
 
 using namespace std;
 
+// Stores universal chess interface (UCI) data and
+// runs ChessEngine through UCI commands.
 class UCI {
 private:
 	ChessState cs;
@@ -17,20 +18,22 @@ private:
 
 	bool isSearching = false;
 
-	// --- UCI Commands ---
 	// Calculation Commands
 	void inputDivide(string input);
 	void inputGo(string input);
 	void inputPerft(string input);
 	void inputStop();
+
 	// Set State Commands
 	void inputMove(string input);
 	void inputPosition(string input);
 	void inputReverse();
 	void inputUcinewgame();
+
 	// Output Commands
 	void inputIsready();
 	void inputUCI();
+
 	// Debugging Commands
 	void inputClear();
 	void inputTest(string input);

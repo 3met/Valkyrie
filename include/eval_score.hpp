@@ -8,8 +8,8 @@
 
 using namespace std;
 
-/* Stores Chess Board Evaluation Score
- * Takes into account checkmate and mate in n move */
+// Stores chess state evaluation score.
+// Takes into account checkmate and mate in N moves.
 class EvalScore {
 public:
 	EvalScore();
@@ -23,13 +23,12 @@ public:
 	bool foundMate;	// Whether checkmate has beem found
 	U8 movesToMate;	// Moves to checkmate
 
-	/* Compares Move Ratings
-	 * The higher rating is better for white
-	 * and the lower better for black.
-	 * Takes into account checkmate.
-	 * If both positions are checkmate, the comparison returns
-	 * the fastest checkmate for black or slowest for white.
-	 * Overall returns true if a is the better move for black. */
+	// Compares Move Ratings
+	// The higher rating is better for white and the lower for black.
+	// Takes into account checkmate.
+	// If both positions are checkmate, the comparison returns
+	// the fastest checkmate for black or slowest for white.
+	// Overall returns true if a is the better move for black.
 	friend bool operator<(const EvalScore& a, const EvalScore& b) {
 		// If neither rating is checkmate
 		if (!a.foundMate && !b.foundMate) {
@@ -80,6 +79,7 @@ public:
 	    return !(b < a) && !(a < b);
 	}
 
+	// Returns the score as though the colors have been switched
 	friend EvalScore operator-(const EvalScore& obj) {
 		return EvalScore(-obj.eval, obj.foundMate, obj.movesToMate);
 	};

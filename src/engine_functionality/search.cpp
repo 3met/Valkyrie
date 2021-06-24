@@ -15,11 +15,10 @@ using namespace std::chrono;
 random_device rd;	// Seed
 mt19937 gen(rd());
 
-/* Needs to be run in it's own thread
-   in order to execute properly.
-   Time is in milliseconds. "timeLeft" is time
-   left on the clock. "timeInc" is the time 
-   increment per move. */
+// Needs to be run in it's own thread in order to execute properly.
+// Time is in milliseconds.
+// "timeLeft" is time left on the clock.
+// "timeInc" is the time increment per move.
 Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	
 	// Start timer
@@ -84,7 +83,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	return *(moveList.end()-1);
 }
 
-/* Seaches to a specific depth as specified */
+// Seaches to a specific depth as specified
 Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 
 	// Set Stats
@@ -117,9 +116,8 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 	return m;
 }
 
-/* Searches for the best move until "canSearch"
-   is false. Needs to be run in it's own thread
-   in order to execute properly. */
+// Searches for the best move until "canSearch" is false.
+// Needs to be run in it's own thread in order to execute properly.
 Move ChessEngine::searchInfinite(ChessState cs) {
 
 	// Set Stats

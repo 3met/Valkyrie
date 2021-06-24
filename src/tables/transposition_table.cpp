@@ -2,17 +2,17 @@
 #include "transposition_table.hpp"
 #include "U8.hpp"
 
-/* Clears Transposition Table */
+// Clears Transposition Table
 void TranspositonTable::clear() {
 	this->table.clear();
 }
 
-/* Returns number of table entries */
+// Returns number of table entries
 size_t TranspositonTable::size() {
 	return this->table.size();
 }
 
-/* Adds entry to the table */
+// Adds entry to the table
 void TranspositonTable::add(const ChessState* cs, EvalScore score, U8 depth) {
 	this->add(&cs->bh, score, depth);
 }

@@ -3,6 +3,8 @@
 #include <vector>
 #include "uci.hpp"
 
+// Handles "divide" command.
+// Used for debugging.
 void UCI::inputDivide(string input) {
 
 	std::vector<string> inVec;

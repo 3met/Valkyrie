@@ -2,10 +2,10 @@
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "S8.hpp"
-#include "U64.hpp"
 #include "U8.hpp"
+#include "U64.hpp"
 
-/* Generates all legal pawn moves */
+// Generates all psudo-legal pawn moves
 void ChessEngine::genPMoves(ChessState* cs, vector<Move>* moves) {
 	U8 i;
 	Bitboard pos_board;

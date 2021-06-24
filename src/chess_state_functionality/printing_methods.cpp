@@ -4,6 +4,7 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
+// Returns a string containing the FEN of the current chess state.
 string ChessState::stringFEN() {
 	string FEN;
 	char board[64];
@@ -89,7 +90,7 @@ string ChessState::stringFEN() {
 	return FEN;
 }
 
-
+// Pastes target on array where bitboard is true
 void ChessState::mapBoardToChar(Bitboard b, char arr[64], char target) {
 	vector<U8> v = b.popPosVec();
 	for (U8 i=0; i<v.size(); ++i) {
@@ -97,10 +98,7 @@ void ChessState::mapBoardToChar(Bitboard b, char arr[64], char target) {
 	}
 }
 
-void ChessState::show() {
-	this->show(true);
-}
-
+// Prints the chess board and some related data.
 void ChessState::show(bool show_coords) {
 	char board[64];
 	char ranks[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
@@ -110,12 +108,12 @@ void ChessState::show(bool show_coords) {
 		board[i] = '.';
 	}
 
+	// Add pieces to array
 	for (i=0; i<6; ++i) {
 		this->mapBoardToChar(pieces[0][i], board, piece_names[0][i]);
 		this->mapBoardToChar(pieces[1][i], board, piece_names[1][i]);
 	}
 
-	// TODO: ADD COORDS around board
 	if (show_coords) {
 		cout << "-------------------" << endl;
 	}
@@ -138,4 +136,9 @@ void ChessState::show(bool show_coords) {
 		cout << "BoardHash: " << this->bh.hash << endl;
 		cout << "-------------------" << endl;
 	}
+}
+
+// Show coordinates by default
+void ChessState::show() {
+	this->show(true);
 }

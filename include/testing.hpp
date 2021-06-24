@@ -1,4 +1,6 @@
 
+// A header file for including testing functions
+
 #pragma once
 #ifndef TESTING_HPP
 #define TESTING_HPP

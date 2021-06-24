@@ -8,13 +8,13 @@
 #include "transposition_table.hpp"
 #include "U8.hpp"
 
-/* Class to compare moves for moving ording prior to
-   alpha-beta pruning search. */
+// Compares moves for moving ording prior to alpha-beta pruning search.
 class MoveCompare {
 private:
 	ChessEngine* engine;
 	U8 depth;
 
+	// Center bias ranks square based on distance from the center
 	static const U8 centerBias[64];
 
 public:

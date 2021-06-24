@@ -1,10 +1,11 @@
 
 #include <random>
-#include "U8.hpp"
 #include "zobrist_values.hpp"
+#include "U8.hpp"
 
 using namespace std;
 
+// Generates Zobrist values to be used later for hashing
 ZobristValues::ZobristValues() {
 	random_device rd;	// Seed
 	default_random_engine generator(rd());

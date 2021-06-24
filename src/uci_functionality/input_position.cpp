@@ -4,9 +4,8 @@
 #include "uci.hpp"
 #include "U8.hpp"
 
-/* For UCI commands starting with "position"
-   Assumes input contains the full command starting
-   with "position" */
+// For UCI commands starting with "position".
+// Assumes input contains the full command starting with "position".
 void UCI::inputPosition(string input) {
 	// Break down input into words
 	std::vector<std::string> inVec;
