@@ -224,7 +224,10 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			if (hashScore.depth >= (depthTarget - depth)) {
 				if (hashScore.score >= beta) {
 					cs->reverseMove();
-					this->addKillerMove(&moves[i], &depth);
+					// Add killer move
+					if (moves[i].killed == -1) {
+						this->addKillerMove(&moves[i], &depth);
+					}
 					return beta;
 				}
 
@@ -258,7 +261,10 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			if (score >= beta) {
 				cs->reverseMove();
-				this->addKillerMove(&moves[i], &depth);
+				// Add killer move
+				if (moves[i].killed == -1) {
+					this->addKillerMove(&moves[i], &depth);
+				}
 				return beta;
 			}
 
