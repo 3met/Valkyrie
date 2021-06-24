@@ -31,9 +31,13 @@ void ChessState::clear() {
 	moveLostCastlePerms[BLACK][KING_SIDE] = -1;
 	moveLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
 
+	// Reset en passant data
 	enPassant = -1;
-	enPassantHistory.clear();
-	enPassantHistory.push_back(enPassant);
+	while (!enPassantHistory.empty()) {
+		enPassantHistory.pop();
+	}
+	enPassantHistory.push(enPassant);
+
 	halfmoveClock = 0;		// # of halfmoves since last capture or pawn move
 	turnNumber = 1;			// Game turn number
 	moveNumber = 1;
@@ -117,7 +121,7 @@ void ChessState::loadFEN(string FEN) {
 	// Read en passant
 	if (FEN[FEN_index] != '-') {
 		this->enPassant = Move::coordToPos(FEN.substr(FEN_index, 2));
-		enPassantHistory.push_back(this->enPassant);	
+		enPassantHistory.push(this->enPassant);	
 		++FEN_index;	// Move to last en passant character
 	}
 
@@ -198,8 +202,10 @@ void ChessState::reset() {
 	moveLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
 
 	enPassant = -1;
-	enPassantHistory.clear();
-	enPassantHistory.push_back(enPassant);
+	while (!enPassantHistory.empty()) {
+		enPassantHistory.pop();
+	}
+	enPassantHistory.push(enPassant);
 	halfmoveClock = 0;		// # of halfmoves since last capture or pawn move
 	turnNumber = 1;			// Game turn number
 	moveNumber = 1;

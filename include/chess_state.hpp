@@ -4,6 +4,7 @@
 #define CHESS_STATE_HPP
 
 #include <exception>
+#include <stack>
 #include <string>
 #include <utility>
 #include "bitboard.hpp"
@@ -58,14 +59,14 @@ public:
 
 	bool turn;	// False for white; true for black
 
-	bool castlePerms[2][2];	// [color][king/queen side]
+	bool castlePerms[2][2];				// [color][king/queen side]
 	short moveLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
 	
-	S8 enPassant;	// Pos behind pawn, else -1
-	vector<S8> enPassantHistory;	// History of en passant for reverseMove()
+	S8 enPassant;				// Pos behind pawn, else -1
+	stack<S8> enPassantHistory;	// History of en passant for reverseMove()
 
-	short halfmoveClock;	// # of halfmoves since last capture or pawn move
-	short turnNumber;	// Game turn number
+	short halfmoveClock;		// # of halfmoves since last capture or pawn move
+	short turnNumber;			// Game turn number
 	short moveNumber;
 
 	vector<Move> moveList;	// List of moves that lead to current game state
