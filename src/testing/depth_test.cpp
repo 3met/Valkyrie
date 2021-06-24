@@ -4,6 +4,7 @@
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "U8.hpp"
+#include "U64.hpp"
 
 using namespace std;
 
@@ -51,22 +52,21 @@ void depthTest(bool verbose) {
 	ChessEngine engine;
 	ChessState cs;
 
-	U64 totalDuration = 0;
+	U64 totalDuration(0);
 
-	int i=0;
-	for (i=0; i<DEPTH_TEST_LIST.size(); ++i) {
+	for (int i(0); i<DEPTH_TEST_LIST.size(); ++i) {
 		if (verbose) {
 			cout << "Stage: " << (i+1) << "/" << DEPTH_TEST_LIST.size() << endl;
 		}
 
 		engine.clear();
 
-		auto start = chrono::high_resolution_clock::now();
+		chrono::high_resolution_clock::time_point start(chrono::high_resolution_clock::now());
 		
 		DEPTH_TEST_LIST[i].run(&engine, &cs, verbose);
 
-		auto stop = chrono::high_resolution_clock::now();
-		U64 duration = chrono::duration_cast<chrono::microseconds>(stop - start).count();
+		chrono::high_resolution_clock::time_point stop(chrono::high_resolution_clock::now());
+		U64 duration(chrono::duration_cast<chrono::microseconds>(stop - start).count());
 		totalDuration += duration;
 
 		if (verbose) {

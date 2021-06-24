@@ -40,7 +40,7 @@ Move::~Move() {}
 // Returns a chess board coordinate from a given position.
 // Ex: 9 --> b2
 string Move::posToCoord(const U8 pos) {
-	char file = 'a';
+	char file('a');
 	file += pos % 8;
 	return file + to_string((pos/8) + 1);
 }

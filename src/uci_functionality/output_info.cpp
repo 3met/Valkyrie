@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 #include "UCI.hpp"
+#include "U64.hpp"
 
 using namespace std::chrono;
 
@@ -18,7 +19,7 @@ void UCI::outputInfo() {
 
 	cout << " nodes " << engine.nodesTotal;
 
-	int time = duration_cast<milliseconds>(high_resolution_clock::now() - engine.startTime).count();
+	U64 time(duration_cast<milliseconds>(high_resolution_clock::now() - engine.startTime).count());
 	if (time != 0) {
 		cout << " time " << time
 			 << " nps " << ((engine.nodesTotal * 1000) / time);

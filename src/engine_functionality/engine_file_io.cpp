@@ -21,7 +21,7 @@ bool ChessEngine::readBitboardTable(Bitboard table[64], string fileName) {
 		return false;
 	} else {
 		U64 val;
-		for (U8 i=0; i<64; ++i) {	
+		for (U8 i(0); i<64; ++i) {	
 			db_file >> val;
 			table[i] = Bitboard(val);
 		}
@@ -41,7 +41,7 @@ bool ChessEngine::readMagicTable(U8 magicShifts[64], Bitboard magics[64], string
 	} else {
 		short shift;
 		U64 magic;
-		for (U8 i=0; i<64; ++i) {	
+		for (U8 i(0); i<64; ++i) {	
 			db_file >> shift >> magic;
 			magicShifts[i] = shift;
 			magics[i] = Bitboard(magic);
@@ -55,7 +55,7 @@ bool ChessEngine::readMagicTable(U8 magicShifts[64], Bitboard magics[64], string
 bool ChessEngine::readAttackTable(Bitboard* attackTable[64], string directory) {
 	ifstream db_file;
 
-	for (U8 i=0; i<64; ++i) {
+	for (U8 i(0); i<64; ++i) {
 		db_file.open(DATA_DIR + directory + to_string(i) + ".tab");
 		if (!db_file) {
 			cout << "Fatal Error: Unable to read " << DATA_DIR << directory << to_string(i) << ".tab" << endl;
@@ -83,7 +83,7 @@ bool ChessEngine::readBonusTable(S8 bonusTable[64], string fileName, const U8 RE
 		return false;
 	} else {
 		short val;
-		for (U8 i=0; i<64; ++i) {	
+		for (U8 i(0); i<64; ++i) {	
 			db_file >> val;
 			bonusTable[READ_ORDER[i]] = val;
 		}
@@ -108,7 +108,7 @@ bool ChessEngine::readOpeningBook(OpeningTable* table, string fileName) {
 		U8 lineIndex;
 		size_t found;
 		// Min percent of total moves used to removes outliers
-		float minPopularity = 0.05;
+		float minPopularity(0.05);
 		int total;
 		vector<int> moveCounts;
 

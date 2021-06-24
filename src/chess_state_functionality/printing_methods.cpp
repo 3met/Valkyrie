@@ -19,7 +19,7 @@ string ChessState::stringFEN() {
 		this->mapBoardToChar(pieces[1][i], board, piece_names[1][i]);
 	}
 
-	int gap = 0;
+	int gap(0);
 	for (i=0; i<64; ++i) {
 		if (board[Bitboard::SHOW_ORDER[i]] == '.') {
 			gap += 1;
@@ -53,7 +53,7 @@ string ChessState::stringFEN() {
 
 	FEN += ' ';
 
-	bool addDash = true;
+	bool addDash(true);
 	if (castlePerms[WHITE][KING_SIDE]) {
 		FEN += 'K';
 		addDash = false;
@@ -92,8 +92,8 @@ string ChessState::stringFEN() {
 
 // Pastes target on array where bitboard is true
 void ChessState::mapBoardToChar(Bitboard b, char arr[64], char target) {
-	vector<U8> v = b.popPosVec();
-	for (U8 i=0; i<v.size(); ++i) {
+	vector<U8> v(b.popPosVec());
+	for (U8 i(0); i<v.size(); ++i) {
 		arr[v[i]] = target;
 	}
 }

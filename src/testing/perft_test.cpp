@@ -30,7 +30,7 @@ public:
 
 		cs->loadFEN(FEN);
 
-		U64 result = engine->perft(cs, depth);
+		U64 result(engine->perft(cs, depth));
 
 		if (verbose) {
 			if (result == target) {
@@ -112,21 +112,21 @@ bool perftTest(bool verbose) {
 	ChessEngine engine;
 	ChessState cs;
 
-	bool passed = true;
-	U64 totalDuration = 0;
+	bool passed(true);
+	U64 totalDuration(0);
 
-	int i=0;
-	for (i=0; i<PERFT_TEST_LIST.size(); ++i) {
+	int i(0);
+	for ( ; i<PERFT_TEST_LIST.size(); ++i) {
 		if (verbose) {
 			cout << "Stage: " << (i+1) << "/" << PERFT_TEST_LIST.size() << endl;
 		}
 
-		auto start = chrono::high_resolution_clock::now();
-		
+		chrono::high_resolution_clock::time_point start(chrono::high_resolution_clock::now());
+
 		passed &= PERFT_TEST_LIST[i].run(&engine, &cs, verbose);
 
-		auto stop = chrono::high_resolution_clock::now();
-		U64 duration = chrono::duration_cast<chrono::microseconds>(stop - start).count();
+		chrono::high_resolution_clock::time_point stop(chrono::high_resolution_clock::now());
+		U64 duration(chrono::duration_cast<chrono::microseconds>(stop - start).count());
 		totalDuration += duration;
 
 		if (verbose) {

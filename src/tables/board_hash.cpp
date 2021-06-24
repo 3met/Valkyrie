@@ -27,13 +27,13 @@ void BoardHash::makeHash(const Bitboard pieces[2][7], const bool turn,
 	const bool castlePerms[2][2], const U8 enPassant) {
 
 	vector<U8> pieceLocations;
-	U8 i, j, k;
+	U8 j, k;
 
 	// Initial hash value
 	hash = 0;
 
 	// Add piece locations to hash
-	for (i=0; i<2; ++i) {	// Loop through colors
+	for (U8 i(0); i<2; ++i) {	// Loop through colors
 		for (j=0; j<6; ++j) {	// Loop through pieces
 			// Location of all pieces of current type
 			pieceLocations = pieces[i][j].getPosVec();

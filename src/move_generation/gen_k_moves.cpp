@@ -8,17 +8,17 @@
 void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 	
 	// Start position of the king
-	U8 start = cs->pieces[cs->turn][cs->KING].getFirstPos();
+	U8 start(cs->pieces[cs->turn][cs->KING].getFirstPos());
 	// Get surrounding squares
-	Bitboard target_board = KMoveDB[start];
-	// Remove squares with same colored pieces
+	Bitboard target_board(KMoveDB[start].board);
+	// Remove squares with same coloured pieces
 	target_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);
 	// Positions of all target squares
-	vector<U8> targets = target_board.popPosVec();
+	vector<U8> targets(target_board.popPosVec());
 
 	S8 killed;
 	// Add moves to vector
-	for (U8 i=0; i<targets.size(); ++i) {
+	for (U8 i(0); i<targets.size(); ++i) {
 		// Check for killing a piece
 		if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(targets[i])) {
 			killed = cs->getPieceType(!cs->turn, targets[i]);

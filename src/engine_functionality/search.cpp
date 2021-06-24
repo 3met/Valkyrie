@@ -8,6 +8,7 @@
 #include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
+#include "U64.hpp"
 
 using namespace std::chrono;
 
@@ -22,7 +23,7 @@ mt19937 gen(rd());
 Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	
 	// Start timer
-	auto start = high_resolution_clock::now();
+	high_resolution_clock::time_point start(high_resolution_clock::now());
 
 	// Set Stats
 	this->startTime = start;
@@ -33,7 +34,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 
 	// Check if position in opening book
 	if (this->openingTable.contains(&cs.bh)) {
-		std::vector<Move> moves = this->openingTable.get(&cs.bh);
+		std::vector<Move> moves(this->openingTable.get(&cs.bh));
 		
 		++nSearches;
 		uniform_int_distribution<> distr(0, moves.size()-1);
@@ -41,11 +42,11 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	}
 
 	// Max time to choose move
-	int maxTime = min((timeLeft/20) + timeInc, timeLeft-200);
+	int maxTime(min((timeLeft/20) + timeInc, timeLeft-200));
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
-	short i = 1;
+	short i(1);
 	// Loop to increase depth until time is up
 	while (true) {
 
@@ -61,8 +62,8 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 		this->currScore = ratedMove.second;
 		
 		// Check if time remains
-		auto stop = high_resolution_clock::now();
-		auto duration = duration_cast<milliseconds>(stop - start).count();
+		high_resolution_clock::time_point stop(high_resolution_clock::now());
+		U64 duration(duration_cast<milliseconds>(stop - start).count());
 		// Break if more than 95% of the target time has passed
 		if (duration >= maxTime*0.95) {
 			break;
@@ -94,7 +95,7 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 
 	pair<Move, EvalScore> ratedMove;
 	Move m;
-	short i = 1;
+	short i(1);
 	// Loop to increase depth until time is up
 	while (i <= depth) {
 
@@ -128,7 +129,7 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 
 	pair<Move, EvalScore> ratedMove;
 	Move m;
-	short i = 2;
+	short i(2);
 	// Loop to increase depth until time is up
 	while (true) {
 

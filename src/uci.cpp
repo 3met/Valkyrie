@@ -13,8 +13,8 @@ UCI::UCI() {};
 UCI::~UCI() {};
 
 // --- Static Members ---
-const string UCI::ENGINE_NAME = "Chess Engine v1";
-const string UCI::ENGINE_AUTHOR = "Emet Behrendt";
+const string UCI::ENGINE_NAME("Chess Engine v1");
+const string UCI::ENGINE_AUTHOR("Emet Behrendt");
 
 // --- Main Methods ---
 // Runs command associated with input if such a command exists.

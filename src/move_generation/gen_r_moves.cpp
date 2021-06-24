@@ -10,11 +10,11 @@ void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
 	vector<U8> start;
 	cs->pieces[cs->turn][cs->ROOK].getPosVec(&start);
 
-	U8 i, j;
+	U8 j;
 	Bitboard occ;
 	Bitboard targets;
 	vector<U8> end;
-	for (i=0; i<start.size(); ++i) {
+	for (U8 i(0); i<start.size(); ++i) {
 		// Find all potential squares
 		occ.board = cs->pieces[0][6].board | cs->pieces[1][6].board;
 		occ.board &= rookMasks[start[i]].board;

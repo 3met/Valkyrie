@@ -18,9 +18,7 @@ ChessState::ChessState() {
 };
 
 ChessState::ChessState(const ChessState* cs) {
-	U8 i;
-
-	for (i=0; i<7; ++i) {
+	for (U8 i(0); i<7; ++i) {
 		pieces[WHITE][i] = cs->pieces[WHITE][i];
 		pieces[BLACK][i] = cs->pieces[BLACK][i];
 	}
@@ -49,7 +47,7 @@ Move ChessState::lastMove() {
 // Returns the type of piece at the given position
 S8 ChessState::getPieceType(bool color, U8 pos) {
 
-	for (U8 i=0; i<6; ++i) {
+	for (U8 i(0); i<6; ++i) {
 		if (pieces[color][i].getPos(pos)) {
 			return i;
 		}
@@ -61,16 +59,17 @@ S8 ChessState::getPieceType(bool color, U8 pos) {
 // Updates the all pieces bitboard for the passed color
 void ChessState::updateAllBitboard(bool color) {
 	pieces[color][ALL_PIECES] = 0;
-	for (U8 i=0; i<6; ++i) {
+	for (U8 i(0); i<6; ++i) {
 		pieces[color][ALL_PIECES].board |= pieces[color][i].board;
 	}
 }
 
 // Converts chess notation to Move object (a7b8q ==> Move)
 Move ChessState::notationToMove(string notation) {
-	U8 start = Move::coordToPos(notation.substr(0, 2));
-	U8 end = Move::coordToPos(notation.substr(2, 2));
-	U8 pieceType = getPieceType(turn, start);
+	U8 start(Move::coordToPos(notation.substr(0, 2)));
+	U8 end(Move::coordToPos(notation.substr(2, 2)));
+	U8 pieceType(getPieceType(turn, start));
+
 	U8 killed;
 	// Check for en passant killing
 	if (end == enPassant && pieceType == PAWN) {

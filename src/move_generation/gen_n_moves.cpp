@@ -6,7 +6,7 @@
 
 // Generates all psudo-legal knight moves
 void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
-	U8 i, j;
+	U8 j;
 	vector<U8> start;
 	Bitboard target_board;
 	vector<U8> targets;
@@ -15,7 +15,7 @@ void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 	// Get all knight locations
 	cs->pieces[cs->turn][cs->KNIGHT].getPosVec(&start);
 
-	for (i=0; i<start.size(); ++i) {
+	for (U8 i(0); i<start.size(); ++i) {
 		// Get potential squares
 		target_board = NMoveDB[start[i]];
 		// Remove squares with same colored pieces

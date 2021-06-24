@@ -175,7 +175,7 @@ inline U8 Bitboard::LSB() {
 
 // Pop lowest significant bit
 inline U8 Bitboard::popLSB() {
-	U8 lsb = this->LSB();
+	U8 lsb(this->LSB());
 	this->board &= this->board - 1;
 	return lsb;
 }
@@ -185,7 +185,7 @@ inline U8 Bitboard::popLSB() {
 void Bitboard::show() {
 	cout << "---------------" << endl;
 
-	for (U8 i=0; i<64; ++i) {
+	for (U8 i(0); i<64; ++i) {
 		cout << ((board >> SHOW_ORDER[i]) & 1) << ' ';
 
 		if ((i+1) % 8 == 0) {
