@@ -12,7 +12,7 @@ void UCI::inputPosition(string input) {
 	std::vector<std::string> inVec;
 	UCI::splitString(input, &inVec);
 
-	short pos = 2;
+	short pos(2);
 
 	// Set position
 	if (inVec[1] == "fen") {

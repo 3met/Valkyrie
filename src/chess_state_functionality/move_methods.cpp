@@ -159,7 +159,7 @@ void ChessState::reverseMove() {
 	moveNumber -= 1;
 
 	// Revert en passant value
-	S8 oldEnPassant = *(enPassantHistory.end()-1);
+	S8 oldEnPassant(*(enPassantHistory.end()-1));
 	enPassantHistory.pop_back();
 	// If en passant variable needs to be updated
 	if (oldEnPassant != *(enPassantHistory.end()-1)) {

@@ -9,7 +9,7 @@
 void ChessState::clear() {
 	
 	// Reset bitboards
-	for (U8 i=0; i<2; ++i) {
+	for (U8 i(0); i<2; ++i) {
 		for (U8 j=0; j<6; ++j) {
 			pieces[i][j].board = 0;
 		}
@@ -45,9 +45,9 @@ void ChessState::loadFEN(string FEN) {
 	/* Loads FEN encoding into chess state */
 	this->clear();
 
-	U8 i=0;
+	U8 i(0);
 	pair<bool, U8> piece;
-	U8 FEN_index = 0;
+	U8 FEN_index(0);
 	// Load board
 	while (i < 64) {
 		// If number at index
@@ -132,7 +132,7 @@ void ChessState::loadFEN(string FEN) {
 	++FEN_index;	// Skip over space
 	++FEN_index;
 
-	U8 nLength = 1;	// Number digit length (567 ==> 3)
+	U8 nLength(1);	// Number digit length (567 ==> 3)
 	// Add halfmove count (allows varible number of digits)
 	while (true) {
 		if (FEN_index != FEN.size()-1 && FEN[FEN_index+1] != ' ') {
@@ -191,7 +191,7 @@ void ChessState::reset() {
 	this->updateAllBitboard(WHITE);
 	this->updateAllBitboard(BLACK);
 
-	turn = false;	// False for white; true for black
+	turn = WHITE;	// False for white; true for black
 
 	moveLostCastlePerms[WHITE][KING_SIDE] = -1;	// For reversing moves
 	moveLostCastlePerms[WHITE][QUEEN_SIDE] = -1;

@@ -19,7 +19,7 @@
  * 153-203	==> late game
  * 204-255	==> end game */
 U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
-	U8 gameStage = 0;
+	U8 gameStage(0);
 	
 	gameStage -= pieces[0][cs->PAWN].size() * 4;
 	gameStage -= pieces[1][cs->PAWN].size() * 4;
@@ -39,8 +39,8 @@ U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
 short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) {
 
 	U8 i;
-	short rating = 0;
-	U8 gameStage = rateGameStage(cs, pieces);
+	short rating(0);
+	U8 gameStage(rateGameStage(cs, pieces));
 
 	#ifdef USE_MATERIAL_VALUE
 		// --- Adjustment for Material Amount --- 
@@ -199,7 +199,7 @@ short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 		}
 	};
 
-	short rating = evalSide(cs, perspective, pieces) - evalSide(cs, !perspective, pieces);;
+	short rating(evalSide(cs, perspective, pieces) - evalSide(cs, !perspective, pieces));
 
 	return rating;
 }

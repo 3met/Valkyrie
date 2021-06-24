@@ -42,7 +42,7 @@ const short ChessEngine::materialValsHB[6] = {
 void ChessEngine::load() {
 	isLoaded = false;
 
-	bool success = true;
+	bool success(true);
 
 	// Load knight and king moves
 	success &= readBitboardTable(NMoveDB, "move-tables/knight/moves.dat");
@@ -90,7 +90,7 @@ void ChessEngine::clear() {
 	nodesTotal = 0;
 	this->transTable.clear();
 	this->pvTable.clear();
-	for (short i=0; i<MAX_SEARCH_DEPTH; ++i) {
+	for (short i(0); i<MAX_SEARCH_DEPTH; ++i) {
 		killerHeuristic[i].clear();
 	}
 }
@@ -111,11 +111,11 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 	EvalScore alpha(-1, true, 0);	// -INF; best score current color can achive 
 	EvalScore beta(1, true, 0);	// INF; best score other color can achive
-	short bestIndex = -1;	// -1 as default
+	short bestIndex(-1);	// -1 as default
 	EvalScore score;
 	HashScore hashScore;	// Transposition table entry
 
-	for (short i=0; i<moves.size(); ++i) {
+	for (U8 i(0); i<moves.size(); ++i) {
 
 		if (this->canSearch == false) {
 			return make_pair(Move(), alpha);	// Return null move
@@ -207,11 +207,11 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	// Move ordering
 	sortMoves(&moves, depth);
 
-	bool hasValidMove = false;
+	bool hasValidMove(false);
 	EvalScore score;
 	HashScore hashScore;	// Transposition table entry
 
-	for (U8 i=0; i<moves.size(); ++i) {
+	for (U8 i(0); i<moves.size(); ++i) {
 
 		cs->move(moves[i]);
 

@@ -7,7 +7,7 @@ void UCI::inputMove(string input) {
 	std::vector<std::string> inVec;
 	UCI::splitString(input, &inVec);
 
-	short pos = 1;
+	short pos(1);
 
 	while (pos != inVec.size()) {
 		cs.move(cs.notationToMove(inVec[pos]));

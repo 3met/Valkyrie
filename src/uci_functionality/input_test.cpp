@@ -13,7 +13,7 @@ void UCI::inputTest(string input) {
 	std::vector<string> inVec;
 	this->splitString(input, &inVec);
 
-	bool verbose = false;
+	bool verbose(false);
 
 	if (inVec.size() > 2 && inVec[2] == "verbose") {
 		verbose = true;

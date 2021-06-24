@@ -38,7 +38,7 @@ Move::Move(S8 p, U8 s, U8 e, S8 k, S8 pro) {
 Move::~Move() {}
 
 string Move::posToCoord(const U8 pos) {
-	char file = 'a';
+	char file('a');
 	file += pos % 8;
 	return file + to_string((pos/8) + 1);
 }

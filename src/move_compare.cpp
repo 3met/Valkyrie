@@ -45,7 +45,7 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 	}
 
 	// Killer heuristic moves
-	for (U8 i=0; i<engine->killerHeuristic[depth].size(); ++i) {
+	for (U8 i(0); i<engine->killerHeuristic[depth].size(); ++i) {
 		if (a == engine->killerHeuristic[depth][i]) {
 			return true;
 		} else if (b == engine->killerHeuristic[depth][i]) {

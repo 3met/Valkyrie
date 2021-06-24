@@ -8,12 +8,12 @@ void ChessEngine::genQMoves(ChessState* cs, vector<Move>* moves) {
 	vector<U8> start;
 	cs->pieces[cs->turn][cs->QUEEN].getPosVec(&start);
 
-	U8 i, j;
+	U8 j;
 	U64 occ;
 	Bitboard open;
 	Bitboard targets;
 	vector<U8> end;
-	for (i=0; i<start.size(); ++i) {
+	for (U8 i(0); i<start.size(); ++i) {
 		occ = cs->pieces[0][6].board | cs->pieces[1][6].board;
 		// --- Bishop-like moves ---
 		// Find all potential squares

@@ -16,16 +16,16 @@ void UCI::inputGo(string input) {
 
 	// "go" command variables
 	std::vector<Move> searchMoves;
-	int wTime = 0;
-	int bTime = 0;
-	int wInc = 0;
-	int bInc = 0;
-	S8 depth = -1;
-	U64 nodes = 0;
-	bool infinite = false;
-	int moveTime = -1;
+	int wTime(0);
+	int bTime(0);
+	int wInc(0);
+	int bInc(0);
+	S8 depth(-1);
+	U64 nodes(0);
+	bool infinite(false);
+	int moveTime(-1);
 
-	short i = 1;
+	short i(1);
 	while (true) {
 		if (i == inVec.size()) {
 			break;
@@ -64,7 +64,7 @@ void UCI::inputGo(string input) {
 	this->engine.canSearch = true;
 
 	Move m;
-	bool continueStream = true;
+	bool continueStream(true);
 	thread outputThread(&UCI::streamOutputInfo, this, &continueStream);
 	if (infinite) {
 		m = engine.searchInfinite(this->cs);
