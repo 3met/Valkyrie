@@ -24,11 +24,11 @@ public:
 	ChessState(const ChessState* cs);
 	~ChessState();
 
-	enum color {
+	enum Color {
 		WHITE = 0,	// White must remain 0 for indexing to work
 		BLACK = 1,
 	};
-	enum pieceType {
+	enum PieceType {
 		PAWN = 0,	// Pawn must remain 0 for indexing to work
 		KNIGHT,		// Changing order may cause errors
 		BISHOP,
@@ -37,7 +37,7 @@ public:
 		KING,
 		ALL_PIECES,
 	};
-	enum castleSide {
+	enum CastleSide {
 		KING_SIDE = 0,
 		QUEEN_SIDE,
 	};

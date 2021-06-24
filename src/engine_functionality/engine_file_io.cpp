@@ -88,7 +88,7 @@ bool ChessEngine::readBonusTable(S8 bonusTable[64], string fileName, const U8 RE
 	return true;
 }
 
-bool ChessEngine::readOpeningBook(OpeningTable* openingTable, string fileName) {
+bool ChessEngine::readOpeningBook(OpeningTable* table, string fileName) {
 	ifstream db_file;
 
 	db_file.open(DATA_DIR + fileName);
@@ -148,7 +148,7 @@ bool ChessEngine::readOpeningBook(OpeningTable* openingTable, string fileName) {
 			}
 			// Add moves to opening table
 			if (moves.size() != 0) {
-				openingTable->add(&cs.bh, &moves);
+				table->add(&cs.bh, &moves);
 			}
 		}
 	}
