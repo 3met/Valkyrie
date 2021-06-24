@@ -83,7 +83,7 @@ const U8 Bitboard::FILE[64] = {
 
 // ----- Get and Set Methods -----
 
-/* Set the given position to the given value */
+// Set the given position to the given value
 void Bitboard::setPos(U8 pos, bool value) {
 	if (value) {
 		board ^= (-U64(1) ^ board) & (1ULL << pos);
@@ -92,22 +92,22 @@ void Bitboard::setPos(U8 pos, bool value) {
 	}
 }
 
-/* Set the given position on (1) */
+// Set the given position on (1)
 void Bitboard::setPosOn(U8 pos) {
 	board ^= (-U64(1) ^ board) & (1ULL << pos);
 }
 
-/* Set the given position off (0) */
+// Set the given position off (0)
 void Bitboard::setPosOff(U8 pos) {
 	board ^= (-U64(0) ^ board) & (1ULL << pos);
 }
 
-/* Returns the value of the bit position */
+// Returns the value of the bit position
 bool Bitboard::getPos(U8 pos) const {
 	return board >> pos & 1;
 }
 
-/* Returns the all positions with a positive value */
+// Returns the all positions with a positive value
 void Bitboard::getPosVec(vector<U8>* v) const {
 	Bitboard bb(this->board);
 
@@ -116,40 +116,40 @@ void Bitboard::getPosVec(vector<U8>* v) const {
 	}
 }
 
-/* Returns the all positions with a positive value */
+// Returns the all positions with a positive value
 vector<U8> Bitboard::getPosVec() const {
 	vector<U8> v;
 	getPosVec(&v);
 	return v;
 }
 
-/* Returns the all positions with a positive value 
-   Resets board to zero */
+// Returns the all positions with a positive value .
+// Resets board to zero.
 void Bitboard::popPosVec(vector<U8>* v) {
 	while (this->board != 0) {
 		v->push_back(this->popLSB());
 	}
 }
 
-/* Returns the all positions with a positive value
-   Resets board to zero */
+// Returns the all positions with a positive value.
+// Resets board to zero.
 vector<U8> Bitboard::popPosVec() {
 	vector<U8> v;
 	popPosVec(&v);
 	return v;
 }
 
-/* Return the position of the first "true" bit */
+// Return the position of the first "true" bit
 U8 Bitboard::getFirstPos() {
 	return LSB();
 }
 
-/* Return the position of the first "true" bit */
+// Return the position of the first "true" bit
 vector<U8> Bitboard::getFirstPosVec() {
 	return vector<U8>(1, LSB());
 }
 
-/* Pop lowest significant bit */
+// Pop lowest significant bit
 inline U8 Bitboard::LSB() {
 	U8* bytes = (U8*)(&this->board);
 
@@ -173,7 +173,7 @@ inline U8 Bitboard::LSB() {
 }
 
 
-/* Pop lowest significant bit */
+// Pop lowest significant bit
 inline U8 Bitboard::popLSB() {
 	U8 lsb = this->LSB();
 	this->board &= this->board - 1;
@@ -181,7 +181,7 @@ inline U8 Bitboard::popLSB() {
 }
 
 // ----- Output Methods -----
-/* Displays Bitboard on Console */
+// Displays Bitboard on Console
 void Bitboard::show() {
 	cout << "---------------" << endl;
 

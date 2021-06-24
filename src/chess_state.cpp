@@ -46,8 +46,8 @@ Move ChessState::lastMove() {
 	return *(moveList.end()-1);
 }
 
+// Returns the type of piece at the given position
 S8 ChessState::getPieceType(bool color, U8 pos) {
-	/* Returns the type of piece at the given position */
 
 	for (U8 i=0; i<6; ++i) {
 		if (pieces[color][i].getPos(pos)) {

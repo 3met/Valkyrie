@@ -1,8 +1,8 @@
 
-/* --- In this File ---
- * 1. ChessEngine Constructor
- * 2. Material value sets
- * 3. Best move calculations (negamax, alpha-beta) */
+// --- In this File ---
+// 1. ChessEngine Constructor
+// 2. Material value sets
+// 3. Best move calculations (negamax, alpha-beta)
 
 #include <iostream>
 #include <stdexcept>
@@ -39,7 +39,7 @@ const short ChessEngine::materialValsHB[6] = {
 	100, 320, 333, 510, 880, 30000,
 };
 
-/* Load data nessesary to operate chess engine */
+// Load data nessesary to operate chess engine
 void ChessEngine::load() {
 	isLoaded = false;
 
@@ -82,7 +82,7 @@ void ChessEngine::load() {
 	}
 }
 
-/* Clear all temporary data */
+// Clear all temporary data
 void ChessEngine::clear() {
 	nSearches = 0;	// Number of searches preformed
 	currDepth = 0;
