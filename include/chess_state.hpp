@@ -16,14 +16,11 @@ using namespace std;
 
 class ChessState {
 private:
+	// Misc Methods
 	void mapBoardToChar(Bitboard b, char arr[64], char target);
 	void updateAllBitboard(bool color);
 
 public:
-	ChessState();
-	ChessState(const ChessState* cs);
-	~ChessState();
-
 	enum Color {
 		WHITE = 0,	// White must remain 0 for indexing to work
 		BLACK = 1,
@@ -41,6 +38,10 @@ public:
 		KING_SIDE = 0,
 		QUEEN_SIDE,
 	};
+
+	ChessState();
+	ChessState(const ChessState* cs);
+	~ChessState();
 
 	// Sort chess state by turn
 	friend bool operator<(const ChessState& a, const ChessState& b) {
@@ -81,26 +82,27 @@ public:
 		}
 	};
 	
-	// Query Methods
-	S8 getPieceType(bool color, U8 pos);
-	Move lastMove();
-
-	// Setup Methods
-	void reset();
-	void clear();
-	void place(bool color, U8 piece, U8 pos);
-	pair<bool, U8> charToPiece(char piece);
-	void loadFEN(string FEN);
-	Move notationToMove(string notation);
-
-	// Playing Methods
+	// Move Methods
 	void move(Move m);
 	void reverseMove();
 
-	// Output Methods
+	// Configuration Methods
+	void clear();
+	void loadFEN(string FEN);
+	void place(bool color, U8 piece, U8 pos);
+	void reset();
+
+	// Printing Methods
 	string stringFEN();
 	void show();
 	void show(bool show_coords);
+
+	// Misc Methods
+	Move lastMove();
+	S8 getPieceType(bool color, U8 pos);
+	Move notationToMove(string notation);
+	pair<bool, U8> charToPiece(char piece);
+
 };
 
 #endif
