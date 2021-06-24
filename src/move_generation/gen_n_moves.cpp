@@ -4,7 +4,7 @@
 #include "S8.hpp"
 #include "U8.hpp"
 
-/* Generates all legal knight moves */
+// Generates all psudo-legal knight moves
 void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 	U8 i, j;
 	vector<U8> start;
@@ -18,7 +18,7 @@ void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 	for (i=0; i<start.size(); ++i) {
 		// Get potential squares
 		target_board = NMoveDB[start[i]];
-		// Remove squares with same coloured pieces
+		// Remove squares with same colored pieces
 		target_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);	
 		// Positions of all targets
 		targets = target_board.popPosVec();

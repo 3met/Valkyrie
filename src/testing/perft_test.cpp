@@ -5,11 +5,12 @@
 #include <vector>
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
-#include "U64.hpp"
 #include "U8.hpp"
+#include "U64.hpp"
 
 using namespace std;
 
+// Contains a test case for testing engine's perft function.
 class PerftTestCase {
 public:
 	string FEN;
@@ -100,7 +101,9 @@ std::vector<PerftTestCase> PERFT_TEST_LIST = {
 	PerftTestCase("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10", 4, 3894594),
 };
 
-/* Returns true if passed, else false */
+// Times perft test cases.
+// Returns true if passed, else false.
+// Good assesment of moves generation speed.
 bool perftTest(bool verbose) {
 	if (verbose) {
 		cout << "------ Begin Perft Test ------" << endl;

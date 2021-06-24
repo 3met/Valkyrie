@@ -4,14 +4,14 @@
 #include "S8.hpp"
 #include "U8.hpp"
 
+// Generates all psudo-legal king moves
 void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
-	/* Generates all legal king moves */
 	
 	// Start position of the king
 	U8 start = cs->pieces[cs->turn][cs->KING].getFirstPos();
 	// Get surrounding squares
 	Bitboard target_board = KMoveDB[start];
-	// Remove squares with same coloured pieces
+	// Remove squares with same colored pieces
 	target_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);
 	// Positions of all target squares
 	vector<U8> targets = target_board.popPosVec();

@@ -1,7 +1,7 @@
 	
 #include "uci.hpp"
 
-/* Clears the console */
+// Clears the console.
 void UCI::inputClear() {
 	#if defined _WIN32
 	system("cls");

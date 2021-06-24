@@ -4,8 +4,7 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
-/* Check if a ray-movement hit an attacker
-   "turn" represents the color of the attacker */
+// Check if a square is attacked "turn" represents the color of the attacker
 bool ChessEngine::isPosAttacked(ChessState* cs, bool turn, U8 pos) {
 	// Check if attacked by knight
 	if ((NMoveDB[pos].board & cs->pieces[turn][cs->KNIGHT].board) != 0) {

@@ -2,9 +2,8 @@
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 
+// Generates all psudo-legal moves
 void ChessEngine::genAllMoves(ChessState* cs, vector<Move>* moves) {
-	/* Generates all moves in a givin ChessState */
-
 	if (cs->pieces[cs->turn][cs->PAWN].board) {
 		genPMoves(cs, moves);
 	}

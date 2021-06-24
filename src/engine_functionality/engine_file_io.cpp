@@ -5,12 +5,13 @@
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "opening_table.hpp"
-#include "U64.hpp"
-#include "U8.hpp"
 #include "S8.hpp"
+#include "U8.hpp"
+#include "U64.hpp"
 
 string DATA_DIR = "../data/";
 
+// Reads files containing a table of bitboard data
 bool ChessEngine::readBitboardTable(Bitboard table[64], string fileName) {
 	ifstream db_file;
 
@@ -29,6 +30,7 @@ bool ChessEngine::readBitboardTable(Bitboard table[64], string fileName) {
 	return true;
 }
 
+// Reads magic bitboard file data
 bool ChessEngine::readMagicTable(U8 magicShifts[64], Bitboard magics[64], string fileName) {
 	ifstream db_file;
 
@@ -49,6 +51,7 @@ bool ChessEngine::readMagicTable(U8 magicShifts[64], Bitboard magics[64], string
 	return true;
 }
 
+// Reads magic bitboard attack table data
 bool ChessEngine::readAttackTable(Bitboard* attackTable[64], string directory) {
 	ifstream db_file;
 
@@ -70,6 +73,7 @@ bool ChessEngine::readAttackTable(Bitboard* attackTable[64], string directory) {
 	return true;
 }
 
+// Reads bonus table data
 bool ChessEngine::readBonusTable(S8 bonusTable[64], string fileName, const U8 READ_ORDER[64]) {
 	ifstream db_file;
 
@@ -88,6 +92,7 @@ bool ChessEngine::readBonusTable(S8 bonusTable[64], string fileName, const U8 RE
 	return true;
 }
 
+// Reads opening book data
 bool ChessEngine::readOpeningBook(OpeningTable* table, string fileName) {
 	ifstream db_file;
 

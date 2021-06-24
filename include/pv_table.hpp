@@ -7,7 +7,9 @@
 
 using namespace std;
 
-/* Implementation of a triangular PV table */
+// Implementation of a triangular PV table.
+// Stores triangular 2D-array of moves lines.
+// Used to store principal variation in alpha-beta search.
 class PvTable {
 private:
 	Move** table;

@@ -1,12 +1,12 @@
 
 #include "uci.hpp"
 
-/* Prepare the chess engine for a new game */
+// Prepare the chess engine for a new game.
+// Resets chess state and engine variables
 void UCI::inputUcinewgame() {
 
-	cs.reset();
+	this->engine.canSearch = false;		// Stop engine from searching
 
-	this->engine.canSearch = false;
-
+	this->cs.reset();
 	this->engine.clear();
 }

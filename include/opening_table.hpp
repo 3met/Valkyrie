@@ -11,6 +11,7 @@
 
 using namespace std;
 
+// Wrapper for a map containing an opening book.
 class OpeningTable {
 private:
 	map<BoardHash, vector<Move>> table;
@@ -19,6 +20,7 @@ public:
 	OpeningTable();
 	~OpeningTable();
 
+	// Modifiers
 	void clear();
 	size_t size();
 
