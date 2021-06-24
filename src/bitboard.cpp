@@ -2,8 +2,8 @@
 #include <iostream>
 #include <vector>
 #include "bitboard.hpp"
-#include "U64.hpp"
 #include "U8.hpp"
+#include "U64.hpp"
 
 using namespace std;
 
@@ -217,7 +217,7 @@ const U8 Bitboard::FILE_POSITIONS[64][7] = {
 	{7,	15,	23,	31,	39,	47,	55},
 };
 
-// |~| ----- Get and Set Methods -----
+// ----- Get and Set Methods -----
 
 /* Set the given position to the given value */
 void Bitboard::setPos(U8 pos, bool value) {
@@ -344,7 +344,7 @@ inline U8 Bitboard::popLSB() {
 	return lsb;
 }
 
-// |~| ----- Output Methods -----
+// ----- Output Methods -----
 /* Displays Bitboard on Console */
 void Bitboard::show() {
 	cout << "---------------" << endl;
