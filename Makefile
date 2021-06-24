@@ -15,7 +15,7 @@ DATA		:= data
 RELEASE_DIR		:= ..\\releases
 RELEASE_NAME	:= release
 
-EXE			:= main.exe
+EXE			:= EB-chess.exe
 DEBUG_EXE	:= debug.exe
 
 FILE_TYPES	:= *.c *.cpp *.cc *.cxx *.c++ *.C *.cp
