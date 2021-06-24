@@ -13,18 +13,18 @@ using namespace std;
 class PvTable {
 private:
 	Move** table;
-	int triangleSize;
+	short triangleSize;
 
 public:
-	PvTable(int maxDepth);
+	PvTable(short maxDepth);
 	~PvTable();
 
-	inline Move* operator[](int n) {
+	inline Move* operator[](short n) {
 		return table[n];
 	}
 
 	void clear();
-	void copyNext(int target);
+	void copyNext(short target);
 };
 
 #endif

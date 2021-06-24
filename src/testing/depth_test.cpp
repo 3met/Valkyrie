@@ -54,7 +54,7 @@ void depthTest(bool verbose) {
 
 	U64 totalDuration(0);
 
-	for (int i(0); i<DEPTH_TEST_LIST.size(); ++i) {
+	for (short i(0); i<DEPTH_TEST_LIST.size(); ++i) {
 		if (verbose) {
 			cout << "Stage: " << (i+1) << "/" << DEPTH_TEST_LIST.size() << endl;
 		}

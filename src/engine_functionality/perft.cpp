@@ -20,7 +20,7 @@ U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 	vector<Move> moves;
 	genAllMoves(cs, &moves);
 	U64 total(0);
-	int moveTotal(0);
+	U64 moveTotal(0);
 
 	short nMoves(moves.size());
 	for (U8 i(0); i<nMoves; ++i) {

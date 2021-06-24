@@ -20,12 +20,12 @@ void UCI::inputGo(string input) {
 	std::vector<Move> searchMoves;
 	U64 wTime(0);
 	U64 bTime(0);
-	int wInc(0);
-	int bInc(0);
+	U64 wInc(0);
+	U64 bInc(0);
 	S8 depth(-1);
 	U64 nodes(0);
 	bool infinite(false);
-	int moveTime(-1);
+	U64 moveTime(-1);
 
 	// Fetching search specifications
 	short i(1);

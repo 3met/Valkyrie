@@ -20,7 +20,7 @@ mt19937 gen(rd());
 // Time is in microseconds.
 // "timeLeft" is time left on the clock.
 // "timeInc" is the time increment per move.
-Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
+Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	
 	// Start timer
 	high_resolution_clock::time_point start(high_resolution_clock::now());
@@ -42,7 +42,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	}
 
 	// Max time to choose move
-	int maxTime(min((timeLeft/20) + timeInc, timeLeft-200));
+	U64 maxTime(min((timeLeft/20) + timeInc, timeLeft-200));
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;

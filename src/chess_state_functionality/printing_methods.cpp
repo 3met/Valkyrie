@@ -19,7 +19,7 @@ string ChessState::stringFEN() {
 		this->mapBoardToChar(pieces[1][i], board, piece_names[1][i]);
 	}
 
-	int gap(0);
+	U8 gap(0);
 	for (i=0; i<64; ++i) {
 		if (board[Bitboard::SHOW_ORDER[i]] == '.') {
 			gap += 1;

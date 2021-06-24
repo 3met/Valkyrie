@@ -115,7 +115,7 @@ bool perftTest(bool verbose) {
 	bool passed(true);
 	U64 totalDuration(0);
 
-	int i(0);
+	short i(0);
 	for ( ; i<PERFT_TEST_LIST.size(); ++i) {
 		if (verbose) {
 			cout << "Stage: " << (i+1) << "/" << PERFT_TEST_LIST.size() << endl;

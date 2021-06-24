@@ -119,7 +119,7 @@ public:
 	// UCI accessible members
 	// Status Variables
 	bool canSearch = false;
-	int nSearches = 0;	// Number of searches preformed
+	short nSearches = 0;	// Number of searches preformed
 	// Information Variables
 	short currDepth = 0;
 	short currSelDepth = 0;
@@ -133,7 +133,7 @@ public:
 	short evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]);
 	
 	// Search Methods
-	Move searchOnTimer(ChessState cs, int timeLeft, int timeInc);
+	Move searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc);
 	Move searchInfinite(ChessState cs);
 	Move searchNodes(ChessState cs);
 	Move searchDepth(ChessState cs, U8 depth);

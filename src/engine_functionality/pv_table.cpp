@@ -2,10 +2,10 @@
 #include "pv_table.hpp"
 
 // Allocate memory for triangular PV Table
-PvTable::PvTable(int maxDepth) {
+PvTable::PvTable(short maxDepth) {
 	table = new Move* [maxDepth];
 
-	for (int i(0); i<maxDepth; ++i) {
+	for (short i(0); i<maxDepth; ++i) {
 		table[i] = new Move [maxDepth - i]();
 	}
 
@@ -14,7 +14,7 @@ PvTable::PvTable(int maxDepth) {
 
 // Delete to prevent memory leak
 PvTable::~PvTable() {
-	for (int i(0); i<triangleSize; ++i) {
+	for (short i(0); i<triangleSize; ++i) {
 		delete [] table[i];
 	}
 
@@ -23,8 +23,8 @@ PvTable::~PvTable() {
 
 // Reset table to null moves
 void PvTable::clear() {
-	int j;
-	for (int i(0); i<triangleSize; ++i) {
+	short j;
+	for (short i(0); i<triangleSize; ++i) {
 		for (j=0; j<(triangleSize-i); ++j) {
 			table[i][j] = Move();
 		}
@@ -32,6 +32,6 @@ void PvTable::clear() {
 }
 
 // Copies and overwrites from next line
-void PvTable::copyNext(int target) {
+void PvTable::copyNext(short target) {
 	memcpy(table[target] + 1, table[target+1], (triangleSize-target-1) * sizeof(Move));
 }
