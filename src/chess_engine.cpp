@@ -211,7 +211,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 		cs->move(moves[i]);
 
-		// Use trans table value if is exists
+		// Use trans table value if it exists
 		if (this->transTable.contains(&cs->bh)) {
 			hasValidMove = true;
 
@@ -235,6 +235,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			}
 		}
 
+		// Check if move is legal before preceding
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			
 			score = -negamaxSearch(cs, depth+1, depthTarget, -beta, -alpha);
