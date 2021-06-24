@@ -18,8 +18,8 @@ void UCI::inputGo(string input) {
 
 	// "go" command variables
 	std::vector<Move> searchMoves;
-	int wTime(0);
-	int bTime(0);
+	U64 wTime(0);
+	U64 bTime(0);
 	int wInc(0);
 	int bInc(0);
 	S8 depth(-1);
@@ -38,16 +38,16 @@ void UCI::inputGo(string input) {
 
 		} else if (inVec[i] == "wtime") {
 			i += 1;
-			wTime = stoi(inVec[i]);
+			wTime = stoi(inVec[i]) * 1000;
 		} else if (inVec[i] == "btime") {
 			i += 1;
-			bTime = stoi(inVec[i]);
+			bTime = stoi(inVec[i]) * 1000;
 		} else if (inVec[i] == "winc") {
 			i += 1;
-			wInc = stoi(inVec[i]);
+			wInc = stoi(inVec[i]) * 1000;
 		} else if (inVec[i] == "binc") {
 			i += 1;
-			bInc = stoi(inVec[i]);
+			bInc = stoi(inVec[i]) * 1000;
 		} else if (inVec[i] == "depth") {
 			i += 1;
 			depth = stoi(inVec[i]);
@@ -58,7 +58,7 @@ void UCI::inputGo(string input) {
 			infinite = true;
 		} else if (inVec[i] == "movetime") {
 			i += 1;
-			moveTime = stoi(inVec[i]);
+			moveTime = stoi(inVec[i]) * 1000;
 		}
 
 		i += 1;

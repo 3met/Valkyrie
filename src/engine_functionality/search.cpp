@@ -17,7 +17,7 @@ random_device rd;	// Seed
 mt19937 gen(rd());
 
 // Needs to be run in it's own thread in order to execute properly.
-// Time is in milliseconds.
+// Time is in microseconds.
 // "timeLeft" is time left on the clock.
 // "timeInc" is the time increment per move.
 Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
@@ -63,7 +63,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 		
 		// Check if time remains
 		high_resolution_clock::time_point stop(high_resolution_clock::now());
-		U64 duration(duration_cast<milliseconds>(stop - start).count());
+		U64 duration(duration_cast<microseconds>(stop - start).count());
 		// Break if more than 95% of the target time has passed
 		if (duration >= maxTime*0.95) {
 			break;
