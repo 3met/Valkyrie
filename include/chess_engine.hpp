@@ -8,14 +8,15 @@
 #include <utility>
 #include <vector>
 #include "bitboard.hpp"
-#include "eval_score.hpp"
-#include "opening_table.hpp"
-#include "transposition_table.hpp"
 #include "chess_state.hpp"
+#include "eval_score.hpp"
 #include "move.hpp"
+#include "opening_table.hpp"
+#include "pv_table.hpp"
+#include "transposition_table.hpp"
+#include "S8.hpp"
 #include "U64.hpp"
 #include "U8.hpp"
-#include "S8.hpp"
 
 using namespace std;
 
@@ -102,7 +103,7 @@ public:
 	U8 maxDepth;
 	TranspositonTable transTable;					// Transposition table
 	deque<Move> killerHeuristic[MAX_SEARCH_DEPTH];	// Killer Heuristic
-	Move pTable[MAX_SEARCH_DEPTH];					// Principal Variation Table
+	PvTable pvTable = PvTable(MAX_SEARCH_DEPTH);	// Principal Variation Table
 
 	// UCI accessible members
 	// Status Variables

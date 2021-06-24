@@ -89,9 +89,9 @@ void ChessEngine::clear() {
 	currScore = EvalScore(0);
 	nodesTotal = 0;
 	this->transTable.clear();
+	this->pvTable.clear();
 	for (short i=0; i<MAX_SEARCH_DEPTH; ++i) {
 		killerHeuristic[i].clear();
-		pTable[i] = Move();	// Reset to null moves
 	}
 }
 
@@ -131,6 +131,8 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 				if (hashScore.score > alpha) {
 					alpha = hashScore.score;
 					bestIndex = i;
+					pvTable[0][0] = moves[i];
+					// TODO: NO NEXT TO COPY ....?
 				}
 
 				// Continue to next move at this point because the hash 
@@ -155,6 +157,8 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			if (score > alpha) {
 				alpha = score;
 				bestIndex = i;
+				pvTable[0][0] = moves[i];
+				pvTable.copyNext(0);
 			}
 		}
 
@@ -226,6 +230,8 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 				if (hashScore.score > alpha) {
 					alpha = hashScore.score;
+					pvTable[depth][0] = moves[i];
+					// TODO: NO NEXT TO COPY ....?
 				}
 
 				// Continue to next move at this point because the hash 
@@ -258,6 +264,8 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			if (score > alpha) {
 				alpha = score;
+				pvTable[depth][0] = moves[i];
+				pvTable.copyNext(depth);
 			}
 		}
 

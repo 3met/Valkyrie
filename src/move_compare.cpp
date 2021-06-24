@@ -19,7 +19,17 @@ MoveCompare::MoveCompare(ChessEngine* _engine, U8 _depth) {
 	this->depth = _depth;
 };
 
+/* Operator to compare moves for move ordering */
 bool MoveCompare::operator()(const Move& a, const Move& b) const {
+	// PV Table Matches
+	if (depth > 0) {
+		if (a == engine->pvTable[depth-1][1]) {
+			return true;
+		} else if (b == engine->pvTable[depth-1][1]) {
+			return false;
+		}
+	}
+
 	// Killed pieces by decreasing value
 	if (a.killed > b.killed) {
 		return true;
