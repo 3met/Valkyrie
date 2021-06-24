@@ -21,14 +21,14 @@
 U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
 	U8 gameStage(0);
 	
-	gameStage -= pieces[0][cs->PAWN].size() * 4;
-	gameStage -= pieces[1][cs->PAWN].size() * 4;
+	gameStage -= pieces[0][cs->PAWN].size() << 2;
+	gameStage -= pieces[1][cs->PAWN].size() << 2;
 	gameStage -= pieces[0][cs->KNIGHT].size() * 10;
 	gameStage -= pieces[1][cs->KNIGHT].size() * 10;
 	gameStage -= pieces[0][cs->BISHOP].size() * 10;
 	gameStage -= pieces[1][cs->BISHOP].size() * 10;
-	gameStage -= pieces[0][cs->ROOK].size() * 16;
-	gameStage -= pieces[1][cs->ROOK].size() * 16;
+	gameStage -= pieces[0][cs->ROOK].size() << 4;
+	gameStage -= pieces[1][cs->ROOK].size() << 4;
 	gameStage -= pieces[0][cs->QUEEN].size() * 24;
 	gameStage -= pieces[1][cs->QUEEN].size() * 24;	
 

@@ -49,7 +49,7 @@ string Move::posToCoord(const U8 pos) {
 // Ex: b2 --> 9
 U8 Move::coordToPos(const string coord) {
 	// Returns 8 * (rank-1) + file[0-7]
-	return (8 * (coord[1] - '1')) + (coord[0] - 'a');	
+	return ((coord[1] - '1') << 3) + (coord[0] - 'a');
 }
 
 // Prints a move
