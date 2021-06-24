@@ -69,7 +69,7 @@ public:
 	short turnNumber;			// Game turn number
 	short moveNumber;
 
-	vector<Move> moveList;	// List of moves that lead to current game state
+	stack<Move> moveHistory;	// List of moves that lead to current game state
 
 	BoardHash bh;	// Current chess board hash
 

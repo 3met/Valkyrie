@@ -5,7 +5,7 @@
 // Assumes move is valid.
 void ChessState::move(Move m) {
 
-	moveList.push_back(m);
+	moveHistory.push(m);
 
 	// Removes potential killed piece from bitboard
 	if (m.killed != -1) {
@@ -148,7 +148,7 @@ void ChessState::move(Move m) {
 // Assumes move is valid.
 void ChessState::reverseMove() {
 
-	Move* m = &(*(moveList.end()-1));
+	Move m = moveHistory.top();
 
 	turn = !turn;	// Swaps turn
 	bh.updateTurn();
@@ -168,42 +168,42 @@ void ChessState::reverseMove() {
 	}
 
 	// Updates piece location on bitboard
-	if (m->promoted == -1) {
-		pieces[turn][m->piece].setPosOff(m->end);
-		bh.updatePiece(turn, m->piece, m->end);
+	if (m.promoted == -1) {
+		pieces[turn][m.piece].setPosOff(m.end);
+		bh.updatePiece(turn, m.piece, m.end);
 	} else {
-		pieces[turn][m->promoted].setPosOff(m->end);
-		bh.updatePiece(turn, m->promoted, m->end);
+		pieces[turn][m.promoted].setPosOff(m.end);
+		bh.updatePiece(turn, m.promoted, m.end);
 	}
-	pieces[turn][m->piece].setPosOn(m->start);
-	bh.updatePiece(turn, m->piece, m->start);
+	pieces[turn][m.piece].setPosOn(m.start);
+	bh.updatePiece(turn, m.piece, m.start);
 
 	// Adds previously killed piece to bitboard
-	if (m->killed != -1) {
-		if (m->end == enPassant) {
+	if (m.killed != -1) {
+		if (m.end == enPassant) {
 			// Place killed en passant piece
 			if (turn == WHITE) {
-				pieces[BLACK][PAWN].setPosOn(m->end-8);
-				bh.updatePiece(BLACK, PAWN, m->end-8);
+				pieces[BLACK][PAWN].setPosOn(m.end-8);
+				bh.updatePiece(BLACK, PAWN, m.end-8);
 			} else {	// Black's turn
-				pieces[WHITE][PAWN].setPosOn(m->end+8);
-				bh.updatePiece(WHITE, PAWN, m->end+8);
+				pieces[WHITE][PAWN].setPosOn(m.end+8);
+				bh.updatePiece(WHITE, PAWN, m.end+8);
 			}
 		} else {
-			pieces[!turn][m->killed].setPosOn(m->end);
-			bh.updatePiece(!turn, m->killed, m->end);
+			pieces[!turn][m.killed].setPosOn(m.end);
+			bh.updatePiece(!turn, m.killed, m.end);
 		}
 	}
 
 	// Reverse rook movement in castling
-	if (m->piece == KING) {
-		if (m->start == KING_START[turn]) {
-			if (m->end == KING_START[turn]+2) {
+	if (m.piece == KING) {
+		if (m.start == KING_START[turn]) {
+			if (m.end == KING_START[turn]+2) {
 				pieces[turn][ROOK].setPosOn(KING_START[turn]+3);
 				pieces[turn][ROOK].setPosOff(KING_START[turn]+1);
 				bh.updatePiece(turn, ROOK, KING_START[turn]+3);
 				bh.updatePiece(turn, ROOK, KING_START[turn]+1);
-			} else if (m->end == KING_START[turn]-2) {
+			} else if (m.end == KING_START[turn]-2) {
 				pieces[turn][ROOK].setPosOn(KING_START[turn]-4);
 				pieces[turn][ROOK].setPosOff(KING_START[turn]-1);
 				bh.updatePiece(turn, ROOK, KING_START[turn]-4);
@@ -236,7 +236,7 @@ void ChessState::reverseMove() {
 	}
 
 	// Remove reversed move from move list
-	moveList.pop_back();
+	moveHistory.pop();
 
 	// Update both universal bitboards
 	this->updateAllBitboard(turn);

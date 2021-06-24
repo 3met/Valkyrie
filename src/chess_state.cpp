@@ -41,7 +41,7 @@ ChessState::~ChessState() {};
 
 // Returns most recent move
 Move ChessState::lastMove() {
-	return *(moveList.end()-1);
+	return moveHistory.top();
 }
 
 // Returns the type of piece at the given position
