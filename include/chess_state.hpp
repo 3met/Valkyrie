@@ -9,7 +9,6 @@
 #include "bitboard.hpp"
 #include "board_hash.hpp"
 #include "move.hpp"
-#include "move_list.hpp"
 #include "U8.hpp"
 #include "S8.hpp"
 
@@ -68,7 +67,7 @@ public:
 	short turnNumber;	// Game turn number
 	short moveNumber;
 
-	MoveList moveList;	// List of moves that lead to current game state
+	vector<Move> moveList;	// List of moves that lead to current game state
 
 	BoardHash bh;	// Current chess board hash
 

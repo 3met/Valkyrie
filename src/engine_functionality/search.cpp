@@ -45,7 +45,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	int maxTime = min((timeLeft/20) + timeInc, timeLeft-200);
 
 	pair<Move, EvalScore> ratedMove;
-	std::vector<Move> bestMoves;
+	std::vector<Move> moveList;
 	short i = 1;
 	// Loop to increase depth until time is up
 	while (true) {
@@ -58,7 +58,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 			break;
 		}
 
-		bestMoves.push_back(ratedMove.first);
+		moveList.push_back(ratedMove.first);
 		this->currScore = ratedMove.second;
 		
 		// Check if time remains
@@ -71,8 +71,8 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 
 		// Break early if past 3 searches have the same result
 		// and more than half the target search time has passed
-		if (duration > maxTime*0.5 && bestMoves.size() >= 3
-			&& bestMoves[i-1] == bestMoves[i-2] && bestMoves[i-2] == bestMoves[i-3]) {
+		if (duration > maxTime*0.5 && moveList.size() >= 3
+			&& moveList[i-1] == moveList[i-2] && moveList[i-2] == moveList[i-3]) {
 
 			break;
 		}
@@ -81,7 +81,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, int timeLeft, int timeInc) {
 	}
 
 	++nSearches;
-	return *(bestMoves.end()-1);
+	return *(moveList.end()-1);
 }
 
 /* Seaches to a specific depth as specified */
