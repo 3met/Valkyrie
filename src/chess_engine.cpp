@@ -39,6 +39,8 @@ const short ChessEngine::materialValsHB[6] = {
 	100, 320, 333, 510, 880, 30000,
 };
 
+bool ChessEngine::isLoaded = false;
+
 // Load data nessesary to operate chess engine
 void ChessEngine::load() {
 	isLoaded = false;
@@ -72,7 +74,7 @@ void ChessEngine::load() {
 	success &= readBonusTable(kingEndBonus[0], "bonus-tables/king/end-game-table.tab");
 	success &= readBonusTable(kingEndBonus[1], "bonus-tables/king/end-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
 	// Load built-in opening book
-	success &= readOpeningBook(&openingTable, "opening_book.dat");
+	// success &= readOpeningBook(&openingTable, "opening_book.dat");
 
 	if (success) {
 		isLoaded = true;

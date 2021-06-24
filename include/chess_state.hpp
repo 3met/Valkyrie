@@ -17,7 +17,7 @@ using namespace std;
 class ChessState {
 private:
 	// Misc Methods
-	void mapBoardToChar(Bitboard b, char arr[64], char target);
+	static void mapBoardToChar(Bitboard b, char arr[64], char target);
 	void updateAllBitboard(bool color);
 
 public:
@@ -75,7 +75,7 @@ public:
 	// TODO: add Threefold repetition
 	// https://en.wikipedia.org/wiki/Threefold_repetition
 
-	// --- Custom Exceptions ---
+	// --- Custom Exception ---
 	struct NoMoves : public exception {
 		const char * what () const throw () {
 			return "There are no legal moves.";
@@ -101,7 +101,7 @@ public:
 	Move lastMove();
 	S8 getPieceType(bool color, U8 pos);
 	Move notationToMove(string notation);
-	pair<bool, U8> charToPiece(char piece);
+	static pair<bool, U8> charToPiece(char piece);
 };
 
 #endif
