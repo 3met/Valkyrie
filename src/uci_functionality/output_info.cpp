@@ -7,6 +7,7 @@
 
 using namespace std::chrono;
 
+// Prints search data with "info" output.
 void UCI::outputInfo() {
 	cout << "info depth " << engine.currDepth;
 	
@@ -26,6 +27,7 @@ void UCI::outputInfo() {
 	cout << endl;
 }
 
+// Continuously streams outputInfo
 void UCI::streamOutputInfo(bool* continueStream) {
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	while (*continueStream) {

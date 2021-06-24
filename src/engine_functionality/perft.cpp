@@ -8,11 +8,7 @@
 
 using namespace std;
 
-/*
-Perft Tests:
-http://talkchess.com/forum3/viewtopic.php?t=47318
-*/
-
+// Similar to perft, except prints nodes for each starting child node
 U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 
 	if (depth == 0) {
@@ -43,6 +39,7 @@ U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 	return total;
 }
 
+// Calculates how many moves combinations there are for a given depth.
 U64 ChessEngine::perft(ChessState* cs, U8 depth) {
 
 	if (depth == 0) {

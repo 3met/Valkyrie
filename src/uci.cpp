@@ -17,6 +17,7 @@ const string UCI::ENGINE_NAME("Chess Engine v1");
 const string UCI::ENGINE_AUTHOR("Emet Behrendt");
 
 // --- Main Methods ---
+// Runs command associated with input if such a command exists.
 void UCI::runCommand(string input) {
 	if (input == "stop") {
 		engine.canSearch = false;
@@ -51,7 +52,7 @@ void UCI::runCommand(string input) {
 	}
 }
 
-/* Deals with all UCI communication */
+// Deals with all UCI communication
 void UCI::run() {
 	string input;
 

@@ -1,6 +1,7 @@
 
 #include "uci.hpp"
 
+// Handles "uci" command.
 void UCI::inputUCI() {
 	cout << "id name " << this->ENGINE_NAME << endl;
 	cout << "id author " << this->ENGINE_AUTHOR << endl;

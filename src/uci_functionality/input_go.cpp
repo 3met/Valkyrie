@@ -7,6 +7,8 @@
 #include "uci.hpp"
 #include "U64.hpp"
 
+// Handles "go" input commands.
+// Runs engine searches based on input.
 void UCI::inputGo(string input) {
 	this->isSearching = true;
 
@@ -25,6 +27,7 @@ void UCI::inputGo(string input) {
 	bool infinite(false);
 	int moveTime(-1);
 
+	// Fetching search specifications
 	short i(1);
 	while (true) {
 		if (i == inVec.size()) {
@@ -79,9 +82,9 @@ void UCI::inputGo(string input) {
 
 	cout << "bestmove " << m << endl;
 	this->isSearching = false;
-
-	cout << "trans table size: " << engine.transTable.size() << endl;
-
 	continueStream = false;
+
+	cout << "info trans-table-size: " << engine.transTable.size() << endl;
+
 	outputThread.join();
 }

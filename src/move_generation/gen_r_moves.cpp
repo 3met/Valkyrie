@@ -4,7 +4,7 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
-
+// Generates all psudo-legal rook moves
 void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
 	// Get rook locations
 	vector<U8> start;

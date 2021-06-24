@@ -6,7 +6,7 @@
 
 using namespace std;
 
-/* Creates a null move */
+// Creates a null move
 Move::Move() {
 	piece = -1;
 }
@@ -23,7 +23,7 @@ Move::Move(S8 p, U8 s, U8 e, S8 k) {
 	piece = p;
 	start = s;
 	end = e;
-	killed = k;	// Piece killed; else -1
+	killed = k;		// Piece killed; else -1
 	promoted = -1;	// Piece promoted to; else -1
 }
 
@@ -31,23 +31,28 @@ Move::Move(S8 p, U8 s, U8 e, S8 k, S8 pro) {
 	piece = p;
 	start = s;
 	end = e;
-	killed = k;	// Piece killed; else -1
+	killed = k;		// Piece killed; else -1
 	promoted = pro;	// Piece promoted to; else -1
 }
 
 Move::~Move() {}
 
+// Returns a chess board coordinate from a given position.
+// Ex: 9 --> b2
 string Move::posToCoord(const U8 pos) {
 	char file('a');
 	file += pos % 8;
 	return file + to_string((pos/8) + 1);
 }
 
+// Turns a chess board coordinate to a position.
+// Ex: b2 --> 9
 U8 Move::coordToPos(const string coord) {
 	// Returns 8 * (rank-1) + file[0-7]
 	return (8 * (coord[1] - '1')) + (coord[0] - 'a');	
 }
 
+// Prints a move
 ostream& operator<<(ostream &os, const Move &m) { 
 	os << Move::posToCoord(m.start) << Move::posToCoord(m.end);
 	if (m.promoted != -1) {

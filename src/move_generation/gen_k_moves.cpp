@@ -4,8 +4,8 @@
 #include "S8.hpp"
 #include "U8.hpp"
 
+// Generates all psudo-legal king moves
 void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
-	/* Generates all legal king moves */
 	
 	// Start position of the king
 	U8 start(cs->pieces[cs->turn][cs->KING].getFirstPos());

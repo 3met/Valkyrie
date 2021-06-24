@@ -2,8 +2,8 @@
 #include <vector>
 #include "board_hash.hpp"
 #include "chess_state.hpp"
-#include "U8.hpp"
 #include "zobrist_values.hpp"
+#include "U8.hpp"
 
 using namespace std;
 
@@ -21,8 +21,8 @@ BoardHash::~BoardHash() {};
 
 ZobristValues BoardHash::zobristValues;
 
-/* Create Zobrist hash from previously generated numbers
- * using passed games state */
+// Create hash from previously generated Zobrist numbers
+// using passed games state
 void BoardHash::makeHash(const Bitboard pieces[2][7], const bool turn,
 	const bool castlePerms[2][2], const U8 enPassant) {
 
@@ -69,8 +69,7 @@ void BoardHash::makeHash(const Bitboard pieces[2][7], const bool turn,
 	}
 }
 
-/* The following methods update the hash without needing to
-   completely re-hash it. */
+// The following methods update the hash without needing to completely re-hash it.
 
 void BoardHash::updatePiece(bool color, U8 pieceType, U8 pos) {
 	hash ^= zobristValues.pieces[color][pieceType][pos];

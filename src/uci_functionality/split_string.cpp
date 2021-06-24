@@ -1,8 +1,7 @@
 
 #include "uci.hpp"
 
-/* Splits a string into seperate words by using ' '
-   (space) as a break point */
+// Splits a string into seperate words by using ' ' (space) as a break point
 void UCI::splitString(string str, vector<string>* strVec) {
 	size_t pos(str.find(' '));
 	size_t startPos(0);

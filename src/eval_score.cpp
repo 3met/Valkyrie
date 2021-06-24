@@ -24,6 +24,7 @@ EvalScore::EvalScore(short e, bool fM, U8 mTM) {
 
 EvalScore::~EvalScore() {}
 
+// Prints the eval score
 ostream& operator<< (ostream &out, EvalScore const& obj) {
 	if (obj.eval > 0) {
 		out << '+';

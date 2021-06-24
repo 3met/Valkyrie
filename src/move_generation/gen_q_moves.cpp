@@ -3,6 +3,7 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
+// Generates all psudo-legal queen moves
 void ChessEngine::genQMoves(ChessState* cs, vector<Move>* moves) {
 	// Get piece locations
 	vector<U8> start;

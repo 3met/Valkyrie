@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// Contains a test case for testing depth searches
 class DepthTestCase {
 public:
 	string FEN;
@@ -42,7 +43,7 @@ std::vector<DepthTestCase> DEPTH_TEST_LIST = {
 	DepthTestCase("2q1rr1k/3bbnnp/p2p1pp1/2pPp3/PpP1P1P1/1P2BNNP/2BQ1PRK/7R b - -", 6),
 };
 
-/* Returns true if passed, else false */
+// Times a list of test cases.
 void depthTest(bool verbose) {
 	if (verbose) {
 		cout << "------ Begin Depth Test ------" << endl;

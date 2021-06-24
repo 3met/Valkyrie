@@ -5,7 +5,7 @@
 #include "chess_state.hpp"
 #include "U8.hpp"
 
-/* Clears the board and resets game data */
+// Clears the board and resets game data
 void ChessState::clear() {
 	
 	// Reset bitboards
@@ -34,15 +34,15 @@ void ChessState::clear() {
 	enPassant = -1;
 	enPassantHistory.clear();
 	enPassantHistory.push_back(enPassant);
-	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
-	turnNumber = 1;	// Game turn number
+	halfmoveClock = 0;		// # of halfmoves since last capture or pawn move
+	turnNumber = 1;			// Game turn number
 	moveNumber = 1;
 
 	this->bh.makeHash(pieces, turn, castlePerms, enPassant);
 }
 
+// Loads FEN encoding into ChessState
 void ChessState::loadFEN(string FEN) {
-	/* Loads FEN encoding into chess state */
 	this->clear();
 
 	U8 i(0);
@@ -171,8 +171,8 @@ void ChessState::loadFEN(string FEN) {
 	this->bh.makeHash(pieces, turn, castlePerms, enPassant);
 }
 
+// Place piece on the board
 void ChessState::place(bool color, U8 pieceType, U8 pos) {
-	/* Place piece on the board */
 
 	pieces[color][pieceType].setPosOn(pos);
 	this->updateAllBitboard(color);
@@ -180,9 +180,8 @@ void ChessState::place(bool color, U8 pieceType, U8 pos) {
 	bh.updatePiece(color, pieceType, pos);
 }
 
+// Resets chess board to the start position.
 void ChessState::reset() {
-	/*	Resets chess board state to as it should
-		be at the beginning of a game.	*/
 
 	// Initial piece setup
 	this->loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -");
@@ -201,8 +200,8 @@ void ChessState::reset() {
 	enPassant = -1;
 	enPassantHistory.clear();
 	enPassantHistory.push_back(enPassant);
-	halfmoveClock = 0;	// # of halfmoves since last capture or pawn move
-	turnNumber = 1;	// Game turn number
+	halfmoveClock = 0;		// # of halfmoves since last capture or pawn move
+	turnNumber = 1;			// Game turn number
 	moveNumber = 1;
 
 	this->bh.makeHash(pieces, turn, castlePerms, enPassant);

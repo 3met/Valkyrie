@@ -9,8 +9,8 @@
 #include "bitboard.hpp"
 #include "board_hash.hpp"
 #include "move.hpp"
-#include "U8.hpp"
 #include "S8.hpp"
+#include "U8.hpp"
 
 using namespace std;
 
@@ -102,7 +102,6 @@ public:
 	S8 getPieceType(bool color, U8 pos);
 	Move notationToMove(string notation);
 	pair<bool, U8> charToPiece(char piece);
-
 };
 
 #endif

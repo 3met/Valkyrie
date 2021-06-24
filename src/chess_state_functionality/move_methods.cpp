@@ -1,9 +1,9 @@
 
 #include "chess_state.hpp"
 
+// Moves a piece on the board.
+// Assumes move is valid.
 void ChessState::move(Move m) {
-	/* 	Moves a piece on the board.
-		Assumes move is valid.	*/
 
 	moveList.push_back(m);
 
@@ -144,9 +144,9 @@ void ChessState::move(Move m) {
 	bh.updateTurn();
 }
 
+// Reverses a moves.
+// Assumes move is valid.
 void ChessState::reverseMove() {
-	/*	Reverses a moves.
-		Assumes move is valid.	*/
 
 	Move* m = &(*(moveList.end()-1));
 

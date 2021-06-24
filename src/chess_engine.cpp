@@ -1,8 +1,8 @@
 
-/* --- In this File ---
- * 1. ChessEngine Constructor
- * 2. Material value sets
- * 3. Best move calculations (negamax, alpha-beta) */
+// --- In this File ---
+// 1. ChessEngine Constructor
+// 2. Material value sets
+// 3. Best move calculations (negamax, alpha-beta)
 
 #include <iostream>
 #include <stdexcept>
@@ -39,6 +39,7 @@ const short ChessEngine::materialValsHB[6] = {
 	100, 320, 333, 510, 880, 30000,
 };
 
+// Load data nessesary to operate chess engine
 void ChessEngine::load() {
 	isLoaded = false;
 
@@ -81,7 +82,7 @@ void ChessEngine::load() {
 	}
 }
 
-/* Clear all temporary data */
+// Clear all temporary data
 void ChessEngine::clear() {
 	nSearches = 0;	// Number of searches preformed
 	currDepth = 0;
@@ -96,6 +97,8 @@ void ChessEngine::clear() {
 }
 
 // ----- Primary Operations -----
+
+// Head of recursive negamax search for the best move
 pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	
 	// Generate psudo-legal moves
@@ -111,9 +114,10 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 	EvalScore alpha(-1, true, 0);	// -INF; best score current color can achive 
 	EvalScore beta(1, true, 0);	// INF; best score other color can achive
-	short bestIndex(-1);	// -1 as default
+	short bestIndex(-1);	    // -1 as default
+
 	EvalScore score;
-	HashScore hashScore;	// Transposition table entry
+	HashScore hashScore;			// Transposition table entry
 
 	for (U8 i(0); i<moves.size(); ++i) {
 
@@ -173,7 +177,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	return make_pair(moves[bestIndex], alpha);
 }
 
-
+// Recursive negamax search for the best move
 EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta) {
 
 	// Check for recursion termination
@@ -224,10 +228,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			if (hashScore.depth >= (depthTarget - depth)) {
 				if (hashScore.score >= beta) {
 					cs->reverseMove();
-					// Add killer move
-					if (moves[i].killed == -1) {
-						this->addKillerMove(&moves[i], &depth);
-					}
+					this->addKillerMove(&moves[i], &depth);
 					return beta;
 				}
 
@@ -261,10 +262,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			if (score >= beta) {
 				cs->reverseMove();
-				// Add killer move
-				if (moves[i].killed == -1) {
-					this->addKillerMove(&moves[i], &depth);
-				}
+				this->addKillerMove(&moves[i], &depth);
 				return beta;
 			}
 

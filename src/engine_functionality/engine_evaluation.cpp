@@ -12,12 +12,12 @@
 #define USE_BACKWARD_PAWNS
 #define USE_BLOCKED_PAWNS
 
-/* A measure of how far the game has progressed
- * 0-50		==> opening
- * 51-101	==> early game
- * 102-152	==> mid game
- * 153-203	==> late game
- * 204-255	==> end game */
+// A measure of how far the game has progressed
+// 0-50		==> opening
+// 51-101	==> early game
+// 102-152	==> mid game
+// 153-203	==> late game
+// 204-255	==> end game
 U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
 	U8 gameStage(0);
 	
@@ -35,7 +35,7 @@ U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
 	return gameStage;
 }
 
-/* Evaluates a score for a single color/side */
+// Evaluates a score for a single color/side
 short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) {
 
 	U8 i;
@@ -169,10 +169,10 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 	return rating;
 }
 
-/* Evaluates the state of the entire board
- * A positive number indicates perspective player has an advantage
- * A negative number indicates other player has an advantage
- * The magnatude of the number represents the size of the advantage */
+// Evaluates the state of the entire board
+// A positive number indicates perspective player has an advantage
+// A negative number indicates other player has an advantage
+// The magnatude of the number represents the size of the advantage
 short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 
 	nodesTotal += 1;
