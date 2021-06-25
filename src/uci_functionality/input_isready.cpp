@@ -8,7 +8,7 @@ void UCI::inputIsready() {
 		engine.load();
 	}
 	
-	if (engine.isLoaded && !this->isSearching) {
+	if (engine.isLoaded && this->runPerm && !this->isRunning) {
 		cout << "readyok" << endl;
 	} else {
 		cout << "notready" << endl;

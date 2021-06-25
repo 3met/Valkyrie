@@ -16,7 +16,8 @@ private:
 	ChessState cs;
 	ChessEngine engine;
 
-	bool isSearching = false;
+	bool isRunning = false;
+	bool runPerm = true;	// Whether the object has permission to run
 
 	// Calculation Commands
 	void inputDivide(string input);

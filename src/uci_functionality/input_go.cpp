@@ -10,7 +10,7 @@
 // Handles "go" input commands.
 // Runs engine searches based on input.
 void UCI::inputGo(string input) {
-	this->isSearching = true;
+	this->isRunning = true;
 
 	// Break down input into words
 	std::vector<std::string> inVec;
@@ -81,7 +81,7 @@ void UCI::inputGo(string input) {
 	this->outputInfo();
 
 	cout << "bestmove " << m << endl;
-	this->isSearching = false;
+	this->isRunning = false;
 	continueStream = false;
 
 	cout << "info trans-table-size: " << engine.transTable.size() << endl;

@@ -1,4 +1,5 @@
 
+#include <chrono>
 #include <future>
 #include <iostream>
 #include <queue>
@@ -62,6 +63,14 @@ void UCI::run() {
 		getline(cin, input);
 
 		if (input == "quit") {
+			runPerm = false;
+
+			// Wait for anything running to finish
+			chrono::milliseconds span(25);
+			for (int i=0; i<futures.size(); ++i) {
+				while (futures[i].wait_for(span) == std::future_status::timeout) {}
+			}
+
 			break;
 		}
 
