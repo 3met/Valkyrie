@@ -83,7 +83,8 @@ private:
 	static bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
 	// Move Generation
-	static void genPMoves(ChessState* cs, vector<Move>* moves);
+	static void genWhitePMoves(ChessState* cs, vector<Move>* moves);
+	static void genBlackPMoves(ChessState* cs, vector<Move>* moves);
 	static void genNMoves(ChessState* cs, vector<Move>* moves);
 	static void genBMoves(ChessState* cs, vector<Move>* moves);
 	static void genRMoves(ChessState* cs, vector<Move>* moves);

@@ -5,7 +5,11 @@
 // Generates all psudo-legal moves
 void ChessEngine::genAllMoves(ChessState* cs, vector<Move>* moves) {
 	if (cs->pieces[cs->turn][cs->PAWN].board) {
-		genPMoves(cs, moves);
+		if (cs->turn == cs->WHITE) {
+			genWhitePMoves(cs, moves);
+		} else {
+			genBlackPMoves(cs, moves);
+		}
 	}
 	if (cs->pieces[cs->turn][cs->KNIGHT].board) {
 		genNMoves(cs, moves);
