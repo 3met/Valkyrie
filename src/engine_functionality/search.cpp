@@ -54,7 +54,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);
-		if (ratedMove.first.piece == -1) {	// Look for null move
+		if (ratedMove.first.isNull()) {	// Look for null move
 			break;
 		}
 
@@ -103,7 +103,7 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 		this->maxDepth = i;
 
 		ratedMove = this->bestMove(&cs, i);
-		if (ratedMove.first.piece == -1) {	// Look for null move
+		if (ratedMove.first.isNull()) {	// Look for null move
 			break;
 		}
 
@@ -137,7 +137,7 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);
-		if (ratedMove.first.piece == -1) {	// Look for null move
+		if (ratedMove.first.isNull()) {	// Look for null move
 			break;
 		}
 

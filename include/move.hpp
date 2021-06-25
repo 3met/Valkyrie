@@ -33,6 +33,9 @@ public:
 	static string posToCoord(const U8 pos);		// Position to coord (9 ==> b2)
 	static U8 coordToPos(const string coord);	// Coord to position (b2 ==> 9)
 	
+	inline bool isNull() {
+		return (piece == -1);
+	}
 	void print();
 };
 
