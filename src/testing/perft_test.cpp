@@ -16,6 +16,7 @@ public:
 	string FEN;
 	U8 depth;
 	U64 target;
+	ChessState* cs;
 
 	PerftTestCase(string _FEN, U8 _depth, U64 _target) {
 		FEN = _FEN;
@@ -23,12 +24,15 @@ public:
 		target = _target;
 	};
 
-	bool run(ChessEngine* engine, ChessState* cs, bool verbose=true) {
+	void load(ChessState* _cs) {
+		cs = _cs;
+		cs->loadFEN(this->FEN);
+	}
+
+	bool run(ChessEngine* engine, bool verbose=true) {
 		if (verbose) {
 			cout << "Position: " << FEN << endl;
 		}
-
-		cs->loadFEN(FEN);
 
 		U64 result(engine->perft(cs, depth));
 
@@ -121,9 +125,11 @@ bool perftTest(bool verbose) {
 			cout << "Stage: " << (i+1) << "/" << PERFT_TEST_LIST.size() << endl;
 		}
 
+		PERFT_TEST_LIST[i].load(&cs);
+
 		chrono::high_resolution_clock::time_point start(chrono::high_resolution_clock::now());
 
-		passed &= PERFT_TEST_LIST[i].run(&engine, &cs, verbose);
+		passed &= PERFT_TEST_LIST[i].run(&engine, verbose);
 
 		chrono::high_resolution_clock::time_point stop(chrono::high_resolution_clock::now());
 		U64 duration(chrono::duration_cast<chrono::microseconds>(stop - start).count());

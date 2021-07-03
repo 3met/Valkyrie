@@ -14,20 +14,23 @@ class DepthTestCase {
 public:
 	string FEN;
 	U8 depth;
+	ChessState* cs;
 
 	DepthTestCase(string _FEN, U8 _depth) {
 		FEN = _FEN;
 		depth = _depth;
 	};
 
-	void run(ChessEngine* engine, ChessState* cs, bool verbose=true) {
+	void load(ChessState* _cs) {
+		cs = _cs;
+		cs->loadFEN(this->FEN);
+	}
+
+	void run(ChessEngine* engine, bool verbose=true) {
 		if (verbose) {
 			cout << "Position: " << FEN << endl;
 			cout << "Depth: " << short(depth) << endl;
 		}
-
-		cs->loadFEN(FEN);
-
 		engine->searchDepth(*cs, depth);
 	}
 };
@@ -61,10 +64,11 @@ void depthTest(bool verbose) {
 		}
 
 		engine.clear();
+		DEPTH_TEST_LIST[i].load(&cs);
 
 		chrono::high_resolution_clock::time_point start(chrono::high_resolution_clock::now());
 		
-		DEPTH_TEST_LIST[i].run(&engine, &cs, verbose);
+		DEPTH_TEST_LIST[i].run(&engine, verbose);
 
 		chrono::high_resolution_clock::time_point stop(chrono::high_resolution_clock::now());
 		U64 duration(chrono::duration_cast<chrono::microseconds>(stop - start).count());

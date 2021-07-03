@@ -17,6 +17,7 @@ class EBFTestCase {
 public:
 	string FEN;
 	U8 depth;
+	ChessState* cs;
 
 	EBFTestCase(string _FEN, U8 _depth) {
 		FEN = _FEN;
@@ -27,13 +28,16 @@ public:
 		}
 	};
 
-	float run(ChessEngine* engine, ChessState* cs, bool verbose=true) {
+	void load(ChessState* _cs) {
+		cs = _cs;
+		cs->loadFEN(this->FEN);
+	}
+
+	float run(ChessEngine* engine, bool verbose=true) {
 		if (verbose) {
 			cout << "Position: " << FEN << endl;
 			cout << "Depth: " << short(depth) << endl;
 		}
-
-		cs->loadFEN(FEN);
 
 		engine->searchDepth(*cs, depth);
 		U64 N = engine->nodesTotal;
@@ -84,8 +88,9 @@ void EBF_Test(bool verbose) {
 		}
 
 		engine.clear();
+		EBF_TEST_LIST[i].load(&cs);
 		
-		meanEBF += EBF_TEST_LIST[i].run(&engine, &cs, verbose);
+		meanEBF += EBF_TEST_LIST[i].run(&engine, verbose);
 
 
 		if (verbose) {
