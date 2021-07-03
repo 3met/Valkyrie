@@ -27,6 +27,8 @@ void UCI::inputTest(string input) {
 		perftTest(verbose);
 	} else if (inVec[1] == "depth") {
 		depthTest(verbose);
+	} else if (inVec[1] == "ebf" || inVec[1] == "EBF") {
+		EBF_Test(verbose);
 	} else {
 		cout << "Unknown Test: " << inVec[1] << endl;
 	}

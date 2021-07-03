@@ -9,5 +9,7 @@
 bool perftTest(bool verbose=false);
 // testing/depth_test.cpp
 bool depthTest(bool verbose=false);
+// testing/EBF_test.cpp
+bool EBF_Test(bool verbose=false);
 
 #endif
