@@ -70,12 +70,12 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 			rating += knightBonus[pieces[side][cs->KNIGHT][i]];
 		}
 		// Bishop placement
-		for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
-			rating += bishopBonus[pieces[side][cs->KNIGHT][i]];
+		for (i=0; i<pieces[side][cs->BISHOP].size(); ++i) {
+			rating += bishopBonus[pieces[side][cs->BISHOP][i]];
 		}
 		// Queen placement
-		for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
-			rating += queenBonus[pieces[side][cs->KNIGHT][i]];
+		for (i=0; i<pieces[side][cs->QUEEN].size(); ++i) {
+			rating += queenBonus[pieces[side][cs->QUEEN][i]];
 		}
 		// King placement
 		if (gameStage <= 51) {
