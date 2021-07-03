@@ -36,9 +36,11 @@ public:
 	void setPosOff(U8 pos);
 	bool getPos(U8 pos) const;
 
-	// Get all positive positions in a vector
+	// Get all positive positions in a vector/array
+	void getPosArr(U8 arr[], U8* n) const;
 	void getPosVec(vector<U8>* v) const;
 	vector<U8> getPosVec() const;
+	void popPosArr(U8 arr[], U8* n);
 	void popPosVec(vector<U8>* v);
 	vector<U8> popPosVec();
 

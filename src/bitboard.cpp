@@ -108,6 +108,16 @@ bool Bitboard::getPos(U8 pos) const {
 }
 
 // Returns the all positions with a positive value
+void Bitboard::getPosArr(U8 arr[], U8* n) const {
+	*n = 0;
+	Bitboard bb(this->board);
+
+	for (U8 i(0); bb.board != 0; ++i) {
+		arr[i] = bb.popLSB();
+	}
+}
+
+// Returns the all positions with a positive value
 void Bitboard::getPosVec(vector<U8>* v) const {
 	Bitboard bb(this->board);
 
@@ -121,6 +131,16 @@ vector<U8> Bitboard::getPosVec() const {
 	vector<U8> v;
 	getPosVec(&v);
 	return v;
+}
+
+// Returns the all positions with a positive value .
+// Resets board to zero.
+void Bitboard::popPosArr(U8 arr[], U8* n) {
+	*n = 0;
+
+	for (U8 i(0); this->board != 0; ++i) {
+		arr[i] = this->popLSB();
+	}
 }
 
 // Returns the all positions with a positive value .
