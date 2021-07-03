@@ -58,10 +58,12 @@ S8 ChessState::getPieceType(bool color, U8 pos) {
 
 // Updates the all pieces bitboard for the passed color
 void ChessState::updateAllBitboard(bool color) {
-	pieces[color][ALL_PIECES] = 0;
-	for (U8 i(0); i<6; ++i) {
-		pieces[color][ALL_PIECES].board |= pieces[color][i].board;
-	}
+	pieces[color][ALL_PIECES].board = pieces[color][PAWN].board;
+	pieces[color][ALL_PIECES].board |= pieces[color][KNIGHT].board;
+	pieces[color][ALL_PIECES].board |= pieces[color][BISHOP].board;
+	pieces[color][ALL_PIECES].board |= pieces[color][ROOK].board;
+	pieces[color][ALL_PIECES].board |= pieces[color][QUEEN].board;
+	pieces[color][ALL_PIECES].board |= pieces[color][KING].board;
 }
 
 // Converts chess notation to Move object (a7b8q ==> Move)
