@@ -19,7 +19,7 @@ TranspostionTable::~TranspostionTable() {
 
 // Clears Transposition Table
 void TranspostionTable::clear() {
-	for (int U64(0); i<tableSize; ++i) {
+	for (int i(0); i<tableSize; ++i) {
 		table[i].setNull();
 	}
 }
