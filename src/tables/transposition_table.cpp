@@ -1,42 +1,55 @@
 
 #include "transposition_table.hpp"
 #include "U8.hpp"
+#include "U64.hpp"
+
+// Constructor to allocate memory
+TranspostionTable::TranspostionTable() {}
+
+// Constructor to allocate memory
+TranspostionTable::TranspostionTable(U64 memSize) {
+	tableSize = U64(memSize / sizeof(TTEntry));
+	table = new TTEntry[tableSize]();	
+}
+
+// Destructor to free memory
+TranspostionTable::~TranspostionTable() {
+	delete [] table;
+}
 
 // Clears Transposition Table
-void TranspositonTable::clear() {
-	this->table.clear();
+void TranspostionTable::clear() {
+	for (int i(0); i<tableSize; ++i) {
+		table[i].setNull();
+	}
 }
 
 // Returns number of table entries
-size_t TranspositonTable::size() {
-	return this->table.size();
+size_t TranspostionTable::size() {
+	return tableSize;
 }
 
 // Adds entry to the table
-void TranspositonTable::add(const ChessState* cs, EvalScore score, U8 depth) {
+void TranspostionTable::add(const ChessState* cs, EvalScore score, U8 depth) {
 	this->add(&cs->bh, score, depth);
 }
 
-void TranspositonTable::add(const BoardHash* bh, EvalScore score, U8 depth) {
-	this->table[*bh] = HashScore(score, depth);
+void TranspostionTable::add(const BoardHash* bh, EvalScore score, U8 depth) {
+	this->table[bh->hash % tableSize].setData(score, depth);
 }
 
-bool TranspositonTable::contains(const ChessState* cs) {
+bool TranspostionTable::contains(const ChessState* cs) {
 	return this->contains(&cs->bh);
 }
 
-bool TranspositonTable::contains(const BoardHash* bh) {
-	if (this->table.find(*bh) != this->table.end()) {
-		return true;
-	}
-	return false;
+bool TranspostionTable::contains(const BoardHash* bh) {
+	return !this->table[bh->hash % tableSize].isNull;
 }
 
-HashScore TranspositonTable::get(const ChessState* cs) {
+TTEntry TranspostionTable::get(const ChessState* cs) {
 	return this->get(&cs->bh);
 }
 
-HashScore TranspositonTable::get(const BoardHash* bh) {
-	this->table.find(*bh);
-	return this->table[*bh];
+TTEntry TranspostionTable::get(const BoardHash* bh) {
+	return this->table[bh->hash % tableSize];
 }

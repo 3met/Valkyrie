@@ -91,7 +91,7 @@ public:
 
 	// Search Variables
 	U8 maxDepth;
-	TranspositonTable transTable;					// Transposition table
+	TranspostionTable* transTable;					// Transposition table
 	deque<Move> killerHeuristic[MAX_SEARCH_DEPTH];	// Killer Heuristic
 	PvTable pvTable = PvTable(MAX_SEARCH_DEPTH);	// Principal Variation Table
 

@@ -84,7 +84,5 @@ void UCI::inputGo(string input) {
 	this->isRunning = false;
 	continueStream = false;
 
-	cout << "info trans-table-size: " << engine.transTable.size() << endl;
-
 	outputThread.join();
 }

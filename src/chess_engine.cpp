@@ -17,9 +17,12 @@ using namespace std;
 
 ChessEngine::ChessEngine() {
 	this->load();
+	transTable = new TranspostionTable(67108864);	// 64 MiB
 }
 
-ChessEngine::~ChessEngine() {}
+ChessEngine::~ChessEngine() {
+	delete transTable;
+}
 
 // ----- Scoring Game State -----
 // Standard material valuation
@@ -91,7 +94,7 @@ void ChessEngine::clear() {
 	currSelDepth = 0;
 	currScore = EvalScore(0);
 	nodesTotal = 0;
-	this->transTable.clear();
+	this->transTable->clear();
 	this->pvTable.clear();
 	for (short i(0); i<MAX_SEARCH_DEPTH; ++i) {
 		killerHeuristic[i].clear();
@@ -119,7 +122,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	short bestIndex(-1);	    // -1 as default
 
 	EvalScore score;
-	HashScore hashScore;			// Transposition table entry
+	TTEntry ttEntry;			// Transposition table entry
 
 	for (U8 i(0); i<moves.size(); ++i) {
 
@@ -130,12 +133,12 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		cs->move(moves[i]);
 
 		// Use hash table value if it exists
-		if (this->transTable.contains(&cs->bh)) {
-			hashScore = this->transTable.get(&cs->bh);
+		if (this->transTable->contains(&cs->bh)) {
+			ttEntry = this->transTable->get(&cs->bh);
 			
-			if (hashScore.depth >= depth) {
-				if (hashScore.score > alpha) {
-					alpha = hashScore.score;
+			if (ttEntry.depth >= depth) {
+				if (ttEntry.score > alpha) {
+					alpha = ttEntry.score;
 					bestIndex = i;
 					pvTable[0][0] = moves[i];
 					// TODO: NO NEXT TO COPY ....?
@@ -158,7 +161,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 			// This calculation must be the best value b/c there was no
 			// previous calculation good enough to use in its place
-			this->transTable.add(&cs->bh, score, depth);
+			this->transTable->add(&cs->bh, score, depth);
 
 			if (score > alpha) {
 				alpha = score;
@@ -215,27 +218,27 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 	bool hasValidMove(false);
 	EvalScore score;
-	HashScore hashScore;	// Transposition table entry
+	TTEntry ttEntry;	// Transposition table entry
 
 	for (U8 i(0); i<moves.size(); ++i) {
 
 		cs->move(moves[i]);
 
 		// Use trans table value if it exists
-		if (this->transTable.contains(&cs->bh)) {
+		if (this->transTable->contains(&cs->bh)) {
 			hasValidMove = true;
 
-			hashScore = this->transTable.get(&cs->bh);
+			ttEntry = this->transTable->get(&cs->bh);
 
-			if (hashScore.depth >= (depthTarget - depth)) {
-				if (hashScore.score >= beta) {
+			if (ttEntry.depth >= (depthTarget - depth)) {
+				if (ttEntry.score >= beta) {
 					cs->reverseMove();
 					this->addKillerMove(&moves[i], &depth);
 					return beta;
 				}
 
-				if (hashScore.score > alpha) {
-					alpha = hashScore.score;
+				if (ttEntry.score > alpha) {
+					alpha = ttEntry.score;
 					pvTable[depth][0] = moves[i];
 					// TODO: NO NEXT TO COPY ....?
 				}
@@ -260,7 +263,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			// This calculation must be the best value b/c there was no
 			// previous calculation good enough to use in its place
-			this->transTable.add(&cs->bh, score, (depthTarget - depth));
+			this->transTable->add(&cs->bh, score, (depthTarget - depth));
 
 			if (score >= beta) {
 				cs->reverseMove();
