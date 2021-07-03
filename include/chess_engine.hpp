@@ -45,6 +45,15 @@ private:
 	inline static S8 kingLateBonus[2][64];
 	inline static S8 kingEndBonus[2][64];
 
+	// Evaluation Variables
+	U8 pawnPosArr[2][8];
+	U8 knightPosArr[2][10];
+	U8 bishopPosArr[2][10];
+	U8 rookPosArr[2][10];
+	U8 queenPosArr[2][10];
+	U8 kingPos[2];
+	U8 pieceCount[2][5];
+
 	// Opening book database
 	OpeningTable openingTable;
 
@@ -107,9 +116,9 @@ public:
 	U64 nodesTotal = 0;
 
 	// Evaluation Methods
-	static U8 rateGameStage(ChessState* cs, vector<U8> pieces[2][6]);
+	static U8 rateGameStage(U8 pieceCount[2][5]);
 	short evalBoard(ChessState* cs, bool perspective);
-	short evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]);
+	short evalSide(ChessState* cs, bool side);
 	
 	// Search Methods
 	Move searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc);

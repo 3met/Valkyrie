@@ -18,76 +18,78 @@
 // 102-152	==> mid game
 // 153-203	==> late game
 // 204-255	==> end game
-U8 ChessEngine::rateGameStage(ChessState* cs, vector<U8> pieces[2][6]) {
+U8 ChessEngine::rateGameStage(U8 pieceCount[2][5]) {
 	U8 gameStage(0);
-	
-	gameStage -= pieces[0][cs->PAWN].size() << 2;
-	gameStage -= pieces[1][cs->PAWN].size() << 2;
-	gameStage -= pieces[0][cs->KNIGHT].size() * 10;
-	gameStage -= pieces[1][cs->KNIGHT].size() * 10;
-	gameStage -= pieces[0][cs->BISHOP].size() * 10;
-	gameStage -= pieces[1][cs->BISHOP].size() * 10;
-	gameStage -= pieces[0][cs->ROOK].size() << 4;
-	gameStage -= pieces[1][cs->ROOK].size() << 4;
-	gameStage -= pieces[0][cs->QUEEN].size() * 24;
-	gameStage -= pieces[1][cs->QUEEN].size() * 24;	
+
+	gameStage -= pieceCount[0][0] << 2;
+	gameStage -= pieceCount[1][0] << 2;
+	gameStage -= pieceCount[0][1] * 10;
+	gameStage -= pieceCount[1][1] * 10;
+	gameStage -= pieceCount[0][2] * 10;
+	gameStage -= pieceCount[1][2] * 10;
+	gameStage -= pieceCount[0][3] << 4;
+	gameStage -= pieceCount[1][3] << 4;
+	gameStage -= pieceCount[0][4] * 24;
+	gameStage -= pieceCount[1][4] * 24;	
 
 	return gameStage;
 }
 
 // Evaluates a score for a single color/side
-short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) {
+short ChessEngine::evalSide(ChessState* cs, bool side) {
 
 	U8 i;
 	short rating(0);
-	U8 gameStage(rateGameStage(cs, pieces));
+	U8 gameStage(pieceCount[2][5]);
 
 	#ifdef USE_MATERIAL_VALUE
 		// --- Adjustment for Material Amount --- 
 		// Account for general material value
-		for (i=0; i<6; ++i) {
-			rating += pieces[side][i].size() * materialValsLK[i];
-		}
+		rating += pieceCount[side][0];
+		rating += pieceCount[side][1];
+		rating += pieceCount[side][2];
+		rating += pieceCount[side][3];
+		rating += pieceCount[side][4];
 
 		// Bonus for having two bishops
-		if (pieces[side][cs->BISHOP].size() == 2) {
+		if (pieceCount[side][cs->BISHOP] == 2) {
 			rating += 50;
 		}
 
 		// Adjust knight value with pawns
 		// +6 for each pawn above 5, -6 for each below
-		rating += pieces[side][cs->KNIGHT].size() * ((6*pieces[side][cs->PAWN].size()) - 30);
+		rating += pieceCount[side][cs->KNIGHT] * ((6*pieceCount[side][cs->PAWN]) - 30);
 
 		// Adjust rook value with pawns
 		// -12 for each pawn above 5, +12 for each below
-		rating += pieces[side][cs->ROOK].size() * ((-12*pieces[side][cs->PAWN].size()) + 60);
+		rating += pieceCount[side][cs->ROOK] * ((-12*pieceCount[side][cs->PAWN]) + 60);
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
 		// --- Adjustment for Material Placement ---
 		// Knight placement
-		for (i=0; i<pieces[side][cs->KNIGHT].size(); ++i) {
-			rating += knightBonus[pieces[side][cs->KNIGHT][i]];
+		for (i=0; i<pieceCount[side][cs->KNIGHT]; ++i) {
+			rating += knightBonus[pieceCount[side][i]];
 		}
 		// Bishop placement
-		for (i=0; i<pieces[side][cs->BISHOP].size(); ++i) {
-			rating += bishopBonus[pieces[side][cs->BISHOP][i]];
+		for (i=0; i<pieceCount[side][cs->BISHOP]; ++i) {
+			rating += bishopBonus[pieceCount[side][i]];
 		}
 		// Queen placement
-		for (i=0; i<pieces[side][cs->QUEEN].size(); ++i) {
-			rating += queenBonus[pieces[side][cs->QUEEN][i]];
+		for (i=0; i<pieceCount[side][cs->QUEEN]; ++i) {
+			rating += queenBonus[pieceCount[side][i]];
 		}
 		// King placement
 		if (gameStage <= 51) {
-			rating += kingOpeningBonus[side][pieces[side][cs->KING][0]];
+			rating += kingOpeningBonus[side][kingPos[side]];
 		} else if (gameStage <= 102) {
-			rating += kingEarlyBonus[side][pieces[side][cs->KING][0]];
+			rating += kingEarlyBonus[side][kingPos[side]];
 		} else if (gameStage <= 153) {
-			rating += kingMidBonus[side][pieces[side][cs->KING][0]];
+			rating += kingMidBonus[side][kingPos[side]];
 		} else if (gameStage <= 204) {
-			rating += kingLateBonus[side][pieces[side][cs->KING][0]];
+			rating += kingLateBonus[side][kingPos[side]];
 		} else {
-			rating += kingEndBonus[side][pieces[side][cs->KING][0]];
+			rating += kingEndBonus[side][kingPos[side]];
 		}
 	#endif
 
@@ -95,13 +97,13 @@ short ChessEngine::evalSide(ChessState* cs, bool side, vector<U8> pieces[2][6]) 
 	U8 pawnsPerRank[2][8] = {{0},{0}};	// colors * ranks 
 	U8 pawnsPerFile[2][8] = {{0},{0}};	// colors * files 
 	// Fill Arrays
-	for (i=0; i<pieces[side][cs->PAWN].size(); ++i) {
-		pawnsPerRank[side][Bitboard::RANK[pieces[side][cs->PAWN][i]]] += 1;
-		pawnsPerFile[side][Bitboard::FILE[pieces[side][cs->PAWN][i]]] += 1;
+	for (i=0; i<pieceCount[side][cs->PAWN]; ++i) {
+		pawnsPerRank[side][Bitboard::RANK[pawnPosArr[side][i]]] += 1;
+		pawnsPerFile[side][Bitboard::FILE[pawnPosArr[side][i]]] += 1;
 	}
-	for (i=0; i<pieces[!side][cs->PAWN].size(); ++i) {
-		pawnsPerRank[!side][Bitboard::RANK[pieces[!side][cs->PAWN][i]]] += 1;
-		pawnsPerFile[!side][Bitboard::FILE[pieces[!side][cs->PAWN][i]]] += 1;
+	for (i=0; i<pieceCount[!side][cs->PAWN]; ++i) {
+		pawnsPerRank[!side][Bitboard::RANK[pawnPosArr[!side][i]]] += 1;
+		pawnsPerFile[!side][Bitboard::FILE[pawnPosArr[!side][i]]] += 1;
 	}
 
 	#ifdef USE_DOUBLED_PAWNS
@@ -178,28 +180,20 @@ short ChessEngine::evalBoard(ChessState* cs, bool perspective) {
 	nodesTotal += 1;
 
 	// Positions of all the pieces
-	vector<U8> pieces[2][6] = {
-		// White
-		{
-			cs->pieces[0][0].getPosVec(),	// Pawn to king
-			cs->pieces[0][1].getPosVec(),
-			cs->pieces[0][2].getPosVec(),
-			cs->pieces[0][3].getPosVec(),
-			cs->pieces[0][4].getPosVec(),
-			cs->pieces[0][5].getFirstPosVec(),
-		},
-		// Black
-		{
-			cs->pieces[1][0].getPosVec(),
-			cs->pieces[1][1].getPosVec(),
-			cs->pieces[1][2].getPosVec(),
-			cs->pieces[1][3].getPosVec(),
-			cs->pieces[1][4].getPosVec(),
-			cs->pieces[1][5].getFirstPosVec(),
-		}
-	};
-
-	short rating(evalSide(cs, perspective, pieces) - evalSide(cs, !perspective, pieces));
+	cs->pieces[0][cs->PAWN].getPosArr(pawnPosArr[0], &pieceCount[0][cs->PAWN]);
+	cs->pieces[0][cs->KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][cs->KNIGHT]);
+	cs->pieces[0][cs->BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][cs->BISHOP]);
+	cs->pieces[0][cs->ROOK].getPosArr(rookPosArr[0], &pieceCount[0][cs->ROOK]);
+	cs->pieces[0][cs->QUEEN].getPosArr(queenPosArr[0], &pieceCount[0][cs->QUEEN]);
+	kingPos[0] = cs->pieces[0][cs->KING].getFirstPos();
+	cs->pieces[1][cs->PAWN].getPosArr(pawnPosArr[1], &pieceCount[1][cs->PAWN]);
+	cs->pieces[1][cs->KNIGHT].getPosArr(knightPosArr[1], &pieceCount[1][cs->KNIGHT]);
+	cs->pieces[1][cs->BISHOP].getPosArr(bishopPosArr[1], &pieceCount[1][cs->BISHOP]);
+	cs->pieces[1][cs->ROOK].getPosArr(rookPosArr[1], &pieceCount[1][cs->ROOK]);
+	cs->pieces[1][cs->QUEEN].getPosArr(queenPosArr[1], &pieceCount[1][cs->QUEEN]);
+	kingPos[1] = cs->pieces[1][cs->KING].getFirstPos();
+	
+	short rating(evalSide(cs, perspective) - evalSide(cs, !perspective));
 
 	return rating;
 }
