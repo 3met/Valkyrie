@@ -22,23 +22,6 @@ using namespace std;
 
 class ChessEngine {
 private:
-	enum cardinalDirections {
-		UP = 0,
-		RIGHT,
-		DOWN,
-		LEFT,
-	};
-
-	enum diagonalDirections {
-		UP_RIGHT = 0,
-		DOWN_RIGHT,
-		DOWN_LEFT,
-		UP_LEFT,
-	};
-
-	const static S8 CARDINAL_POS_INC[4];
-	const static S8 DIAGONAL_POS_INC[4];
-
 	// King and knight move databases
 	inline static Bitboard KMoveDB[64];
 	inline static Bitboard NMoveDB[64];
@@ -69,11 +52,6 @@ private:
 	const static short materialValsSTD[6];
 	const static short materialValsLK[6];
 	const static short materialValsHB[6];
-
-
-	static bool sortRatedMove(const pair<Move, float> &a, const pair<Move, float> &b) {
-		return a.second < b.second;
-	};
 
 	// File IO methods
 	static bool readBitboardTable(Bitboard table[64], string fileName);
