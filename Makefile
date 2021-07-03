@@ -58,7 +58,7 @@ debug: $(BIN)/$(DEBUG_EXE)
 
 $(BIN)/$(DEBUG_EXE): $(SRC_FILES)
 	if not exist "$(BIN)" mkdir "$(BIN)"
-	$(CXX) $(CXX_FLAGS) $^ -o $@ -I $(INCLUDE) -L $(LIBRARIES)
+	$(CXX) $(CXX_FLAGS) $(DEBUG_FLAGS) $^ -o $@ -I $(INCLUDE) -L $(LIBRARIES)
 
 
 # ----- CREATE RELEASE -----
