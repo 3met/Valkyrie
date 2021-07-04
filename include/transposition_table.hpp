@@ -36,6 +36,7 @@ public:
 	~TranspostionTable();
 
 	void clear();
+	void resize(U64 memSize);
 	size_t size();
 
 	void add(const ChessState* cs, EvalScore score, U8 depth);

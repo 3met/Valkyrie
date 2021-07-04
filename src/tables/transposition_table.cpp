@@ -47,6 +47,14 @@ void TranspostionTable::clear() {
 	}
 }
 
+// Resizes table and clears old entries
+void TranspostionTable::resize(U64 memSize) {
+	delete [] table;
+
+	tableSize = U64(memSize / sizeof(TTEntry));
+	table = new TTEntry[tableSize]();	
+}
+
 // Returns number of table entries
 size_t TranspostionTable::size() {
 	return tableSize;

@@ -38,10 +38,10 @@ void UCI::inputGo(string input) {
 
 		} else if (inVec[i] == "wtime") {
 			i += 1;
-			wTime = stoi(inVec[i]) * 1000;
+			wTime = max(stoi(inVec[i]) - moveOverhead, 1) * 1000;
 		} else if (inVec[i] == "btime") {
 			i += 1;
-			bTime = stoi(inVec[i]) * 1000;
+			bTime = max(stoi(inVec[i]) - moveOverhead, 1) * 1000;
 		} else if (inVec[i] == "winc") {
 			i += 1;
 			wInc = stoi(inVec[i]) * 1000;

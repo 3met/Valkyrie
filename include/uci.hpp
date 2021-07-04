@@ -13,11 +13,66 @@ using namespace std;
 // runs ChessEngine through UCI commands.
 class UCI {
 private:
+	// Stores a UCI option
+	class UciOption {
+	protected:
+		string name;
+
+	public:
+		UciOption(string _name="") {
+			name = _name;
+		};
+
+		virtual string to_str() = 0;
+	};
+
+	// Spin option for UCI
+	class UciSpinOption : public UciOption {
+	private:
+		int defaultValue;
+		int min;
+		int max;
+
+	public:
+		UciSpinOption(string _name, int _defaultValue, int _min, int _max) : UciOption() {
+			name = _name;
+			defaultValue = _defaultValue;
+			min = _min;
+			max = _max;
+		};
+
+		string to_str() {
+			return "option name " + name + " type spin default "
+				+ to_string(defaultValue) + " min " + to_string(min)
+				+ " max " + to_string(max);
+		}
+	};
+
+	// Button Option for UCI
+	class UciButtonOption : public UciOption {
+	public:
+		UciButtonOption(string _name) {
+			name = _name;
+		};
+
+		string to_str() {
+			return "option name " + name + " type button";
+		}
+	};
+
+	// Engine and chess state for computations
 	ChessState cs;
 	ChessEngine engine;
 
-	bool isRunning = false;
-	bool runPerm = true;	// Whether the object has permission to run
+	// UCI options
+	vector<UciOption*> options;
+
+	// Status variables
+	bool isRunning = false;	// Whether a computation is running
+	bool runPerm = true;	// Whether the object has permission execute commands
+
+	// Engine options
+	int moveOverhead;		// Connection delay (ms)
 
 	// Calculation Commands
 	void inputDivide(string input);
@@ -28,6 +83,7 @@ private:
 	// Set State Commands
 	void inputMove(string input);
 	void inputPosition(string input);
+	void inputSetOption(string input);
 	void inputReverse();
 	void inputUcinewgame();
 

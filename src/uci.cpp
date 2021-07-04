@@ -9,9 +9,24 @@
 
 using namespace std;
 
-UCI::UCI() {};
+UCI::UCI() {
+	// Set UCI variables
+	int defaultHash = 64;
+	moveOverhead = 10;
 
-UCI::~UCI() {};
+	// Create UCI options
+	// Note: options match those in UCI::setOption()
+	options.push_back(new UciSpinOption("Hash", defaultHash, 1, 2048));
+	options.push_back(new UciButtonOption("Clear Hash"));
+	options.push_back(new UciSpinOption("Move Overhead", moveOverhead, 0, 10000));
+};
+
+UCI::~UCI() {
+	// Free memory option storage
+	for (int i(0); i<options.size(); ++i) {
+		delete options[i];
+	}
+};
 
 // --- Static Members ---
 const string UCI::ENGINE_NAME("Chess Engine v1");
@@ -32,6 +47,8 @@ void UCI::runCommand(string input) {
 		this->inputUCI();
 	} else if (input == "isready") {
 		this->inputIsready();
+	} else if (input.substr(0, 10) == "setoption ") {
+		this->inputSetOption(input);
 	} else if (input.substr(0, 5) == "move ") {
 		this->inputMove(input);
 	} else if (input == "reverse") {
