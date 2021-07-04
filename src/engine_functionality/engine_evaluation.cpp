@@ -45,11 +45,11 @@ short ChessEngine::evalSide(ChessState* cs, bool side) {
 	#ifdef USE_MATERIAL_VALUE
 		// --- Adjustment for Material Amount --- 
 		// Account for general material value
-		rating += pieceCount[side][0];
-		rating += pieceCount[side][1];
-		rating += pieceCount[side][2];
-		rating += pieceCount[side][3];
-		rating += pieceCount[side][4];
+		rating += pieceCount[side][cs->PAWN] * materialValsLK[cs->PAWN];
+		rating += pieceCount[side][cs->KNIGHT] * materialValsLK[cs->KNIGHT];
+		rating += pieceCount[side][cs->BISHOP] * materialValsLK[cs->BISHOP];
+		rating += pieceCount[side][cs->ROOK] * materialValsLK[cs->ROOK];
+		rating += pieceCount[side][cs->QUEEN] * materialValsLK[cs->QUEEN];
 
 		// Bonus for having two bishops
 		if (pieceCount[side][cs->BISHOP] == 2) {
@@ -69,15 +69,15 @@ short ChessEngine::evalSide(ChessState* cs, bool side) {
 		// --- Adjustment for Material Placement ---
 		// Knight placement
 		for (i=0; i<pieceCount[side][cs->KNIGHT]; ++i) {
-			rating += knightBonus[pieceCount[side][i]];
+			rating += knightBonus[knightPosArr[side][i]];
 		}
 		// Bishop placement
 		for (i=0; i<pieceCount[side][cs->BISHOP]; ++i) {
-			rating += bishopBonus[pieceCount[side][i]];
+			rating += bishopBonus[bishopPosArr[side][i]];
 		}
 		// Queen placement
 		for (i=0; i<pieceCount[side][cs->QUEEN]; ++i) {
-			rating += queenBonus[pieceCount[side][i]];
+			rating += queenBonus[queenPosArr[side][i]];
 		}
 		// King placement
 		if (gameStage <= 51) {
