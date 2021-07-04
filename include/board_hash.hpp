@@ -28,6 +28,10 @@ public:
 		return a.hash < b.hash;
 	};
 
+	friend bool operator==(const BoardHash& a, const BoardHash& b) {
+		return a.hash == b.hash;
+	}
+
 	// Creates a hash from ChessState data
 	void makeHash(const Bitboard pieces[2][7], const bool turn,
 		const bool castlePerms[2][2], const U8 enPassant);

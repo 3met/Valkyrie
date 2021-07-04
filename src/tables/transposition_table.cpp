@@ -3,7 +3,30 @@
 #include "U8.hpp"
 #include "U64.hpp"
 
-// Constructor to allocate memory
+// ----- Transposition Table Entry/Row Methods -----
+
+TTEntry::TTEntry() {}
+
+TTEntry::TTEntry(const BoardHash* _bh, EvalScore _score, U8 _depth) {
+	bh = *_bh;
+	score = _score;
+	depth = _depth;
+}
+
+TTEntry::~TTEntry() {}
+
+void TTEntry::setNull() {
+	bh.hash = 0;
+}
+
+void TTEntry::setData(const BoardHash* _bh, EvalScore _score, U8 _depth) {
+	bh = *_bh;
+	score = _score;
+	depth = _depth;
+}
+
+// ----- Transposition Table Methods -----
+
 TranspostionTable::TranspostionTable() {}
 
 // Constructor to allocate memory
@@ -35,7 +58,7 @@ void TranspostionTable::add(const ChessState* cs, EvalScore score, U8 depth) {
 }
 
 void TranspostionTable::add(const BoardHash* bh, EvalScore score, U8 depth) {
-	this->table[bh->hash % tableSize].setData(score, depth);
+	this->table[bh->hash % tableSize].setData(bh, score, depth);
 }
 
 bool TranspostionTable::contains(const ChessState* cs) {
@@ -43,7 +66,7 @@ bool TranspostionTable::contains(const ChessState* cs) {
 }
 
 bool TranspostionTable::contains(const BoardHash* bh) {
-	return !this->table[bh->hash % tableSize].isNull;
+	return this->table[bh->hash % tableSize].bh == *bh;
 }
 
 TTEntry TranspostionTable::get(const ChessState* cs) {

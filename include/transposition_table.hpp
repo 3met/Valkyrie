@@ -12,16 +12,16 @@
 // TTEntry stores info which the transposition table maps to.
 class TTEntry {
 public:
-	bool isNull;
+	BoardHash bh;
 	EvalScore score;
 	U8 depth;
 
-	TTEntry() { isNull=true; };
-	TTEntry(EvalScore s, U8 d) { score=s; depth=d; isNull=false; };
-	~TTEntry() {};
+	TTEntry();
+	TTEntry(const BoardHash* _bh, EvalScore _score, U8 _depth);
+	~TTEntry();
 
-	void setNull() { isNull=true; };
-	void setData(EvalScore s, U8 d) { score=s; depth=d; };
+	void setNull();
+	void setData(const BoardHash* _bh, EvalScore _score, U8 _depth) ;
 };
 
 // Wrapper for a map between BoardHashes and their matching TTEntrys.
