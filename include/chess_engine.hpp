@@ -45,14 +45,21 @@ private:
 	inline static S8 kingLateBonus[2][64];
 	inline static S8 kingEndBonus[2][64];
 
-	// Evaluation Variables
-	U8 pawnPosArr[2][8];
+	// Move Generation and Evaluation Variables
+	// In some methods, the only first index of these arrays are used
+	// to save the memory from declaring a new variable.
+	U8 pawnPosArr[2][8];	// Piece positions by color
 	U8 knightPosArr[2][10];
 	U8 bishopPosArr[2][10];
 	U8 rookPosArr[2][10];
 	U8 queenPosArr[2][10];
 	U8 kingPos[2];
-	U8 pieceCount[2][5];
+	U8 pieceCount[2][5];	// The number of each piece type
+	Bitboard bufferBoard;	// Bitboard to use as a buffer
+	Bitboard moveBoard;		// Bitboard with all move target locations
+	Bitboard killBoard;		// Bitboard with all kill target locations
+	U8 posTargets[27];		// Target location positions
+	U8 targetCount;			// Number of target positions
 
 	// Time management search variables
 	bool limitTime;		// Whether to limit time in search
@@ -76,14 +83,14 @@ private:
 	static bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
 	// Move Generation
-	static void genWhitePMoves(ChessState* cs, vector<Move>* moves);
-	static void genBlackPMoves(ChessState* cs, vector<Move>* moves);
-	static void genNMoves(ChessState* cs, vector<Move>* moves);
-	static void genBMoves(ChessState* cs, vector<Move>* moves);
-	static void genRMoves(ChessState* cs, vector<Move>* moves);
-	static void genQMoves(ChessState* cs, vector<Move>* moves);
-	static void genKMoves(ChessState* cs, vector<Move>* moves);
-	static void genAllMoves(ChessState* cs, vector<Move>* moves);
+	void genWhitePMoves(ChessState* cs, vector<Move>* moves);
+	void genBlackPMoves(ChessState* cs, vector<Move>* moves);
+	void genNMoves(ChessState* cs, vector<Move>* moves);
+	void genBMoves(ChessState* cs, vector<Move>* moves);
+	void genRMoves(ChessState* cs, vector<Move>* moves);
+	void genQMoves(ChessState* cs, vector<Move>* moves);
+	void genKMoves(ChessState* cs, vector<Move>* moves);
+	void genAllMoves(ChessState* cs, vector<Move>* moves);
 
 	// Search Helper Methods
 	void sortMoves(vector<Move>* moves, U8 depth);

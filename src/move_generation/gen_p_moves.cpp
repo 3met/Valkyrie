@@ -9,103 +9,103 @@
 void ChessEngine::genWhitePMoves(ChessState* cs, vector<Move>* moves) {
 	
 	// Set en passant square
-	Bitboard buffer(0);
+	bufferBoard = 0;
 	if (cs->enPassant != -1) {
-		buffer.setPosOn(cs->enPassant);
+		bufferBoard.setPosOn(cs->enPassant);
 	}
 
-	buffer.board |= cs->pieces[cs->BLACK][cs->ALL_PIECES].board;
+	bufferBoard.board |= cs->pieces[cs->BLACK][cs->ALL_PIECES].board;
 
 	// ---- Right Kills ----
-	Bitboard pos_board(cs->pieces[cs->WHITE][cs->PAWN].board);
+	killBoard = cs->pieces[cs->WHITE][cs->PAWN].board;
 	// Remove all on 'h' file
-	pos_board.board &= 9187201950435737471ULL;
-	pos_board.board <<= 9;
+	killBoard.board &= 9187201950435737471ULL;
+	killBoard.board <<= 9;
 	// Removes all but kill positions (en passant included)
-	pos_board.board &= buffer.board;
-	// Add moves to vector
-	vector<U8> pos_targets(pos_board.popPosVec());
+	killBoard.board &= bufferBoard.board;
+	// Add moves to array
+	killBoard.popPosArr(posTargets, &targetCount);
 	U8 i(0);
 	S8 killed;
-	for ( ; i<pos_targets.size(); ++i) {
+	for ( ; i<targetCount; ++i) {
 		// Type of piece killed
-		killed = cs->getPieceType(cs->BLACK, pos_targets[i]);
+		killed = cs->getPieceType(cs->BLACK, posTargets[i]);
 		// Check pawn promotion
-		if (Bitboard::RANK[pos_targets[i]] == 7) {
+		if (Bitboard::RANK[posTargets[i]] == 7) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-9, pos_targets[i], killed, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-9, pos_targets[i], killed, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-9, pos_targets[i], killed, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-9, pos_targets[i], killed, cs->KNIGHT));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->QUEEN));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->ROOK));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->BISHOP));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->KNIGHT));
 		} else {
 			// Account for en passant
 			if (killed == -1) {
 				killed = cs->PAWN;
 			}
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-9, pos_targets[i], killed));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed));
 		}
 	}
 
 	// ---- Left Kills ----
-	pos_board.board = cs->pieces[cs->WHITE][cs->PAWN].board;
+	killBoard.board = cs->pieces[cs->WHITE][cs->PAWN].board;
 	// Remove all on 'a' file
-	pos_board.board &= 18374403900871474942ULL;
-	pos_board.board <<= 7;
+	killBoard.board &= 18374403900871474942ULL;
+	killBoard.board <<= 7;
 	// Removes all but kill positions (en passant included)
-	pos_board.board &=  buffer.board;
-	// Add moves to vector
-	pos_targets = pos_board.popPosVec();
-	for (i=0; i<pos_targets.size(); ++i) {
+	killBoard.board &=  bufferBoard.board;
+	// Add moves to array
+	killBoard.popPosArr(posTargets, &targetCount);
+	for (i=0; i<targetCount; ++i) {
 		// Type of piece killed
-		killed = cs->getPieceType(cs->BLACK, pos_targets[i]);
+		killed = cs->getPieceType(cs->BLACK, posTargets[i]);
 		// Check pawn promotion
-		if (Bitboard::RANK[pos_targets[i]] == 7) {
+		if (Bitboard::RANK[posTargets[i]] == 7) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-7, pos_targets[i], killed, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-7, pos_targets[i], killed, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-7, pos_targets[i], killed, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-7, pos_targets[i], killed, cs->KNIGHT));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->QUEEN));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->ROOK));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->BISHOP));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->KNIGHT));
 		} else {
 			// Account for en passant
 			if (killed == -1) {
 				killed = cs->PAWN;
 			}
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-7, pos_targets[i], killed));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed));
 		}
 	}
 
 	// --- Generate non-kill moves ---
-	buffer.board = ~(cs->pieces[cs->WHITE][cs->ALL_PIECES].board | cs->pieces[cs->BLACK][cs->ALL_PIECES].board);
+	bufferBoard.board = ~(cs->pieces[cs->WHITE][cs->ALL_PIECES].board | cs->pieces[cs->BLACK][cs->ALL_PIECES].board);
 
 	// Get potential single move squares
-	pos_board.board = (cs->pieces[cs->WHITE][cs->PAWN].board << 8);
+	moveBoard.board = (cs->pieces[cs->WHITE][cs->PAWN].board << 8);
 	// Remove occupied squares
-	pos_board.board &= buffer.board;
+	moveBoard.board &= bufferBoard.board;
 	// Get end positions
-	pos_targets = pos_board.getPosVec();
-	for (i=0; i<pos_targets.size(); ++i) {
+	moveBoard.getPosArr(posTargets, &targetCount);
+	for (i=0; i<targetCount; ++i) {
 		// Check pawn promotion
-		if (Bitboard::RANK[pos_targets[i]] == 7) {
+		if (Bitboard::RANK[posTargets[i]] == 7) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-8, pos_targets[i], -1, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-8, pos_targets[i], -1, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-8, pos_targets[i], -1, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-8, pos_targets[i], -1, cs->KNIGHT));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->QUEEN));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->ROOK));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->BISHOP));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->KNIGHT));
 		} else {
-			moves->push_back(Move(cs->PAWN, pos_targets[i]-8, pos_targets[i]));
+			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i]));
 		}
 	}
 
 	// Remove all except potential double moves
-	pos_board.board &= (255 << 16);
-	pos_board.board <<= 8;
+	moveBoard.board &= (255 << 16);
+	moveBoard.board <<= 8;
 	// Remove occupied squares
-	pos_board.board &= buffer.board;
+	moveBoard.board &= bufferBoard.board;
 	// Get end positions
-	pos_targets = pos_board.popPosVec();
-	// Add positions to vector
-	for (i=0; i<pos_targets.size(); ++i) {
-		moves->push_back(Move(cs->PAWN, pos_targets[i]-16, pos_targets[i]));
+	moveBoard.popPosArr(posTargets, &targetCount);
+	// Add positions to array
+	for (i=0; i<targetCount; ++i) {
+		moves->push_back(Move(cs->PAWN, posTargets[i]-16, posTargets[i]));
 	}
 }
 
@@ -113,104 +113,104 @@ void ChessEngine::genWhitePMoves(ChessState* cs, vector<Move>* moves) {
 void ChessEngine::genBlackPMoves(ChessState* cs, vector<Move>* moves) {
 	
 	// Set en passant square
-	Bitboard buffer(0);
+	bufferBoard = 0;
 	if (cs->enPassant != -1) {
-		buffer.setPosOn(cs->enPassant);
+		bufferBoard.setPosOn(cs->enPassant);
 	}
 
-	buffer.board |= cs->pieces[cs->WHITE][cs->ALL_PIECES].board;
+	bufferBoard.board |= cs->pieces[cs->WHITE][cs->ALL_PIECES].board;
 
 	// ---- Right Kills ----
-	Bitboard pos_board(cs->pieces[cs->BLACK][cs->PAWN].board);
+	killBoard = cs->pieces[cs->BLACK][cs->PAWN].board;
 	// Remove all on 'h' file
-	pos_board.board &= 9187201950435737471ULL;
-	pos_board.board >>= 7;
+	killBoard.board &= 9187201950435737471ULL;
+	killBoard.board >>= 7;
 	// Removes all but kill positions (en passant included)
-	pos_board.board &= buffer.board;
-	// Add moves to vector
-	vector<U8> pos_targets(pos_board.popPosVec());
+	killBoard.board &= bufferBoard.board;
+	// Add moves to array
+	killBoard.popPosArr(posTargets, &targetCount);
 	U8 i(0);
 	S8 killed;
-	for ( ; i<pos_targets.size(); ++i) {
+	for ( ; i<targetCount; ++i) {
 		// Type of piece killed
-		killed = cs->getPieceType(cs->WHITE, pos_targets[i]);
+		killed = cs->getPieceType(cs->WHITE, posTargets[i]);
 		// Check pawn promotion
-		if (Bitboard::RANK[pos_targets[i]] == 0) {
+		if (Bitboard::RANK[posTargets[i]] == 0) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+7, pos_targets[i], killed, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+7, pos_targets[i], killed, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+7, pos_targets[i], killed, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+7, pos_targets[i], killed, cs->KNIGHT));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->QUEEN));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->ROOK));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->BISHOP));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->KNIGHT));
 		} else {
 			// Account for en passant
 			if (killed == -1) {
 				killed = cs->PAWN;
 			}
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+7, pos_targets[i], killed));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed));
 		}
 	}
 
 	// ---- Left Kills ----
-	pos_board.board = cs->pieces[cs->BLACK][cs->PAWN].board;
+	killBoard.board = cs->pieces[cs->BLACK][cs->PAWN].board;
 	// Remove all on 'a' file
-	pos_board.board &= 18374403900871474942ULL;
-	pos_board.board >>= 9;
+	killBoard.board &= 18374403900871474942ULL;
+	killBoard.board >>= 9;
 	// Removes all but kill positions (en passant included)
-	pos_board.board &= buffer.board;
-	// Add moves to vector
-	pos_targets = pos_board.popPosVec();
-	for (i=0; i<pos_targets.size(); ++i) {
+	killBoard.board &= bufferBoard.board;
+	// Add moves to array
+	killBoard.popPosArr(posTargets, &targetCount);
+	for (i=0; i<targetCount; ++i) {
 		// Type of piece killed
-		killed = cs->getPieceType(cs->WHITE, pos_targets[i]);
+		killed = cs->getPieceType(cs->WHITE, posTargets[i]);
 		// Check pawn promotion
-		if (Bitboard::RANK[pos_targets[i]] == 0) {
+		if (Bitboard::RANK[posTargets[i]] == 0) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+9, pos_targets[i], killed, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+9, pos_targets[i], killed, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+9, pos_targets[i], killed, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+9, pos_targets[i], killed, cs->KNIGHT));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->QUEEN));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->ROOK));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->BISHOP));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->KNIGHT));
 		} else {
 			// Account for en passant
 			if (killed == -1) {
 				killed = cs->PAWN;
 			}
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+9, pos_targets[i], killed));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed));
 		}
 	}
 
 	// --- Generate non-kill moves ---
-	buffer.board = ~(cs->pieces[cs->WHITE][cs->ALL_PIECES].board | cs->pieces[cs->BLACK][cs->ALL_PIECES].board);
+	bufferBoard.board = ~(cs->pieces[cs->WHITE][cs->ALL_PIECES].board | cs->pieces[cs->BLACK][cs->ALL_PIECES].board);
 
 	// Get potential single move squares
-	pos_board.board = (cs->pieces[cs->BLACK][cs->PAWN].board >> 8);
+	moveBoard.board = (cs->pieces[cs->BLACK][cs->PAWN].board >> 8);
 	// Remove occupied squares
-	pos_board.board &= buffer.board;
+	moveBoard.board &= bufferBoard.board;
 	// Get end positions
-	pos_targets = pos_board.getPosVec();
+	moveBoard.getPosArr(posTargets, &targetCount);
 
-	for (i=0; i<pos_targets.size(); ++i) {
+	for (i=0; i<targetCount; ++i) {
 		// Check pawn promotion
-		if (Bitboard::RANK[pos_targets[i]] == 0) {
+		if (Bitboard::RANK[posTargets[i]] == 0) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+8, pos_targets[i], -1, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+8, pos_targets[i], -1, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+8, pos_targets[i], -1, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+8, pos_targets[i], -1, cs->KNIGHT));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->QUEEN));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->ROOK));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->BISHOP));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->KNIGHT));
 		} else {
-			moves->push_back(Move(cs->PAWN, pos_targets[i]+8, pos_targets[i]));
+			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i]));
 		}
 	}
 
 	// Remove all except potential double moves
-	pos_board.board &= (255ULL << 40);
-	pos_board.board >>= 8;
+	moveBoard.board &= (255ULL << 40);
+	moveBoard.board >>= 8;
 	// Remove occupied squares
-	pos_board.board &= buffer.board;
+	moveBoard.board &= bufferBoard.board;
 	// Get end positions
-	pos_targets = pos_board.popPosVec();
-	// Add positions to vector
-	for (i=0; i<pos_targets.size(); ++i) {
-		moves->push_back(Move(cs->PAWN, pos_targets[i]+16, pos_targets[i]));
+	moveBoard.popPosArr(posTargets, &targetCount);
+	// Add positions to array
+	for (i=0; i<targetCount; ++i) {
+		moves->push_back(Move(cs->PAWN, posTargets[i]+16, posTargets[i]));
 	}
 }
 

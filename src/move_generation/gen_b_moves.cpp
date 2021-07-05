@@ -6,40 +6,39 @@
 // Generates all psudo-legal bishop moves
 void ChessEngine::genBMoves(ChessState* cs, vector<Move>* moves) {
 	// Get piece locations
-	vector<U8> start;
-	cs->pieces[cs->turn][cs->BISHOP].getPosVec(&start);
+	cs->pieces[cs->turn][cs->BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][0]);
 
 	U8 j;
-	Bitboard occ;
-	Bitboard targets;
-	vector<U8> end;
-	for (U8 i(0); i<start.size(); ++i) {
+	for (U8 i(0); i<pieceCount[0][0]; ++i) {
 		// Find all potential squares
-		occ.board = cs->pieces[0][6].board | cs->pieces[1][6].board;
-		occ.board &= bishopMasks[start[i]].board;
-		occ.board *= bishopMagics[start[i]].board;
-		occ.board >>= bishopMagicShifts[start[i]];
-		occ = bishopAttackTable[start[i]][occ.board];
+		moveBoard.board = cs->pieces[0][6].board | cs->pieces[1][6].board;
+		moveBoard.board &= bishopMasks[bishopPosArr[0][i]].board;
+		moveBoard.board *= bishopMagics[bishopPosArr[0][i]].board;
+		moveBoard.board >>= bishopMagicShifts[bishopPosArr[0][i]];
+		moveBoard = bishopAttackTable[bishopPosArr[0][i]][moveBoard.board];
 		// Remove friendly targets
-		occ.board &= ~(cs->pieces[cs->turn][6].board);
-		// Seperate enemy targets
-		targets.board = occ.board & cs->pieces[!cs->turn][6].board;
-		// Remove enemies from occ
-		occ.board &= ~(cs->pieces[!cs->turn][6].board);
+		moveBoard.board &= ~(cs->pieces[cs->turn][6].board);
+		// Seperate enemy move board
+		killBoard.board = moveBoard.board & cs->pieces[!cs->turn][6].board;
+		// Remove enemies from moveBoard
+		moveBoard.board &= ~(cs->pieces[!cs->turn][6].board);
 
-		// Add non-kill moves
-		if (occ.board != 0) {
-			end = occ.popPosVec();
-			for (j=0; j<end.size(); ++j) {
-				moves->push_back(Move(cs->BISHOP, start[i], end[j]));
+		// Add kill moves
+		if (killBoard.board != 0) {
+			killBoard.popPosArr(posTargets, &targetCount);
+			for (j=0; j<targetCount; ++j) {
+				moves->push_back(Move(cs->BISHOP,
+					bishopPosArr[0][i],
+					posTargets[j],
+					cs->getPieceType(!cs->turn, posTargets[j])));
 			}
 		}
 
-		// Add kill moves
-		if (targets.board != 0) {
-			end = targets.popPosVec();
-			for (j=0; j<end.size(); ++j) {
-				moves->push_back(Move(cs->BISHOP, start[i], end[j], cs->getPieceType(!cs->turn, end[j])));
+		// Add non-kill moves
+		if (moveBoard.board != 0) {
+			moveBoard.popPosArr(posTargets, &targetCount);
+			for (j=0; j<targetCount; ++j) {
+				moves->push_back(Move(cs->BISHOP, bishopPosArr[0][i], posTargets[j]));
 			}
 		}
 	}

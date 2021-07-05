@@ -7,33 +7,30 @@
 // Generates all psudo-legal knight moves
 void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 	U8 j;
-	vector<U8> start;
-	Bitboard target_board;
-	vector<U8> targets;
 	S8 killed;
 	
 	// Get all knight locations
-	cs->pieces[cs->turn][cs->KNIGHT].getPosVec(&start);
-
-	for (U8 i(0); i<start.size(); ++i) {
+	cs->pieces[cs->turn][cs->KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][0]);
+	
+	// Loop through pieces
+	for (U8 i(0); i<pieceCount[0][0]; ++i) {
 		// Get potential squares
-		target_board = NMoveDB[start[i]];
+		moveBoard = NMoveDB[knightPosArr[0][i]];
 		// Remove squares with same colored pieces
-		target_board.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);	
+		moveBoard.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);	
 		// Positions of all targets
-		targets = target_board.popPosVec();
+		moveBoard.popPosArr(posTargets, &targetCount);
 
-		// Add moves to vector
-		for (j=0; j<targets.size(); ++j) {
+		for (j=0; j<targetCount; ++j) {
 			// Check for killing a piece
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(targets[j])) {
-				killed = cs->getPieceType(!cs->turn, targets[j]);
+			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(posTargets[j])) {
+				killed = cs->getPieceType(!cs->turn, posTargets[j]);
 			} else {
 				killed = -1;	// Default
 			}
 
-			// Store as Move object
-			moves->push_back(Move(cs->KNIGHT, start[i], targets[j], killed));
+			// Create move
+			moves->push_back(Move(cs->KNIGHT, knightPosArr[0][i], posTargets[j], killed));
 		}
 	}
 }
