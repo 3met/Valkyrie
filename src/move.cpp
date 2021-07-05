@@ -53,10 +53,14 @@ U8 Move::coordToPos(const string coord) {
 }
 
 // Prints a move
-ostream& operator<<(ostream &os, const Move &m) { 
-	os << Move::posToCoord(m.start) << Move::posToCoord(m.end);
-	if (m.promoted != -1) {
-		os << ChessState::piece_names[ChessState::BLACK][m.promoted];
+ostream& operator<<(ostream &os, const Move &m) {
+	if (m.piece != -1) {
+		os << Move::posToCoord(m.start) << Move::posToCoord(m.end);
+		if (m.promoted != -1) {
+			os << ChessState::piece_names[ChessState::BLACK][m.promoted];
+		}
+	} else {
+		os << "NullMove" << endl;
 	}
 	return os;
 }
