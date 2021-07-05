@@ -45,12 +45,14 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 		return false;
 	}
 
+	// Evaluate Killer Heuristic
 	if (a == engine->killerHeuristic[depth][!engine->killerHeuristicNext[depth]]) {
 		return true;
 	} else if (b == engine->killerHeuristic[depth][!engine->killerHeuristicNext[depth]]) {
 		return false;
 	}
 
+	// Second Killer Heuristic
 	if (a == engine->killerHeuristic[depth][engine->killerHeuristicNext[depth]]) {
 		return true;
 	} else if (b == engine->killerHeuristic[depth][engine->killerHeuristicNext[depth]]) {
