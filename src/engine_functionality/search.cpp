@@ -64,8 +64,8 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 		// Check if time remains
 		high_resolution_clock::time_point stop(high_resolution_clock::now());
 		U64 duration(duration_cast<microseconds>(stop - start).count());
-		// Break if more than 95% of the target time has passed
-		if (duration >= maxTime*0.95) {
+		// Break if more than 90% of the target time has passed
+		if (duration >= maxTime*0.90) {
 			break;
 		}
 
