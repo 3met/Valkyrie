@@ -54,6 +54,12 @@ private:
 	U8 kingPos[2];
 	U8 pieceCount[2][5];
 
+	// Time management search variables
+	bool limitTime;		// Whether to limit time in search
+	bool passedOptimalTime;
+	chrono::high_resolution_clock::time_point optimalEndTime;
+	chrono::high_resolution_clock::time_point hardEndTime;
+
 	// Opening book database
 	OpeningTable openingTable;
 

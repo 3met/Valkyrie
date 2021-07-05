@@ -82,6 +82,7 @@ void UCI::run() {
 		getline(cin, input);
 
 		if (input == "quit") {
+			engine.canSearch = false;
 			runPerm = false;
 
 			// Wait for anything running to finish

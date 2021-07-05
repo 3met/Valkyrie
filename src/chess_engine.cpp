@@ -4,6 +4,7 @@
 // 2. Material value sets
 // 3. Best move calculations (negamax, alpha-beta)
 
+#include <chrono>
 #include <iostream>
 #include <stdexcept>
 #include <stdlib.h>
@@ -126,8 +127,28 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 	for (U8 i(0); i<moves.size(); ++i) {
 
+		// Exit if no longer allowed to search
 		if (this->canSearch == false) {
 			return make_pair(Move(), alpha);	// Return null move
+		}
+
+		// Every 4096 nodes, check search status
+		if (this->limitTime && (this->nodesTotal & 4095) == 0) {
+			// Check if we have passed the optimal search time
+			if (!this->passedOptimalTime) {
+				if (this->optimalEndTime < chrono::high_resolution_clock::now()) {
+					this->passedOptimalTime = true;
+					// If passed, check if we hit hard cut off
+					if (this->hardEndTime < chrono::high_resolution_clock::now()) {
+						this->canSearch = false;
+					}
+				}
+			// If passed, check if we hit hard cut off
+			} else {
+				if (this->hardEndTime < chrono::high_resolution_clock::now()) {
+					this->canSearch = false;
+				}
+			}
 		}
 
 		cs->move(moves[i]);
@@ -221,6 +242,30 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	TTEntry ttEntry;	// Transposition table entry
 
 	for (U8 i(0); i<moves.size(); ++i) {
+
+		// Exit if no longer allowed to search
+		if (this->canSearch == false) {
+			return alpha;	// Return null move
+		}
+
+		// Every 4096 nodes, check search status
+		if (this->limitTime && (this->nodesTotal & 4095) == 0) {
+			// Check if we have passed the optimal search time
+			if (!this->passedOptimalTime) {
+				if (this->optimalEndTime < chrono::high_resolution_clock::now()) {
+					this->passedOptimalTime = true;
+					// If passed, check if we hit hard cut off
+					if (this->hardEndTime < chrono::high_resolution_clock::now()) {
+						this->canSearch = false;
+					}
+				}
+			// If passed, check if we hit hard cut off
+			} else {
+				if (this->hardEndTime < chrono::high_resolution_clock::now()) {
+					this->canSearch = false;
+				}
+			}
+		}
 
 		cs->move(moves[i]);
 

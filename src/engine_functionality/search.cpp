@@ -31,6 +31,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	this->nodesTotal = 0;
 	this->canSearch = true;
 	this->currScore = 0;
+	this->limitTime = true;
 
 	// Check if position in opening book
 	if (this->openingTable.contains(&cs.bh)) {
@@ -42,7 +43,10 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	}
 
 	// Max time to choose move
-	U64 maxTime(min((timeLeft/20) + timeInc, timeLeft-200));
+	U64 optimalTime(min((timeLeft/20) + timeInc, timeLeft-200));
+	U64 maxTime(optimalTime + 10);
+	this->optimalEndTime = start + chrono::microseconds(optimalTime);
+	this->hardEndTime = start + chrono::microseconds(maxTime);
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
@@ -92,6 +96,7 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 	this->currDepth = 0;
 	this->nodesTotal = 0;
 	this->canSearch = true;
+	this->limitTime = false;
 
 	pair<Move, EvalScore> ratedMove;
 	Move m;
@@ -126,6 +131,7 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 	this->currDepth = 0;
 	this->nodesTotal = 0;
 	this->canSearch = true;
+	this->limitTime = false;
 
 	pair<Move, EvalScore> ratedMove;
 	Move m;
