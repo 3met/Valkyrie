@@ -51,8 +51,11 @@ public:
 
 	static const char piece_names[2][6];	// Note: must match piece indexing
 	// Stores king and rook starting positions for castling
-	static const U8 KING_START[2];	// [color]
+	static const U8 KING_START[2];		// [color]
 	static const U8 ROOK_START[2][2];	// [color][king/queen side]
+
+	// Maximum number of moves the chess state will store
+	static const short MAX_MOVES;
 
 	// Bitboard to store piece locations
 	Bitboard pieces[2][7];	// [colors][p/n/b/r/q/k/all]
@@ -63,13 +66,13 @@ public:
 	short moveLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
 	
 	S8 enPassant;				// Pos behind pawn, else -1
-	stack<S8> enPassantHistory;	// History of en passant for reverseMove()
+	S8* enPassantHistory;		// History of en passant for reverseMove()
 
+	stack<Move> moveHistory;	// List of moves that lead to current game state
+	
 	short halfmoveClock;		// # of halfmoves since last capture or pawn move
 	short turnNumber;			// Game turn number
 	short moveNumber;
-
-	stack<Move> moveHistory;	// List of moves that lead to current game state
 
 	BoardHash bh;	// Current chess board hash
 

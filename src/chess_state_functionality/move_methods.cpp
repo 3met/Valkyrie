@@ -126,7 +126,7 @@ void ChessState::move(Move m) {
 			bh.updateEnPassant(enPassant, -1);
 			enPassant = -1;
 		}
-		enPassantHistory.push(enPassant);
+		enPassantHistory[moveNumber] = enPassant;
 
 		// Update "all" bitboard
 		this->updateAllBitboard(turn);
@@ -163,11 +163,11 @@ void ChessState::reverseMove() {
 
 	if (!m.isNull()) {
 		// Revert en passant value
-		S8 oldEnPassant(enPassantHistory.top());
-		enPassantHistory.pop();
+		S8 oldEnPassant(enPassantHistory[moveNumber]);
+		enPassantHistory[moveNumber] = -1;
 		// If en passant variable needs to be updated
-		if (oldEnPassant != enPassantHistory.top()) {
-			enPassant = enPassantHistory.top();
+		if (oldEnPassant != enPassantHistory[moveNumber-1]) {
+			enPassant = enPassantHistory[moveNumber-1];
 			bh.updateEnPassant(oldEnPassant, enPassant);
 		}
 
@@ -241,7 +241,9 @@ void ChessState::reverseMove() {
 
 		// Update both universal bitboards
 		this->updateAllBitboard(turn);
-		this->updateAllBitboard(!turn);
+		if (m.killed != -1) {
+			this->updateAllBitboard(!turn);
+		}
 	}
 
 	// Remove reversed move from move list

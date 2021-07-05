@@ -13,11 +13,17 @@ const U8 ChessState::KING_START[2] = {4, 60};	// {white, black}
 
 const U8 ChessState::ROOK_START[2][2] = {{7, 0}, {63, 56}};	// {{WK, WQ}, {BK, BQ}}
 
+const short ChessState::MAX_MOVES = 1024;
+
 ChessState::ChessState() {
+	enPassantHistory = new S8[MAX_MOVES];
+
 	this->reset();
 };
 
 ChessState::ChessState(const ChessState* cs) {
+	enPassantHistory = new S8[MAX_MOVES];
+	
 	for (U8 i(0); i<7; ++i) {
 		pieces[WHITE][i] = cs->pieces[WHITE][i];
 		pieces[BLACK][i] = cs->pieces[BLACK][i];
@@ -37,7 +43,9 @@ ChessState::ChessState(const ChessState* cs) {
 	bh = cs->bh;
 }
 
-ChessState::~ChessState() {};
+ChessState::~ChessState() {
+	delete [] enPassantHistory;
+};
 
 // Returns most recent move
 Move ChessState::lastMove() {
