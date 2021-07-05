@@ -60,7 +60,7 @@ ostream& operator<<(ostream &os, const Move &m) {
 			os << ChessState::piece_names[ChessState::BLACK][m.promoted];
 		}
 	} else {
-		os << "NullMove" << endl;
+		os << "NullMove";
 	}
 	return os;
 }
