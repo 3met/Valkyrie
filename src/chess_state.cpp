@@ -17,31 +17,11 @@ ChessState::ChessState() {
 	this->reset();
 };
 
-ChessState::ChessState(const ChessState* cs) {
-	for (U8 i(0); i<7; ++i) {
-		pieces[WHITE][i] = cs->pieces[WHITE][i];
-		pieces[BLACK][i] = cs->pieces[BLACK][i];
-	}
-
-	turn = cs->turn;
-	
-	castlePerms[WHITE][KING_SIDE] = cs->castlePerms[WHITE][KING_SIDE];	// Castle perms
-	castlePerms[WHITE][QUEEN_SIDE] = cs->castlePerms[WHITE][QUEEN_SIDE];
-	castlePerms[BLACK][KING_SIDE] = cs->castlePerms[BLACK][KING_SIDE];
-	castlePerms[BLACK][QUEEN_SIDE] = cs->castlePerms[BLACK][QUEEN_SIDE];
-	
-	halfmoveClock = cs->halfmoveClock;
-	turnNumber = cs->turnNumber;
-	moveNumber = cs->moveNumber;
-
-	bh = cs->bh;
-}
-
 ChessState::~ChessState() {};
 
 // Returns most recent move
 Move ChessState::lastMove() {
-	return moveHistory.top();
+	return moveHistory[moveNumber];
 }
 
 // Returns the type of piece at the given position

@@ -6,7 +6,7 @@
 // Update boardHash with move
 void ChessState::move(Move m) {
 
-	moveHistory.push(m);
+	moveHistory[moveNumber] = m;
 
 	if (!m.isNull()) {
 		// Removes potential killed piece from bitboard
@@ -151,8 +151,6 @@ void ChessState::move(Move m) {
 // Assumes move is valid.
 void ChessState::reverseMove() {
 
-	Move m = moveHistory.top();
-
 	turn = !turn;	// Swaps turn
 	bh.updateTurn();
 
@@ -160,6 +158,8 @@ void ChessState::reverseMove() {
 		turnNumber -= 1;
 	}
 	moveNumber -= 1;
+
+	Move m = moveHistory[moveNumber];
 
 	if (!m.isNull()) {
 		// Revert en passant value
@@ -245,7 +245,4 @@ void ChessState::reverseMove() {
 			this->updateAllBitboard(!turn);
 		}
 	}
-
-	// Remove reversed move from move list
-	moveHistory.pop();
 }

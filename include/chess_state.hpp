@@ -42,7 +42,6 @@ public:
 	};
 
 	ChessState();
-	ChessState(const ChessState* cs);
 	~ChessState();
 
 	// Sort chess state by turn
@@ -69,7 +68,7 @@ public:
 	S8 enPassant;				// Pos behind pawn, else -1
 	array<S8, MAX_MOVES> enPassantHistory;		// History of en passant for reverseMove()
 
-	stack<Move> moveHistory;	// List of moves that lead to current game state
+	array<Move, MAX_MOVES> moveHistory;	// List of moves that lead to current game state
 	
 	short halfmoveClock;		// # of halfmoves since last capture or pawn move
 	short turnNumber;			// Game turn number
