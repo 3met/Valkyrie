@@ -13,12 +13,14 @@ UCI::UCI() {
 	// Set UCI variables
 	int defaultHash = 64;
 	moveOverhead = 10;
+	defaultThreads = 1;
 
 	// Create UCI options
 	// Note: options match those in UCI::setOption()
 	options.push_back(new UciSpinOption("Hash", defaultHash, 1, 2048));
 	options.push_back(new UciButtonOption("Clear Hash"));
 	options.push_back(new UciSpinOption("Move Overhead", moveOverhead, 0, 10000));
+	options.push_back(new UciSpinOption("Threads", defaultThreads, 1, 1));
 };
 
 UCI::~UCI() {

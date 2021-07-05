@@ -37,6 +37,8 @@ void UCI::inputSetOption(string input) {
 		engine.transTable->clear();
 	} else if (name == "Move Overhead") {
 		this->moveOverhead = stoi(value);
+	} else if (name == "Threads") {
+		// TODO: add thread options
 	} else {
 		cout << "Unable to set option \"" << name << "\"" << endl;
 	}
