@@ -13,7 +13,7 @@ UCI::UCI() {
 	// Set UCI variables
 	int defaultHash = 64;
 	moveOverhead = 10;
-	defaultThreads = 1;
+	int defaultThreads = 1;
 
 	// Create UCI options
 	// Note: options match those in UCI::setOption()
