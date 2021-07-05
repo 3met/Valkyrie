@@ -4,7 +4,7 @@
 #include "U8.hpp"
 
 // Generates all psudo-legal queen moves
-void ChessEngine::genQMoves(ChessState* cs, vector<Move>* moves) {
+void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get piece locations
 	cs->pieces[cs->turn][cs->QUEEN].getPosArr(queenPosArr[0], &pieceCount[0][0]);
 
@@ -29,17 +29,19 @@ void ChessEngine::genQMoves(ChessState* cs, vector<Move>* moves) {
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves->push_back(Move(cs->QUEEN,
+				moves[*moveCount] = Move(cs->QUEEN,
 					queenPosArr[0][i],
 					posTargets[j],
-					cs->getPieceType(!cs->turn, posTargets[j])));
+					cs->getPieceType(!cs->turn, posTargets[j]));
+				++*moveCount;
 			}
 		}
 		// Add non-kill moves
 		if (moveBoard.board != 0) {
 			moveBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves->push_back(Move(cs->QUEEN, queenPosArr[0][i], posTargets[j]));
+				moves[*moveCount] = Move(cs->QUEEN, queenPosArr[0][i], posTargets[j]);
+				++*moveCount;
 			}
 		}
 
@@ -61,17 +63,19 @@ void ChessEngine::genQMoves(ChessState* cs, vector<Move>* moves) {
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves->push_back(Move(cs->QUEEN,
+				moves[*moveCount] = Move(cs->QUEEN,
 					queenPosArr[0][i],
 					posTargets[j],
-					cs->getPieceType(!cs->turn, posTargets[j])));
+					cs->getPieceType(!cs->turn, posTargets[j]));
+				++*moveCount;
 			}
 		}
 		// Add non-kill moves
 		if (moveBoard.board != 0) {
 			moveBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves->push_back(Move(cs->QUEEN, queenPosArr[0][i], posTargets[j]));
+				moves[*moveCount] = Move(cs->QUEEN, queenPosArr[0][i], posTargets[j]);
+				++*moveCount;
 			}
 		}
 	}

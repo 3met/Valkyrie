@@ -5,7 +5,7 @@
 #include "U8.hpp"
 
 // Generates all psudo-legal king moves
-void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
+void ChessEngine::genKMoves(ChessState* cs, Move moves[218], U8* moveCount){
 	
 	// Start position of the king
 	kingPos[0] = cs->pieces[cs->turn][cs->KING].getFirstPos();
@@ -27,7 +27,8 @@ void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 		}
 
 		// Add to list of valid moves
-		moves->push_back(Move(cs->KING, kingPos[0], posTargets[i], killed));
+		moves[*moveCount] = Move(cs->KING, kingPos[0], posTargets[i], killed);
+		++*moveCount;
 	}
 
 	// Castling Moves
@@ -40,7 +41,8 @@ void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 		&& !isPosAttacked(cs, !cs->turn, kingPos[0]+1)
 		&& !isPosAttacked(cs, !cs->turn, kingPos[0]+2)) {
 
-		moves->push_back(Move(cs->KING, kingPos[0], kingPos[0]+2));
+		moves[*moveCount] = Move(cs->KING, kingPos[0], kingPos[0]+2);
+		++*moveCount;
 	}
 	if (cs->castlePerms[cs->turn][cs->QUEEN_SIDE]
 		&& !cs->pieces[cs->turn][cs->ALL_PIECES].getPos(kingPos[0]-1)	// Ensure no pieces are in the way
@@ -53,6 +55,7 @@ void ChessEngine::genKMoves(ChessState* cs, vector<Move>* moves){
 		&& !isPosAttacked(cs, !cs->turn, kingPos[0]-1)
 		&& !isPosAttacked(cs, !cs->turn, kingPos[0]-2)) {
 
-		moves->push_back(Move(cs->KING, kingPos[0], kingPos[0]-2));
+		moves[*moveCount] = Move(cs->KING, kingPos[0], kingPos[0]-2);
+		++*moveCount;
 	}
 }

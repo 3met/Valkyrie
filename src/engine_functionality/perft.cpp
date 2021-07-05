@@ -17,17 +17,16 @@ U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 
 	cout << "--- Divide " << short(depth) << " Start ---" << endl;
 
-	vector<Move> moves;
-	genAllMoves(cs, &moves);
+	U8 moveCount;		// Number of moves (in moveArr)
+	genAllMoves(cs, moveArr[depth], &moveCount);
 	U64 total(0);
 	U64 moveTotal(0);
 
-	short nMoves(moves.size());
-	for (U8 i(0); i<nMoves; ++i) {
-		cs->move(moves[i]);
+	for (U8 i(0); i<moveCount; ++i) {
+		cs->move(moveArr[depth][i]);
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			moveTotal = perft(cs, depth-1);
-			cout << moves[i] << ": " << moveTotal << endl;
+			cout << moveArr[depth][i] << ": " << moveTotal << endl;
 			total += moveTotal;
 		}
 		cs->reverseMove();
@@ -46,13 +45,12 @@ U64 ChessEngine::perft(ChessState* cs, U8 depth) {
 		return 1;
 	}
 
-	vector<Move> moves;
-	genAllMoves(cs, &moves);
+	U8 moveCount;		// Number of moves (in moveArr)
+	genAllMoves(cs, moveArr[depth], &moveCount);
 	U64 total(0);
 
-	short nMoves(moves.size());
-	for (U8 i(0); i<nMoves; ++i) {
-		cs->move(moves[i]);
+	for (U8 i(0); i<moveCount; ++i) {
+		cs->move(moveArr[depth][i]);
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			total += perft(cs, depth-1);
 		}

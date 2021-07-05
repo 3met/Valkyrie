@@ -111,15 +111,15 @@ void ChessEngine::clear() {
 pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	
 	// Generate psudo-legal moves
-	vector<Move> moves;
-	genAllMoves(cs, &moves);
+	U8 moveCount;		// Number of moves (in moveArr)
+	genAllMoves(cs, moveArr[0], &moveCount);
 	
 	// Check if valid moves were generated
-	if (moves.size() == 0) {
+	if (moveCount == 0) {
 		throw ChessState::NoMoves();
 	}
 
-	this->sortMoves(&moves, 0);
+	this->sortMoves(moveArr[0], &moveCount, 0);
 
 	EvalScore alpha(-1, true, 0);	// -INF; best score current color can achive 
 	EvalScore beta(1, true, 0);	// INF; best score other color can achive
@@ -128,7 +128,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	EvalScore score;
 	TTEntry ttEntry;			// Transposition table entry
 
-	for (U8 i(0); i<moves.size(); ++i) {
+	for (U8 i(0); i<moveCount; ++i) {
 
 		// Exit if no longer allowed to search
 		if (this->canSearch == false) {
@@ -154,7 +154,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			}
 		}
 
-		cs->move(moves[i]);
+		cs->move(moveArr[0][i]);
 
 		// Use hash table value if it exists
 		if (this->transTable->contains(&cs->bh)) {
@@ -164,7 +164,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 				if (ttEntry.score > alpha) {
 					alpha = ttEntry.score;
 					bestIndex = i;
-					pvTable[0][0] = moves[i];
+					pvTable[0][0] = moveArr[0][i];
 					// TODO: NO NEXT TO COPY ....?
 				}
 
@@ -190,7 +190,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			if (score > alpha) {
 				alpha = score;
 				bestIndex = i;
-				pvTable[0][0] = moves[i];
+				pvTable[0][0] = moveArr[0][i];
 				pvTable.copyNext(0);
 			}
 		}
@@ -203,7 +203,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		throw ChessState::NoMoves();
 	}
 
-	return make_pair(moves[bestIndex], alpha);
+	return make_pair(moveArr[0][bestIndex], alpha);
 }
 
 // Recursive negamax search for the best move
@@ -229,22 +229,22 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	}
 
 	// Generate and sort moves
-	vector<Move> moves;
-	genAllMoves(cs, &moves);
+	U8 moveCount;		// Number of moves (in moveArr)
+	genAllMoves(cs, moveArr[depth], &moveCount);
 	
 	// Check if valid moves were generated
-	if (moves.size() == 0) {
+	if (moveCount == 0) {
 		throw ChessState::NoMoves();
 	}
 
 	// Move ordering
-	sortMoves(&moves, depth);
+	sortMoves(moveArr[depth], &moveCount, depth);
 
 	bool hasValidMove(false);
 	EvalScore score;
 	TTEntry ttEntry;	// Transposition table entry
 
-	for (U8 i(0); i<moves.size(); ++i) {
+	for (U8 i(0); i<moveCount; ++i) {
 
 		// Exit if no longer allowed to search
 		if (this->canSearch == false) {
@@ -270,7 +270,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			}
 		}
 
-		cs->move(moves[i]);
+		cs->move(moveArr[depth][i]);
 
 		// Use trans table value if it exists
 		if (this->transTable->contains(&cs->bh)) {
@@ -281,15 +281,15 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			if (ttEntry.depth >= (depthTarget - depth)) {
 				if (ttEntry.score >= beta) {
 					cs->reverseMove();
-					if (moves[i].killed == -1) {
-						this->addKillerMove(&moves[i], &depth);
+					if (moveArr[depth][i].killed == -1) {
+						this->addKillerMove(&moveArr[depth][i], &depth);
 					}
 					return beta;
 				}
 
 				if (ttEntry.score > alpha) {
 					alpha = ttEntry.score;
-					pvTable[depth][0] = moves[i];
+					pvTable[depth][0] = moveArr[depth][i];
 					// TODO: NO NEXT TO COPY ....?
 				}
 
@@ -317,15 +317,15 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			if (score >= beta) {
 				cs->reverseMove();
-				if (moves[i].killed == -1) {
-					this->addKillerMove(&moves[i], &depth);
+				if (moveArr[depth][i].killed == -1) {
+					this->addKillerMove(&moveArr[depth][i], &depth);
 				}
 				return beta;
 			}
 
 			if (score > alpha) {
 				alpha = score;
-				pvTable[depth][0] = moves[i];
+				pvTable[depth][0] = moveArr[depth][i];
 				pvTable.copyNext(depth);
 			}
 		}

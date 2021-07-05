@@ -45,6 +45,9 @@ private:
 	inline static S8 kingLateBonus[2][64];
 	inline static S8 kingEndBonus[2][64];
 
+	// Maximum depth the engine can search
+	static const short MAX_SEARCH_DEPTH = 256;
+
 	// Move Generation and Evaluation Variables
 	// In some methods, the only first index of these arrays are used
 	// to save the memory from declaring a new variable.
@@ -60,6 +63,7 @@ private:
 	Bitboard killBoard;		// Bitboard with all kill target locations
 	U8 posTargets[27];		// Target location positions
 	U8 targetCount;			// Number of target positions
+	Move moveArr[MAX_SEARCH_DEPTH][218];
 
 	// Time management search variables
 	bool limitTime;		// Whether to limit time in search
@@ -83,17 +87,18 @@ private:
 	static bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
 	// Move Generation
-	void genWhitePMoves(ChessState* cs, vector<Move>* moves);
-	void genBlackPMoves(ChessState* cs, vector<Move>* moves);
-	void genNMoves(ChessState* cs, vector<Move>* moves);
-	void genBMoves(ChessState* cs, vector<Move>* moves);
-	void genRMoves(ChessState* cs, vector<Move>* moves);
-	void genQMoves(ChessState* cs, vector<Move>* moves);
-	void genKMoves(ChessState* cs, vector<Move>* moves);
-	void genAllMoves(ChessState* cs, vector<Move>* moves);
+	// Note: 218 is the max number of moves in a position
+	void genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genBlackPMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genNMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genBMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genRMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genQMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genKMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genAllMoves(ChessState* cs, Move moves[218], U8* moveCount);
 
 	// Search Helper Methods
-	void sortMoves(vector<Move>* moves, U8 depth);
+	void sortMoves(Move moves[218], U8* moveCount, U8 depth);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
 
@@ -105,7 +110,6 @@ public:
 	~ChessEngine();
 
 	static bool isLoaded;
-	static const short MAX_SEARCH_DEPTH = 256;
 	
 	// Configurable option
 	float MAX_DEPTH_RATIO = 1.5;		// For search extensions

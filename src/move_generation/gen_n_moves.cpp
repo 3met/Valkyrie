@@ -5,7 +5,7 @@
 #include "U8.hpp"
 
 // Generates all psudo-legal knight moves
-void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
+void ChessEngine::genNMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	U8 j;
 	S8 killed;
 	
@@ -30,7 +30,8 @@ void ChessEngine::genNMoves(ChessState* cs, vector<Move>* moves) {
 			}
 
 			// Create move
-			moves->push_back(Move(cs->KNIGHT, knightPosArr[0][i], posTargets[j], killed));
+			moves[*moveCount] = Move(cs->KNIGHT, knightPosArr[0][i], posTargets[j], killed);
+			++*moveCount;
 		}
 	}
 }

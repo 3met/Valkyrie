@@ -5,7 +5,7 @@
 #include "U8.hpp"
 
 // Generates all psudo-legal rook moves
-void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
+void ChessEngine::genRMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get rook locations
 	cs->pieces[cs->turn][cs->ROOK].getPosArr(rookPosArr[0], &pieceCount[0][0]);
 
@@ -28,17 +28,19 @@ void ChessEngine::genRMoves(ChessState* cs, vector<Move>* moves) {
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves->push_back(Move(cs->ROOK,
+				moves[*moveCount] = Move(cs->ROOK,
 					rookPosArr[0][i],
 					posTargets[j],
-					cs->getPieceType(!cs->turn, posTargets[j])));
+					cs->getPieceType(!cs->turn, posTargets[j]));
+				++*moveCount;
 			}
 		}
 		// Add non-kill moves
 		if (moveBoard.board != 0) {
 			moveBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves->push_back(Move(cs->ROOK, rookPosArr[0][i], posTargets[j]));
+				moves[*moveCount] = Move(cs->ROOK, rookPosArr[0][i], posTargets[j]);
+				++*moveCount;
 			}
 		}
 	}

@@ -3,10 +3,9 @@
 #include "chess_state.hpp"
 #include "S8.hpp"
 #include "U8.hpp"
-#include "U64.hpp"
 
 // Generates all psudo-legal pawn moves
-void ChessEngine::genWhitePMoves(ChessState* cs, vector<Move>* moves) {
+void ChessEngine::genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	
 	// Set en passant square
 	bufferBoard = 0;
@@ -33,16 +32,21 @@ void ChessEngine::genWhitePMoves(ChessState* cs, vector<Move>* moves) {
 		// Check pawn promotion
 		if (Bitboard::RANK[posTargets[i]] == 7) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->KNIGHT));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->QUEEN);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->ROOK);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->BISHOP);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed, cs->KNIGHT);
+			++*moveCount;
 		} else {
 			// Account for en passant
 			if (killed == -1) {
 				killed = cs->PAWN;
 			}
-			moves->push_back(Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-9, posTargets[i], killed);
+			++*moveCount;
 		}
 	}
 
@@ -61,16 +65,21 @@ void ChessEngine::genWhitePMoves(ChessState* cs, vector<Move>* moves) {
 		// Check pawn promotion
 		if (Bitboard::RANK[posTargets[i]] == 7) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->KNIGHT));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->QUEEN);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->ROOK);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->BISHOP);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed, cs->KNIGHT);
+			++*moveCount;
 		} else {
 			// Account for en passant
 			if (killed == -1) {
 				killed = cs->PAWN;
 			}
-			moves->push_back(Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-7, posTargets[i], killed);
+			++*moveCount;
 		}
 	}
 
@@ -87,12 +96,17 @@ void ChessEngine::genWhitePMoves(ChessState* cs, vector<Move>* moves) {
 		// Check pawn promotion
 		if (Bitboard::RANK[posTargets[i]] == 7) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->KNIGHT));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->QUEEN);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->ROOK);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->BISHOP);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-8, posTargets[i], -1, cs->KNIGHT);
+			++*moveCount;
 		} else {
-			moves->push_back(Move(cs->PAWN, posTargets[i]-8, posTargets[i]));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]-8, posTargets[i]);
+			++*moveCount;
 		}
 	}
 
@@ -105,12 +119,13 @@ void ChessEngine::genWhitePMoves(ChessState* cs, vector<Move>* moves) {
 	moveBoard.popPosArr(posTargets, &targetCount);
 	// Add positions to array
 	for (i=0; i<targetCount; ++i) {
-		moves->push_back(Move(cs->PAWN, posTargets[i]-16, posTargets[i]));
+		moves[*moveCount] = Move(cs->PAWN, posTargets[i]-16, posTargets[i]);
+		++*moveCount;
 	}
 }
 
 // Generates all psudo-legal pawn moves
-void ChessEngine::genBlackPMoves(ChessState* cs, vector<Move>* moves) {
+void ChessEngine::genBlackPMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	
 	// Set en passant square
 	bufferBoard = 0;
@@ -137,16 +152,21 @@ void ChessEngine::genBlackPMoves(ChessState* cs, vector<Move>* moves) {
 		// Check pawn promotion
 		if (Bitboard::RANK[posTargets[i]] == 0) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->KNIGHT));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->QUEEN);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->ROOK);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->BISHOP);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed, cs->KNIGHT);
+			++*moveCount;
 		} else {
 			// Account for en passant
 			if (killed == -1) {
 				killed = cs->PAWN;
 			}
-			moves->push_back(Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+7, posTargets[i], killed);
+			++*moveCount;
 		}
 	}
 
@@ -165,16 +185,21 @@ void ChessEngine::genBlackPMoves(ChessState* cs, vector<Move>* moves) {
 		// Check pawn promotion
 		if (Bitboard::RANK[posTargets[i]] == 0) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->KNIGHT));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->QUEEN);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->ROOK);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->BISHOP);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed, cs->KNIGHT);
+			++*moveCount;
 		} else {
 			// Account for en passant
 			if (killed == -1) {
 				killed = cs->PAWN;
 			}
-			moves->push_back(Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+9, posTargets[i], killed);
+			++*moveCount;
 		}
 	}
 
@@ -192,12 +217,17 @@ void ChessEngine::genBlackPMoves(ChessState* cs, vector<Move>* moves) {
 		// Check pawn promotion
 		if (Bitboard::RANK[posTargets[i]] == 0) {
 			// Add a moves for each possible promotion type
-			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->QUEEN));
-			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->ROOK));
-			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->BISHOP));
-			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->KNIGHT));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->QUEEN);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->ROOK);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->BISHOP);
+			++*moveCount;
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+8, posTargets[i], -1, cs->KNIGHT);
+			++*moveCount;
 		} else {
-			moves->push_back(Move(cs->PAWN, posTargets[i]+8, posTargets[i]));
+			moves[*moveCount] = Move(cs->PAWN, posTargets[i]+8, posTargets[i]);
+			++*moveCount;
 		}
 	}
 
@@ -210,7 +240,8 @@ void ChessEngine::genBlackPMoves(ChessState* cs, vector<Move>* moves) {
 	moveBoard.popPosArr(posTargets, &targetCount);
 	// Add positions to array
 	for (i=0; i<targetCount; ++i) {
-		moves->push_back(Move(cs->PAWN, posTargets[i]+16, posTargets[i]));
+		moves[*moveCount] = Move(cs->PAWN, posTargets[i]+16, posTargets[i]);
+		++*moveCount;
 	}
 }
 
