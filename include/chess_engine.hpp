@@ -101,13 +101,13 @@ public:
 	static const short MAX_SEARCH_DEPTH = 256;
 	
 	// Configurable option
-	U8 KILL_QUEUE_MAX_SIZE = 2;			// For killer heurisitc
 	float MAX_DEPTH_RATIO = 1.5;		// For search extensions
 
 	// Search Variables
 	U8 maxDepth;
 	TranspostionTable* transTable;					// Transposition table
-	deque<Move> killerHeuristic[MAX_SEARCH_DEPTH];	// Killer Heuristic
+	bool killerHeuristicNext[MAX_SEARCH_DEPTH] = {false};
+	Move killerHeuristic[MAX_SEARCH_DEPTH][2];		// Killer Heuristic
 	PvTable pvTable = PvTable(MAX_SEARCH_DEPTH);	// Principal Variation Table
 
 	// UCI accessible members

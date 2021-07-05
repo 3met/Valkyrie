@@ -97,8 +97,11 @@ void ChessEngine::clear() {
 	nodesTotal = 0;
 	this->transTable->clear();
 	this->pvTable.clear();
+
+	Move nullMove = Move();
 	for (short i(0); i<MAX_SEARCH_DEPTH; ++i) {
-		killerHeuristic[i].clear();
+		killerHeuristic[i][0] = nullMove;
+		killerHeuristic[i][1] = nullMove;
 	}
 }
 
@@ -278,7 +281,9 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			if (ttEntry.depth >= (depthTarget - depth)) {
 				if (ttEntry.score >= beta) {
 					cs->reverseMove();
-					this->addKillerMove(&moves[i], &depth);
+					if (moves[i].killed == -1) {
+						this->addKillerMove(&moves[i], &depth);
+					}
 					return beta;
 				}
 
@@ -312,7 +317,9 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			if (score >= beta) {
 				cs->reverseMove();
-				this->addKillerMove(&moves[i], &depth);
+				if (moves[i].killed == -1) {
+					this->addKillerMove(&moves[i], &depth);
+				}
 				return beta;
 			}
 

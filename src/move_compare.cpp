@@ -45,13 +45,16 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 		return false;
 	}
 
-	// Killer heuristic moves
-	for (U8 i(0); i<engine->killerHeuristic[depth].size(); ++i) {
-		if (a == engine->killerHeuristic[depth][i]) {
-			return true;
-		} else if (b == engine->killerHeuristic[depth][i]) {
-			return false;
-		}
+	if (a == engine->killerHeuristic[depth][!engine->killerHeuristicNext[depth]]) {
+		return true;
+	} else if (b == engine->killerHeuristic[depth][!engine->killerHeuristicNext[depth]]) {
+		return false;
+	}
+
+	if (a == engine->killerHeuristic[depth][engine->killerHeuristicNext[depth]]) {
+		return true;
+	} else if (b == engine->killerHeuristic[depth][engine->killerHeuristicNext[depth]]) {
+		return false;
 	}
 
 	// Center bias prioritizes moves toward the center
