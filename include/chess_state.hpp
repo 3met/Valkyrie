@@ -3,6 +3,7 @@
 #ifndef CHESS_STATE_HPP
 #define CHESS_STATE_HPP
 
+#include <array>
 #include <exception>
 #include <stack>
 #include <string>
@@ -55,7 +56,7 @@ public:
 	static const U8 ROOK_START[2][2];	// [color][king/queen side]
 
 	// Maximum number of moves the chess state will store
-	static const short MAX_MOVES;
+	static const short MAX_MOVES = 1024;
 
 	// Bitboard to store piece locations
 	Bitboard pieces[2][7];	// [colors][p/n/b/r/q/k/all]
@@ -66,7 +67,7 @@ public:
 	short moveLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
 	
 	S8 enPassant;				// Pos behind pawn, else -1
-	S8* enPassantHistory;		// History of en passant for reverseMove()
+	array<S8, MAX_MOVES> enPassantHistory;		// History of en passant for reverseMove()
 
 	stack<Move> moveHistory;	// List of moves that lead to current game state
 	
