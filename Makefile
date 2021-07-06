@@ -50,6 +50,12 @@ $(BUILD)/%.o: $(SRC_DIR)/%.cpp
 run:
 	cd "$(BIN)" && "$(EXE)"
 
+# Build & Run Project
+.PHONY: clean
+clean:
+	if exist "$(BIN)" rmdir "$(BIN)" /s
+	if exist "$(BUILD)" rmdir "$(BUILD)" /s
+
 
 # ----- COMPILE WITH DEBUG -----
 .PHONY: debug
