@@ -2,7 +2,7 @@
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 // Generates all psudo-legal rook moves
 void ChessEngine::genRMoves(ChessState* cs, Move moves[218], U8* moveCount) {

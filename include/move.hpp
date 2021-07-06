@@ -4,8 +4,7 @@
 #define MOVE_HPP
 
 #include <string>
-#include "S8.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 using namespace std;
 

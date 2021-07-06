@@ -2,7 +2,7 @@
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 // Factors used in static evaluation
 #define USE_MATERIAL_VALUE

@@ -1,7 +1,7 @@
 
 #include "chess_engine.hpp"
 #include "move.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 // Add killer heuristic move
 void ChessEngine::addKillerMove(Move* m, U8* depth) {

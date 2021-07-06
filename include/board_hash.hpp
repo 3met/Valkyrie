@@ -4,8 +4,8 @@
 #define BOARD_HASH_HPP
 
 #include "bitboard.hpp"
+#include "size_defs.hpp"
 #include "zobrist_values.hpp"
-#include "U64.hpp"
 
 // Zobrist Board Hash used to represent a chess board.
 // Hash takes into account piece locations, color to play,

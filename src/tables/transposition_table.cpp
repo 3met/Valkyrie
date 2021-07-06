@@ -1,7 +1,6 @@
 
 #include "transposition_table.hpp"
-#include "U8.hpp"
-#include "U64.hpp"
+#include "size_defs.hpp"
 
 // ----- Transposition Table Entry/Row Methods -----
 

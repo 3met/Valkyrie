@@ -5,9 +5,7 @@
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "opening_table.hpp"
-#include "S8.hpp"
-#include "U8.hpp"
-#include "U64.hpp"
+#include "size_defs.hpp"
 
 string DATA_DIR = "../data/";
 

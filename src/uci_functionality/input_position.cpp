@@ -1,8 +1,8 @@
 
 #include <string>
 #include <vector>
+#include "size_defs.hpp"
 #include "uci.hpp"
-#include "U8.hpp"
 
 // For UCI commands starting with "position".
 // Assumes input contains the full command starting with "position".

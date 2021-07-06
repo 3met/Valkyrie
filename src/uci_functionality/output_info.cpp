@@ -2,8 +2,8 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
-#include "UCI.hpp"
-#include "U64.hpp"
+#include "size_defs.hpp"
+#include "uci.hpp"
 
 using namespace std::chrono;
 

@@ -1,7 +1,7 @@
 
 #include <random>
+#include "size_defs.hpp"
 #include "zobrist_values.hpp"
-#include "U8.hpp"
 
 using namespace std;
 

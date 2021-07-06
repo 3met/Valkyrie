@@ -4,8 +4,7 @@
 #define BITBOARD_HPP
 
 #include <vector>
-#include "U8.hpp"
-#include "U64.hpp"
+#include "size_defs.hpp"
 
 using namespace std;
 

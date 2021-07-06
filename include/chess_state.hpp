@@ -11,8 +11,7 @@
 #include "bitboard.hpp"
 #include "board_hash.hpp"
 #include "move.hpp"
-#include "S8.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 using namespace std;
 

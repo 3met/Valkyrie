@@ -1,7 +1,7 @@
 
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 // Generates all psudo-legal bishop moves
 void ChessEngine::genBMoves(ChessState* cs, Move moves[218], U8* moveCount) {

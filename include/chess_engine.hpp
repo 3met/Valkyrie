@@ -13,10 +13,8 @@
 #include "move.hpp"
 #include "opening_table.hpp"
 #include "pv_table.hpp"
+#include "size_defs.hpp"
 #include "transposition_table.hpp"
-#include "S8.hpp"
-#include "U8.hpp"
-#include "U64.hpp"
 
 using namespace std;
 

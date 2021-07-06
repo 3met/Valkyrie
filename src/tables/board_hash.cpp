@@ -2,8 +2,8 @@
 #include <vector>
 #include "board_hash.hpp"
 #include "chess_state.hpp"
+#include "size_defs.hpp"
 #include "zobrist_values.hpp"
-#include "U8.hpp"
 
 using namespace std;
 

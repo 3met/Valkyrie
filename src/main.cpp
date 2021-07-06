@@ -16,20 +16,14 @@
  */
 
 #include <iostream>
+#include "size_defs.hpp"
 #include "testing.hpp"
 #include "uci.hpp"
-#include "U64.hpp"
 
 using namespace std;
 
 int main() {
 	cout << "Chess Engine | By Emet Behrendt" << endl;
-
-	// Bitboard size check
-	if (sizeof(U64) != 8) {
-		cout << "ERROR: Bitboard has incorrect number of bits" << endl;
-		return 1;
-	}
 
 	UCI uci;
 	uci.run();

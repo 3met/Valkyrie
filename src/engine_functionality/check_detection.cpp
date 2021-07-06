@@ -2,7 +2,7 @@
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 // Check if a square is attacked "turn" represents the color of the attacker
 bool ChessEngine::isPosAttacked(ChessState* cs, bool turn, U8 pos) {

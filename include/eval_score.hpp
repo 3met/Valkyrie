@@ -4,7 +4,7 @@
 #define EVAL_SCORE_HPP
 
 #include <iostream>
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 using namespace std;
 

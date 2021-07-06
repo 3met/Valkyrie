@@ -2,8 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "bitboard.hpp"
-#include "U8.hpp"
-#include "U64.hpp"
+#include "size_defs.hpp"
 
 using namespace std;
 

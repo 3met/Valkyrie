@@ -3,7 +3,7 @@
 #ifndef ZOBRIST_VALUES_HPP
 #define ZOBRIST_VALUES_HPP
 
-#include "U64.hpp"
+#include "size_defs.hpp"
 
 // Stores a set of Zobrish hash values.
 // Values can be used to hash the state of a 

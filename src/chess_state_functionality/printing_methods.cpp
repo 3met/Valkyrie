@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include "chess_state.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 // Returns a string containing the FEN of the current chess state.
 string ChessState::stringFEN() {

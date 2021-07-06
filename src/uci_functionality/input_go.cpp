@@ -4,8 +4,8 @@
 #include <thread>
 #include <vector>
 #include "move.hpp"
+#include "size_defs.hpp"
 #include "uci.hpp"
-#include "U64.hpp"
 
 // Handles "go" input commands.
 // Runs engine searches based on input.

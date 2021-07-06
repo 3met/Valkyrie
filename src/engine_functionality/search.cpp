@@ -8,7 +8,7 @@
 #include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
-#include "U64.hpp"
+#include "size_defs.hpp"
 
 using namespace std::chrono;
 

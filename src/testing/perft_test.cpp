@@ -5,8 +5,7 @@
 #include <vector>
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
-#include "U8.hpp"
-#include "U64.hpp"
+#include "size_defs.hpp"
 
 using namespace std;
 

@@ -1,8 +1,7 @@
 
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
-#include "S8.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 // Generates all psudo-legal king moves
 void ChessEngine::genKMoves(ChessState* cs, Move moves[218], U8* moveCount){
