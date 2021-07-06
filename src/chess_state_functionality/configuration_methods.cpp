@@ -3,7 +3,7 @@
 #include <string>
 #include <utility>
 #include "chess_state.hpp"
-#include "U8.hpp"
+#include "size_defs.hpp"
 
 // Clears the board and resets game data
 void ChessState::clear() {
