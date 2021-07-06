@@ -25,23 +25,25 @@ FILE_TYPES	:= *.c *.cpp *.cc *.cxx *.c++ *.C *.cp
 # DO NOT EDIT BELOW THIS LINE
 # ---------------------------
 
+MAIN_DIR	:= main
+DEBUG_DIR	:= debug
 
 rwildcard	= $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 SRC_FILES	:= $(call rwildcard, $(SRC_DIR), $(FILE_TYPES))
-OBJECTS		:= $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/%.o, $(SRC_FILES))
-
+MAIN_OBJ	:= $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/$(MAIN_DIR)/%.o, $(SRC_FILES))
+DEBUG_OBJ	:= $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/$(DEBUG_DIR)/%.o, $(SRC_FILES))
 
 # ----- COMPILE AND RUN NORMALLY -----
 .PHONY: compile
 compile: $(BIN)/$(EXE)
 
 # Compile object files into executable
-$(BIN)/$(EXE): $(OBJECTS)
+$(BIN)/$(EXE): $(MAIN_OBJ)
 	if not exist "$(BIN)" mkdir "$(BIN)"
 	$(CXX) $(CXX_FLAGS) $^ -o "$@" -I $(INCLUDE) -L $(LIBRARIES)
 
-# Compile object file for each cpp file
-$(BUILD)/%.o: $(SRC_DIR)/%.cpp
+# Compile object file for each C/C++ file
+$(BUILD)/$(MAIN_DIR)/%.o: $(SRC_DIR)/%.cpp
 	if not exist "$(dir $@)" mkdir "$(dir $@)"
 	$(CXX) $(CXX_FLAGS) -c "$^" -o "$@" -I $(INCLUDE)
 
@@ -62,9 +64,15 @@ clean:
 debug: $(BIN)/$(DEBUG_EXE)
 	cd "$(BIN)" && gdb $(DEBUG_EXE)
 
-$(BIN)/$(DEBUG_EXE): $(SRC_FILES)
+# Compile debug exe
+$(BIN)/$(DEBUG_EXE): $(DEBUG_OBJ)
 	if not exist "$(BIN)" mkdir "$(BIN)"
-	$(CXX) $(CXX_FLAGS) $(DEBUG_FLAGS) $^ -o $@ -I $(INCLUDE) -L $(LIBRARIES)
+	$(CXX) $(CXX_FLAGS) $(DEBUG_FLAGS) $^ -o "$@" -I $(INCLUDE) -L $(LIBRARIES)
+
+# Compile object file with debug flags
+$(BUILD)/$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.cpp
+	if not exist "$(dir $@)" mkdir "$(dir $@)"
+	$(CXX) $(CXX_FLAGS) $(DEBUG_FLAGS) -c "$^" -o "$@" -I $(INCLUDE)
 
 
 # ----- CREATE RELEASE -----
