@@ -25,13 +25,22 @@ FILE_TYPES	:= *.c *.cpp *.cc *.cxx *.c++ *.C *.cp
 # DO NOT EDIT BELOW THIS LINE
 # ---------------------------
 
+# Where to store .o and .d files
 MAIN_DIR	:= main
 DEBUG_DIR	:= debug
 
+# Source Files
 rwildcard	= $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 SRC_FILES	:= $(call rwildcard, $(SRC_DIR), $(FILE_TYPES))
+# Object Files
 MAIN_OBJ	:= $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/$(MAIN_DIR)/%.o, $(SRC_FILES))
 DEBUG_OBJ	:= $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/$(DEBUG_DIR)/%.o, $(SRC_FILES))
+# Dependancy Files
+MAIN_DEPS	:= $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/$(MAIN_DIR)/%.d, $(SRC_FILES))
+DEBUG_DEPS	:= $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/$(DEBUG_DIR)/%.d, $(SRC_FILES))
+
+-include $(MAIN_DEPS)
+-include $(DEBUG_DEPS)
 
 # ----- COMPILE AND RUN NORMALLY -----
 .PHONY: compile
@@ -42,10 +51,11 @@ $(BIN)/$(EXE): $(MAIN_OBJ)
 	if not exist "$(BIN)" mkdir "$(BIN)"
 	$(CXX) $(CXX_FLAGS) $^ -o "$@" -I $(INCLUDE) -L $(LIBRARIES)
 
-# Compile object file for each C/C++ file
+# Compile object and dependancy files for each C/C++ file
 $(BUILD)/$(MAIN_DIR)/%.o: $(SRC_DIR)/%.cpp
 	if not exist "$(dir $@)" mkdir "$(dir $@)"
-	$(CXX) $(CXX_FLAGS) -c "$^" -o "$@" -I $(INCLUDE)
+	$(CXX) $(CXX_FLAGS) -c "$<" -o "$@" -I $(INCLUDE)
+	$(CXX) $(CXX_FLAGS) -MM $< -MT "$@" -MF "$(patsubst $(SRC_DIR)/%.cpp,$(BUILD)/$(MAIN_DIR)/%.d,$<)" -I $(INCLUDE)
 
 # Build & Run Project
 .PHONY: run
@@ -73,6 +83,7 @@ $(BIN)/$(DEBUG_EXE): $(DEBUG_OBJ)
 $(BUILD)/$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.cpp
 	if not exist "$(dir $@)" mkdir "$(dir $@)"
 	$(CXX) $(CXX_FLAGS) $(DEBUG_FLAGS) -c "$^" -o "$@" -I $(INCLUDE)
+	$(CXX) $(CXX_FLAGS) -MM $< -MT "$@" -MF "$(patsubst $(SRC_DIR)/%.cpp,$(BUILD)/$(DEBUG_DIR)/%.d,$<)" -I $(INCLUDE)
 
 
 # ----- CREATE RELEASE -----
