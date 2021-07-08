@@ -45,11 +45,11 @@ short ChessEngine::evalSide(ChessState* cs, bool side) {
 	#ifdef USE_MATERIAL_VALUE
 		// --- Adjustment for Material Amount --- 
 		// Account for general material value
-		rating += pieceCount[side][cs->PAWN] * materialValsLK[cs->PAWN];
-		rating += pieceCount[side][cs->KNIGHT] * materialValsLK[cs->KNIGHT];
-		rating += pieceCount[side][cs->BISHOP] * materialValsLK[cs->BISHOP];
-		rating += pieceCount[side][cs->ROOK] * materialValsLK[cs->ROOK];
-		rating += pieceCount[side][cs->QUEEN] * materialValsLK[cs->QUEEN];
+		rating += pieceCount[side][cs->PAWN] * materialVals[cs->PAWN];
+		rating += pieceCount[side][cs->KNIGHT] * materialVals[cs->KNIGHT];
+		rating += pieceCount[side][cs->BISHOP] * materialVals[cs->BISHOP];
+		rating += pieceCount[side][cs->ROOK] * materialVals[cs->ROOK];
+		rating += pieceCount[side][cs->QUEEN] * materialVals[cs->QUEEN];
 
 		// Bonus for having two bishops
 		if (pieceCount[side][cs->BISHOP] == 2) {

@@ -73,9 +73,7 @@ private:
 	OpeningTable openingTable;
 
 	// Material value systems
-	const static short materialValsSTD[6];
-	const static short materialValsLK[6];
-	const static short materialValsHB[6];
+	const static short materialVals[6];
 
 	// File IO methods
 	static bool readBitboardTable(Bitboard table[64], string fileName);

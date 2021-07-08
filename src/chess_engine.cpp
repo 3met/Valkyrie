@@ -25,23 +25,13 @@ ChessEngine::~ChessEngine() {
 	delete transTable;
 }
 
-// ----- Scoring Game State -----
-// Standard material valuation
-const short ChessEngine::materialValsSTD[6] = {
-	100, 300, 300, 500, 900, 30000,
-};
 
 // Larry Kaufman's material valuation
-const short ChessEngine::materialValsLK[6] = {
+const short ChessEngine::materialVals[6] = {
 	// https://web.archive.org/web/20160314214435/http://www.danheisman.com/Articles/evaluation_of_material_imbalance.htm
 	100, 325, 325, 500, 975, 30000,
 };
 
-// Hans Berliner's material valuation
-const short ChessEngine::materialValsHB[6] = {
-	// https://en.wikipedia.org/wiki/Chess_piece_relative_value#Hans_Berliner's_system
-	100, 320, 333, 510, 880, 30000,
-};
 
 bool ChessEngine::isLoaded = false;
 
