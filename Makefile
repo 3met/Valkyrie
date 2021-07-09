@@ -82,7 +82,7 @@ $(BIN)/$(DEBUG_EXE): $(DEBUG_OBJ)
 # Compile object file with debug flags
 $(BUILD)/$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.cpp
 	if not exist "$(dir $@)" mkdir "$(dir $@)"
-	$(CXX) $(CXX_FLAGS) $(DEBUG_FLAGS) -c "$^" -o "$@" -I $(INCLUDE)
+	$(CXX) $(CXX_FLAGS) $(DEBUG_FLAGS) -c "$<" -o "$@" -I $(INCLUDE)
 	$(CXX) $(CXX_FLAGS) -MM $< -MT "$@" -MF "$(patsubst $(SRC_DIR)/%.cpp,$(BUILD)/$(DEBUG_DIR)/%.d,$<)" -I $(INCLUDE)
 
 
