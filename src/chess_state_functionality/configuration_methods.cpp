@@ -32,7 +32,6 @@ void ChessState::clear() {
 	moveLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
 
 	// Reset en passant data
-	enPassant = -1;
 	for (short i(0); i<MAX_MOVES; ++i) {
 		enPassantHistory[i] = -1;
 	}
@@ -41,7 +40,7 @@ void ChessState::clear() {
 	turnNumber = 1;			// Game turn number
 	moveNumber = 1;
 
-	this->bh.makeHash(pieces, turn, castlePerms, enPassant);
+	this->bh.makeHash(pieces, turn, castlePerms, enPassantHistory[moveNumber-1]);
 }
 
 // Loads FEN encoding into ChessState
@@ -120,8 +119,7 @@ void ChessState::loadFEN(string FEN) {
 
 	// Read en passant
 	if (FEN[FEN_index] != '-') {
-		this->enPassant = Move::coordToPos(FEN.substr(FEN_index, 2));
-		enPassantHistory[0] = this->enPassant;
+		enPassantHistory[moveNumber-1] = Move::coordToPos(FEN.substr(FEN_index, 2));
 		++FEN_index;	// Move to last en passant character
 	}
 
@@ -129,7 +127,7 @@ void ChessState::loadFEN(string FEN) {
 	if (FEN_index == FEN.size()-1) {
 		halfmoveClock = 0;
 		turnNumber = 1;
-		this->bh.makeHash(pieces, turn, castlePerms, enPassant);
+		this->bh.makeHash(pieces, turn, castlePerms, enPassantHistory[moveNumber-1]);
 		return;
 	}
 
@@ -152,7 +150,7 @@ void ChessState::loadFEN(string FEN) {
 	// Return if no more to read
 	if (FEN_index == FEN.size()-1) {
 		turnNumber = 1;
-		this->bh.makeHash(pieces, turn, castlePerms, enPassant);
+		this->bh.makeHash(pieces, turn, castlePerms, enPassantHistory[moveNumber-1]);
 		return;
 	}
 
@@ -172,7 +170,7 @@ void ChessState::loadFEN(string FEN) {
 
 	turnNumber = stoi(FEN.substr(FEN_index-(nLength-1), nLength));
 
-	this->bh.makeHash(pieces, turn, castlePerms, enPassant);
+	this->bh.makeHash(pieces, turn, castlePerms, enPassantHistory[moveNumber-1]);
 }
 
 // Place piece on the board
@@ -202,7 +200,6 @@ void ChessState::reset() {
 	moveLostCastlePerms[BLACK][QUEEN_SIDE] = -1;
 
 	// Reset en passant data
-	enPassant = -1;
 	for (short i(0); i<MAX_MOVES; ++i) {
 		enPassantHistory[i] = -1;
 	}
@@ -211,5 +208,5 @@ void ChessState::reset() {
 	turnNumber = 1;			// Game turn number
 	moveNumber = 1;
 
-	this->bh.makeHash(pieces, turn, castlePerms, enPassant);
+	this->bh.makeHash(pieces, turn, castlePerms, enPassantHistory[moveNumber-1]);
 }

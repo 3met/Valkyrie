@@ -64,7 +64,6 @@ public:
 	bool castlePerms[2][2];				// [color][king/queen side]
 	short moveLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
 	
-	S8 enPassant;				// Pos behind pawn, else -1
 	array<S8, MAX_MOVES> enPassantHistory;		// History of en passant for reverseMove()
 
 	array<Move, MAX_MOVES> moveHistory;	// List of moves that lead to current game state

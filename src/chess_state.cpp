@@ -54,7 +54,7 @@ Move ChessState::notationToMove(string notation) {
 
 	U8 killed;
 	// Check for en passant killing
-	if (end == enPassant && pieceType == PAWN) {
+	if (end == enPassantHistory[moveNumber-1] && pieceType == PAWN) {
 		killed = PAWN;
 	} else {
 		killed = getPieceType(!turn, end);

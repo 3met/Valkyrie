@@ -8,8 +8,8 @@ void ChessEngine::genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	
 	// Set en passant square
 	bufferBoard = 0;
-	if (cs->enPassant != -1) {
-		bufferBoard.setPosOn(cs->enPassant);
+	if (cs->enPassantHistory[cs->moveNumber-1] != -1) {
+		bufferBoard.setPosOn(cs->enPassantHistory[cs->moveNumber-1]);
 	}
 
 	bufferBoard.board |= cs->pieces[cs->BLACK][cs->ALL_PIECES].board;
@@ -128,8 +128,8 @@ void ChessEngine::genBlackPMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	
 	// Set en passant square
 	bufferBoard = 0;
-	if (cs->enPassant != -1) {
-		bufferBoard.setPosOn(cs->enPassant);
+	if (cs->enPassantHistory[cs->moveNumber-1] != -1) {
+		bufferBoard.setPosOn(cs->enPassantHistory[cs->moveNumber-1]);
 	}
 
 	bufferBoard.board |= cs->pieces[cs->WHITE][cs->ALL_PIECES].board;

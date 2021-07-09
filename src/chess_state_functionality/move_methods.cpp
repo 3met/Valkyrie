@@ -11,7 +11,7 @@ void ChessState::move(Move m) {
 	if (!m.isNull()) {
 		// Removes potential killed piece from bitboard
 		if (m.killed != -1) {
-			if (m.end == enPassant) {
+			if (m.end == enPassantHistory[moveNumber-1]) {
 				// Remove piece killed by en passant
 				if (turn == WHITE) {
 					pieces[BLACK][PAWN].setPosOff(m.end-8);
@@ -102,31 +102,30 @@ void ChessState::move(Move m) {
 			}
 		}
 
-		// Update enPassant value
+		// Update en passant value
 		if (m.piece == PAWN) {
 			if (turn == WHITE) {
 				// If pawn moved two squares forward
 				if (Bitboard::RANK[m.start] == 1 && Bitboard::RANK[m.end] == 3) {
-					bh.updateEnPassant(enPassant, m.end-8);
-					enPassant = m.end-8;
+					bh.updateEnPassant(enPassantHistory[moveNumber-1], m.end-8);
+					enPassantHistory[moveNumber] = m.end-8;
 				} else {
-					bh.updateEnPassant(enPassant, -1);
-					enPassant = -1;
+					bh.updateEnPassant(enPassantHistory[moveNumber-1], -1);
+					enPassantHistory[moveNumber] = -1;
 				}
 			} else {	// If black's turn
 				if (Bitboard::RANK[m.start] == 6 && Bitboard::RANK[m.end] == 4) {
-					bh.updateEnPassant(enPassant, m.end+8);
-					enPassant = m.end+8;
+					bh.updateEnPassant(enPassantHistory[moveNumber-1], m.end+8);
+					enPassantHistory[moveNumber] = m.end+8;
 				} else {
-					bh.updateEnPassant(enPassant, -1);
-					enPassant = -1;
+					bh.updateEnPassant(enPassantHistory[moveNumber-1], -1);
+					enPassantHistory[moveNumber] = -1;
 				}
 			}
 		} else {
-			bh.updateEnPassant(enPassant, -1);
-			enPassant = -1;
+			bh.updateEnPassant(enPassantHistory[moveNumber-1], -1);
+			enPassantHistory[moveNumber] = -1;
 		}
-		enPassantHistory[moveNumber] = enPassant;
 
 		// Update "all" bitboard
 		this->updateAllBitboard(turn);
@@ -163,15 +162,13 @@ void ChessState::reverseMove() {
 
 	if (!m.isNull()) {
 		// Revert en passant value
-		S8 oldEnPassant(enPassantHistory[moveNumber]);
-		enPassantHistory[moveNumber] = -1;
+		enPassantHistory[moveNumber] = -1;		// TODO: Remove?
 		// If en passant variable needs to be updated
-		if (oldEnPassant != enPassantHistory[moveNumber-1]) {
-			enPassant = enPassantHistory[moveNumber-1];
-			bh.updateEnPassant(oldEnPassant, enPassant);
+		if (enPassantHistory[moveNumber] != enPassantHistory[moveNumber-1]) {
+			bh.updateEnPassant(enPassantHistory[moveNumber], enPassantHistory[moveNumber-1]);
 		}
 
-		// Updates piece location on bitboard
+		// Updates moving piece location on bitboard
 		if (m.promoted == -1) {
 			pieces[turn][m.piece].setPosOff(m.end);
 			bh.updatePiece(turn, m.piece, m.end);
@@ -184,7 +181,7 @@ void ChessState::reverseMove() {
 
 		// Adds previously killed piece to bitboard
 		if (m.killed != -1) {
-			if (m.end == enPassant) {
+			if (m.end == enPassantHistory[moveNumber-1]) {
 				// Place killed en passant piece
 				if (turn == WHITE) {
 					pieces[BLACK][PAWN].setPosOn(m.end-8);
