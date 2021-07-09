@@ -5,7 +5,6 @@
 
 #include <array>
 #include <exception>
-#include <stack>
 #include <string>
 #include <utility>
 #include "bitboard.hpp"

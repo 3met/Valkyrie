@@ -2,9 +2,7 @@
 #include <chrono>
 #include <future>
 #include <iostream>
-#include <queue>
 #include <string>
-#include <thread>
 #include "uci.hpp"
 
 using namespace std;

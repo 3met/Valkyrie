@@ -10,7 +10,7 @@ void ChessState::clear() {
 	
 	// Reset bitboards
 	for (U8 i(0); i<2; ++i) {
-		for (U8 j=0; j<6; ++j) {
+		for (U8 j(0); j<6; ++j) {
 			pieces[i][j].board = 0;
 		}
 	}

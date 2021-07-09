@@ -16,8 +16,6 @@
  */
 
 #include <iostream>
-#include "size_defs.hpp"
-#include "testing.hpp"
 #include "uci.hpp"
 
 using namespace std;

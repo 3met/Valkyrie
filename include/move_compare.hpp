@@ -5,7 +5,6 @@
 
 #include "chess_engine.hpp"
 #include "move.hpp"
-#include "transposition_table.hpp"
 #include "size_defs.hpp"
 
 // Compares moves for moving ording prior to alpha-beta pruning search.

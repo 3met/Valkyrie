@@ -1,7 +1,6 @@
 
 #include <string>
 #include <vector>
-#include "size_defs.hpp"
 #include "uci.hpp"
 
 // For UCI commands starting with "position".

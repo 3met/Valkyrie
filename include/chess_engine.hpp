@@ -4,9 +4,7 @@
 #define CHESS_ENGINE_HPP
 
 #include <chrono>
-#include <deque>
 #include <utility>
-#include <vector>
 #include "bitboard.hpp"
 #include "chess_state.hpp"
 #include "eval_score.hpp"

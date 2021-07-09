@@ -3,6 +3,7 @@
 #include "chess_engine.hpp"
 #include "move.hpp"
 #include "move_compare.hpp"
+#include "size_defs.hpp"
 
 using namespace std;
 
