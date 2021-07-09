@@ -54,6 +54,14 @@ private:
 	U8 queenPosArr[2][10];
 	U8 kingPos[2];
 	U8 pieceCount[2][5];	// The number of each piece type
+	U8 gameStage;			// The number of each piece type
+	short pawnEvalResult;	// Evaluation results
+	short knightEvalResult;
+	short bishopEvalResult;
+	short rookEvalResult;
+	short queenEvalResult;
+	short kingEvalResult;
+	short kingSafetyEvalResult;
 	Bitboard bufferBoard;	// Bitboard to use as a buffer
 	Bitboard moveBoard;		// Bitboard with all move target locations
 	Bitboard killBoard;		// Bitboard with all kill target locations
@@ -127,9 +135,17 @@ public:
 	U64 nodesTotal = 0;
 
 	// Evaluation Methods
-	static U8 rateGameStage(U8 pieceCount[2][5]);
-	short evalBoard(ChessState* cs, bool perspective);
-	short evalSide(ChessState* cs, bool side);
+	void setGameStage();
+	void prepEval(ChessState* cs);
+	short evalSide(bool side);
+	void evalPawns(bool side);
+	void evalKnights(bool side);
+	void evalBishops(bool side);
+	void evalRooks(bool side);
+	void evalQueens(bool side);
+	void evalKings(bool side);
+	void evalKingSafety(bool side);
+	short evalBoard(ChessState* cs, bool side);
 	
 	// Search Methods
 	Move searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc);
