@@ -67,6 +67,18 @@ void ChessEngine::load() {
 	success &= readBonusTable(kingLateBonus[1], "bonus-tables/king/late-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(kingEndBonus[0], "bonus-tables/king/end-game-table.tab");
 	success &= readBonusTable(kingEndBonus[1], "bonus-tables/king/end-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	// Load pawn bonus tables
+	success &= readBonusTable(pawnOpeningBonus[0], "bonus-tables/pawn/opening-game-table.tab");
+	success &= readBonusTable(pawnOpeningBonus[1], "bonus-tables/pawn/opening-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(pawnEarlyBonus[0], "bonus-tables/pawn/early-game-table.tab");
+	success &= readBonusTable(pawnEarlyBonus[1], "bonus-tables/pawn/early-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(pawnMidBonus[0], "bonus-tables/pawn/mid-game-table.tab");
+	success &= readBonusTable(pawnMidBonus[1], "bonus-tables/pawn/mid-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(pawnLateBonus[0], "bonus-tables/pawn/late-game-table.tab");
+	success &= readBonusTable(pawnLateBonus[1], "bonus-tables/pawn/late-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(pawnEndBonus[0], "bonus-tables/pawn/end-game-table.tab");
+	success &= readBonusTable(pawnEndBonus[1], "bonus-tables/pawn/end-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+
 	// Load built-in opening book
 	// success &= readOpeningBook(&openingTable, "opening_book.dat");
 

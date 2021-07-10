@@ -35,6 +35,11 @@ private:
 	inline static S8 knightBonus[64];
 	inline static S8 bishopBonus[64];
 	inline static S8 queenBonus[64];
+	inline static S8 pawnOpeningBonus[2][64];	// Flipped for black and white
+	inline static S8 pawnEarlyBonus[2][64];
+	inline static S8 pawnMidBonus[2][64];
+	inline static S8 pawnLateBonus[2][64];
+	inline static S8 pawnEndBonus[2][64];
 	inline static S8 kingOpeningBonus[2][64];	// Flipped for black and white
 	inline static S8 kingEarlyBonus[2][64];
 	inline static S8 kingMidBonus[2][64];

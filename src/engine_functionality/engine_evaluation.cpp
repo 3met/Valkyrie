@@ -77,6 +77,29 @@ void ChessEngine::evalPawns(bool side) {
 			pawnsPerFile[!side][Bitboard::FILE[pawnPosArr[!side][i]]] += 1;
 		}
 
+		// Pawn adjust placement based on game stage
+		if (gameStage <= 51) {
+			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+				pawnEvalResult += pawnOpeningBonus[side][pawnPosArr[side][i]];
+			}
+		} else if (gameStage <= 102) {
+			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+				pawnEvalResult += pawnEarlyBonus[side][pawnPosArr[side][i]];
+			}
+		} else if (gameStage <= 153) {
+			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+				pawnEvalResult += pawnMidBonus[side][pawnPosArr[side][i]];
+			}
+		} else if (gameStage <= 204) {
+			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+				pawnEvalResult += pawnLateBonus[side][pawnPosArr[side][i]];
+			}
+		} else {
+			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+				pawnEvalResult += pawnEndBonus[side][pawnPosArr[side][i]];
+			}
+		}
+
 		#ifdef USE_DOUBLED_PAWNS
 			// Penalize doubled pawns
 			// Subtract 40 centipawns for each doubled/tripled pawn
