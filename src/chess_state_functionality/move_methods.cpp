@@ -161,8 +161,6 @@ void ChessState::reverseMove() {
 	Move m = moveHistory[moveNumber];
 
 	if (!m.isNull()) {
-		// Revert en passant value
-		enPassantHistory[moveNumber] = -1;		// TODO: Remove?
 		// If en passant variable needs to be updated
 		if (enPassantHistory[moveNumber] != enPassantHistory[moveNumber-1]) {
 			bh.updateEnPassant(enPassantHistory[moveNumber], enPassantHistory[moveNumber-1]);
