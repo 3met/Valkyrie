@@ -80,7 +80,7 @@ void ChessState::move(Move m) {
 				moveLostCastlePerms[turn][KING_SIDE] = moveNumber;
 				bh.updateCastlePerms(turn, KING_SIDE);
 			// Queen's side
-			} else if (ROOK_START[turn][KING_SIDE]
+			} else if (m.start == ROOK_START[turn][QUEEN_SIDE]
 				&& castlePerms[turn][QUEEN_SIDE]) {
 				
 				castlePerms[turn][QUEEN_SIDE] = false;
