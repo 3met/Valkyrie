@@ -20,10 +20,11 @@ MoveCompare::MoveCompare(ChessEngine* _engine, U8 _depth) {
 	this->depth = _depth;
 };
 
-// Operator to compare moves for move ordering
+// Operator to compare moves for move ordering.
+// Return true if A is the better move.
 bool MoveCompare::operator()(const Move& a, const Move& b) const {
 	// PV Table Matches
-	if (depth > 0) {
+	if (depth != 0) {
 		if (a == engine->pvTable[depth-1][1]) {
 			return true;
 		} else if (b == engine->pvTable[depth-1][1]) {
@@ -31,10 +32,36 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 		}
 	}
 
-	// Killed pieces by decreasing value
-	if (a.killed > b.killed) {
-		return true;
-	} else if (b.killed > a.killed) {
+	// Killed ordered by most valuable victim then least valuable attacker
+	// (MVV/LVA)
+	if (a.killed != -1) {
+		if (b.killed != -1) {
+			// If victims were the same
+			if (a.killed == b.killed) {
+				// If attacker A is worth less
+				if (a.piece < b.piece) {
+					return true;
+
+				// If attacker B is worth less
+				} else if (a.piece != b.piece) {
+					return false;
+				}
+
+			// If A has a more valuable victim
+			} else if (a.killed > b.killed) {
+				return true;
+			
+			// If B has a more valuable victim
+			} else {
+				return false;
+			}
+		} else {
+			// If only A is a kill
+			return true;
+		}
+
+	} else if (b.killed != -1) {
+		// If only B is a kill
 		return false;
 	}
 
