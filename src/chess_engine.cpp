@@ -173,7 +173,12 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 		// Exit if no longer allowed to search
 		if (this->canSearch == false) {
-			return make_pair(Move(), alpha);	// Return null move
+			// Return a nullmove if no moves have been searched
+			if (bestIndex == -1) {
+				return make_pair(Move(), alpha);
+			} else {
+				return make_pair(moveArr[0][bestIndex], alpha);
+			}
 		}
 
 		cs->move(moveArr[0][i]);
