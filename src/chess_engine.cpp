@@ -80,7 +80,7 @@ void ChessEngine::load() {
 	success &= readBonusTable(pawnEndBonus[1], "bonus-tables/pawn/end-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
 
 	// Load built-in opening book
-	// success &= readOpeningBook(&openingTable, "opening_book.dat");
+	success &= readOpeningBook(&openingTable, "opening-book.dat");
 
 	if (success) {
 		isLoaded = true;

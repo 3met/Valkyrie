@@ -75,7 +75,7 @@ private:
 	chrono::high_resolution_clock::time_point hardEndTime;
 
 	// Opening book database
-	OpeningTable openingTable;
+	inline static OpeningTable openingTable;
 
 	// Material value systems
 	const static short materialVals[6];
