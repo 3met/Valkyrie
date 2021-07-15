@@ -56,7 +56,7 @@ ifeq ($(OS), Windows_NT)
 else
 	EXE := $(EXE_NAME)
 	DEBUG_EXE := $(EXE_NAME)-debug
-	make_dir = if [ ! -d "$1" ]; then mkdir "$1" ; fi
+	make_dir = if [ ! -d "$1" ]; then mkdir -p "$1" ; fi
 	rm := rmdir
 	copy_data := rsync -rupE "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)"
 endif
