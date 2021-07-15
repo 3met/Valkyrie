@@ -100,10 +100,9 @@ void ChessEngine::clear() {
 	this->transTable->clear();
 	this->pvTable.clear();
 
-	Move nullMove = Move();
 	for (short i(0); i<MAX_SEARCH_DEPTH; ++i) {
-		killerHeuristic[i][0] = nullMove;
-		killerHeuristic[i][1] = nullMove;
+		killerHeuristic[i][0] = Move::NULL_MOVE;
+		killerHeuristic[i][1] = Move::NULL_MOVE;
 	}
 }
 
@@ -175,7 +174,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		if (this->canSearch == false) {
 			// Return a nullmove if no moves have been searched
 			if (bestIndex == -1) {
-				return make_pair(Move(), alpha);
+				return make_pair(Move::NULL_MOVE, alpha);
 			} else {
 				return make_pair(moveArr[0][bestIndex], alpha);
 			}

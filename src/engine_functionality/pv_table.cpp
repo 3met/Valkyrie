@@ -27,7 +27,7 @@ void PvTable::clear() {
 	short j;
 	for (short i(0); i<triangleSize; ++i) {
 		for (j=0; j<(triangleSize-i); ++j) {
-			table[i][j] = Move();
+			table[i][j] = Move::NULL_MOVE;
 		}
 	}
 }

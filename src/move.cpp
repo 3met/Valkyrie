@@ -37,6 +37,8 @@ Move::Move(S8 p, U8 s, U8 e, S8 k, S8 pro) {
 
 Move::~Move() {}
 
+const Move Move::NULL_MOVE = Move();
+
 // Returns a chess board coordinate from a given position.
 // Ex: 9 --> b2
 string Move::posToCoord(const U8 pos) {

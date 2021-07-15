@@ -23,6 +23,8 @@ public:
 	friend ostream& operator<<(ostream& os, const Move& m);
 	friend bool operator==(const Move& a, const Move& b);
 
+	static const Move NULL_MOVE;
+
 	S8 piece;		// Piece being moved; -1 for null move
 	U8 start;		// Start pos
 	U8 end;			// End pos
