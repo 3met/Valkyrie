@@ -59,14 +59,6 @@ private:
 	U8 queenPosArr[2][10];
 	U8 kingPos[2];
 	U8 pieceCount[2][5];	// The number of each piece type
-	U8 gameStage;			// The number of each piece type
-	short pawnEvalResult;	// Evaluation results
-	short knightEvalResult;
-	short bishopEvalResult;
-	short rookEvalResult;
-	short queenEvalResult;
-	short kingEvalResult;
-	short kingSafetyEvalResult;
 	Bitboard bufferBoard;	// Bitboard to use as a buffer
 	Bitboard moveBoard;		// Bitboard with all move target locations
 	Bitboard killBoard;		// Bitboard with all kill target locations
@@ -127,6 +119,16 @@ public:
 	bool killerHeuristicNext[MAX_SEARCH_DEPTH] = {false};
 	Move killerHeuristic[MAX_SEARCH_DEPTH][2];		// Killer Heuristic
 	PvTable pvTable = PvTable(MAX_SEARCH_DEPTH);	// Principal Variation Table
+
+	// Evaluation variables
+	U8 gameStage;			// The number of each piece type
+	short pawnEvalResult[2];	// Evaluation results
+	short knightEvalResult[2];
+	short bishopEvalResult[2];
+	short rookEvalResult[2];
+	short queenEvalResult[2];
+	short kingEvalResult[2];
+	short kingSafetyEvalResult[2];
 
 	// UCI accessible members
 	// Status Variables

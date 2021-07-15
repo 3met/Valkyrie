@@ -56,10 +56,10 @@ void ChessEngine::prepEval(ChessState* cs) {
 }
 
 void ChessEngine::evalPawns(bool side) {
-	pawnEvalResult = 0;
+	pawnEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		pawnEvalResult += pieceCount[side][CS::PAWN] * materialVals[CS::PAWN];
+		pawnEvalResult[side] += pieceCount[side][CS::PAWN] * materialVals[CS::PAWN];
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
@@ -80,23 +80,23 @@ void ChessEngine::evalPawns(bool side) {
 		// Pawn adjust placement based on game stage
 		if (gameStage <= 51) {
 			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
-				pawnEvalResult += pawnOpeningBonus[side][pawnPosArr[side][i]];
+				pawnEvalResult[side] += pawnOpeningBonus[side][pawnPosArr[side][i]];
 			}
 		} else if (gameStage <= 102) {
 			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
-				pawnEvalResult += pawnEarlyBonus[side][pawnPosArr[side][i]];
+				pawnEvalResult[side] += pawnEarlyBonus[side][pawnPosArr[side][i]];
 			}
 		} else if (gameStage <= 153) {
 			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
-				pawnEvalResult += pawnMidBonus[side][pawnPosArr[side][i]];
+				pawnEvalResult[side] += pawnMidBonus[side][pawnPosArr[side][i]];
 			}
 		} else if (gameStage <= 204) {
 			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
-				pawnEvalResult += pawnLateBonus[side][pawnPosArr[side][i]];
+				pawnEvalResult[side] += pawnLateBonus[side][pawnPosArr[side][i]];
 			}
 		} else {
 			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
-				pawnEvalResult += pawnEndBonus[side][pawnPosArr[side][i]];
+				pawnEvalResult[side] += pawnEndBonus[side][pawnPosArr[side][i]];
 			}
 		}
 
@@ -105,7 +105,7 @@ void ChessEngine::evalPawns(bool side) {
 			// Subtract 40 centipawns for each doubled/tripled pawn
 			for (i=0; i<8; ++i) {
 				if (pawnsPerFile[side][i] > 1) {
-					pawnEvalResult -= (pawnsPerFile[side][i]-1) * 40;
+					pawnEvalResult[side] -= (pawnsPerFile[side][i]-1) * 40;
 				}
 			}
 
@@ -120,7 +120,7 @@ void ChessEngine::evalPawns(bool side) {
 			while (i < 7) {	// Files a to g
 				if (pawnsPerFile[side][i] > 0) {
 					if (pawnsPerFile[side][i+1] == 0) {
-						pawnEvalResult -= 10 * pawnsPerFile[side][i];
+						pawnEvalResult[side] -= 10 * pawnsPerFile[side][i];
 						i += 2;
 					} else {
 						i += 3;
@@ -131,7 +131,7 @@ void ChessEngine::evalPawns(bool side) {
 			}
 			if (i == 7 && pawnsPerFile[side][7] > 0 && pawnsPerFile[side][6] == 0) {
 				// Pawn on last file (h)
-				pawnEvalResult -= 10 * pawnsPerFile[side][7];
+				pawnEvalResult[side] -= 10 * pawnsPerFile[side][7];
 			}
 		#endif
 
@@ -155,92 +155,92 @@ void ChessEngine::evalPawns(bool side) {
 }
 
 void ChessEngine::evalKnights(bool side) {
-	knightEvalResult = 0;
+	knightEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		knightEvalResult += pieceCount[side][CS::KNIGHT] * materialVals[CS::KNIGHT];
+		knightEvalResult[side] += pieceCount[side][CS::KNIGHT] * materialVals[CS::KNIGHT];
 
 		// Adjust knight value based on number of pawns
 		// +6 for each pawn above 5, -6 for each below
-		knightEvalResult += pieceCount[side][CS::KNIGHT] * ((6*pieceCount[side][CS::PAWN]) - 30);
+		knightEvalResult[side] += pieceCount[side][CS::KNIGHT] * ((6*pieceCount[side][CS::PAWN]) - 30);
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
 		// Consider knight position on board
 		for (U8 i(0); i<pieceCount[side][CS::KNIGHT]; ++i) {
-			knightEvalResult += knightBonus[knightPosArr[side][i]];
+			knightEvalResult[side] += knightBonus[knightPosArr[side][i]];
 		}
 	#endif
 }
 
 void ChessEngine::evalBishops(bool side) {
-	bishopEvalResult = 0;
+	bishopEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		bishopEvalResult += pieceCount[side][CS::BISHOP] * materialVals[CS::BISHOP];
+		bishopEvalResult[side] += pieceCount[side][CS::BISHOP] * materialVals[CS::BISHOP];
 
 		// Bonus for having two bishops
 		if (pieceCount[side][CS::BISHOP] == 2) {
-			bishopEvalResult += 50;
+			bishopEvalResult[side] += 50;
 		}
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
 		// Consider bishop position on board
 		for (U8 i(0); i<pieceCount[side][CS::BISHOP]; ++i) {
-			bishopEvalResult += bishopBonus[bishopPosArr[side][i]];
+			bishopEvalResult[side] += bishopBonus[bishopPosArr[side][i]];
 		}
 	#endif
 }
 
 void ChessEngine::evalRooks(bool side) {
-	rookEvalResult = 0;
+	rookEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		rookEvalResult += pieceCount[side][CS::ROOK] * materialVals[CS::ROOK];
+		rookEvalResult[side] += pieceCount[side][CS::ROOK] * materialVals[CS::ROOK];
 
 		// Adjust rook value based on number of pawns
 		// -12 for each pawn above 5, +12 for each below
-		rookEvalResult += pieceCount[side][CS::ROOK] * ((-12*pieceCount[side][CS::PAWN]) + 60);
+		rookEvalResult[side] += pieceCount[side][CS::ROOK] * ((-12*pieceCount[side][CS::PAWN]) + 60);
 	#endif
 }
 
 void ChessEngine::evalQueens(bool side) {
-	queenEvalResult = 0;
+	queenEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		queenEvalResult += pieceCount[side][CS::QUEEN] * materialVals[CS::QUEEN];
+		queenEvalResult[side] += pieceCount[side][CS::QUEEN] * materialVals[CS::QUEEN];
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
 		// Consider bishop position on board
 		for (U8 i(0); i<pieceCount[side][CS::QUEEN]; ++i) {
-			queenEvalResult += queenBonus[queenPosArr[side][i]];
+			queenEvalResult[side] += queenBonus[queenPosArr[side][i]];
 		}
 	#endif
 }
 
 void ChessEngine::evalKings(bool side) {
-	kingEvalResult = 0;
+	kingEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_PLACEMENT
 		// King adjust placement based on game stage
 		if (gameStage <= 51) {
-			kingEvalResult += kingOpeningBonus[side][kingPos[side]];
+			kingEvalResult[side] += kingOpeningBonus[side][kingPos[side]];
 		} else if (gameStage <= 102) {
-			kingEvalResult += kingEarlyBonus[side][kingPos[side]];
+			kingEvalResult[side] += kingEarlyBonus[side][kingPos[side]];
 		} else if (gameStage <= 153) {
-			kingEvalResult += kingMidBonus[side][kingPos[side]];
+			kingEvalResult[side] += kingMidBonus[side][kingPos[side]];
 		} else if (gameStage <= 204) {
-			kingEvalResult += kingLateBonus[side][kingPos[side]];
+			kingEvalResult[side] += kingLateBonus[side][kingPos[side]];
 		} else {
-			kingEvalResult += kingEndBonus[side][kingPos[side]];
+			kingEvalResult[side] += kingEndBonus[side][kingPos[side]];
 		}
 	#endif
 }
 
 void ChessEngine::evalKingSafety(bool side) {
-	kingSafetyEvalResult = 0;
+	kingSafetyEvalResult[side] = 0;
 
 	// --- Adjust for King Safty ---
 	// Retain pawn protection
@@ -259,13 +259,13 @@ short ChessEngine::evalSide(bool side) {
 	this->evalKings(side);
 	this->evalKingSafety(side);
 
-	short rating(pawnEvalResult);
-	rating += knightEvalResult;
-	rating += bishopEvalResult;
-	rating += rookEvalResult;
-	rating += queenEvalResult;
-	rating += kingEvalResult;
-	rating += kingSafetyEvalResult;
+	short rating(pawnEvalResult[side]);
+	rating += knightEvalResult[side];
+	rating += bishopEvalResult[side];
+	rating += rookEvalResult[side];
+	rating += queenEvalResult[side];
+	rating += kingEvalResult[side];
+	rating += kingSafetyEvalResult[side];
 
 	// --- Adjustment for Mobility ---
 	// TODO
