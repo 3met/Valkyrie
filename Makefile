@@ -19,11 +19,6 @@ EXE_NAME		:= EB-chess
 
 FILE_TYPES	:= *.c *.cpp *.cc *.cxx *.c++ *.C *.cp
 
-
-# ---------------------------
-# DO NOT EDIT BELOW THIS LINE
-# ---------------------------
-
 # Where to store .o and .d files
 MAIN_DIR	:= main
 DEBUG_DIR	:= debug
@@ -82,7 +77,7 @@ $(BUILD)/$(MAIN_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Build & Run Project
 .PHONY: run
 run:
-	cd "$(BIN)" && "$(EXE)"
+	cd "$(BIN)" && "./$(EXE)"
 
 # Build & Run Project
 .PHONY: clean
@@ -112,7 +107,6 @@ $(BUILD)/$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.cpp
 .PHONY: release
 release: $(RELEASE_DIR)/$(RELEASE_NAME)/$(BIN)/$(RELEASE_NAME).exe
 
-# 
 $(RELEASE_DIR)/$(RELEASE_NAME)/$(BIN)/$(RELEASE_NAME).exe: $(SRC_FILES)
 	$(call make_dir,$(dir $@))
 	$(copy_data)
