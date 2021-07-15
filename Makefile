@@ -48,12 +48,14 @@ make_dir =
 rm =
 copy_data =
 ifeq ($(OS), Windows_NT)
+	CXX_FLAGS += -D WINDOWS
 	EXE := $(EXE_NAME).exe
 	DEBUG_EXE := $(EXE_NAME)-debug.exe
 	make_dir = if not exist "$1" mkdir "$1"
 	rm := rmdir /s
 	copy_data := xcopy "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)\\$(DATA)" /s /q /y /i /c
 else
+	CXX_FLAGS += -D LINUX
 	EXE := $(EXE_NAME)
 	DEBUG_EXE := $(EXE_NAME)-debug
 	make_dir = if [ ! -d "$1" ]; then mkdir -p "$1" ; fi
