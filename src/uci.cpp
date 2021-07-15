@@ -19,6 +19,10 @@ UCI::UCI() {
 	options.push_back(new UciButtonOption("Clear Hash"));
 	options.push_back(new UciSpinOption("Move Overhead", moveOverhead, 0, 10000));
 	options.push_back(new UciSpinOption("Threads", defaultThreads, 1, 1));
+
+	// Apply default settings
+	engine.transTable->resize(defaultHash * 1000000);
+	this->moveOverhead = moveOverhead;
 };
 
 UCI::~UCI() {
