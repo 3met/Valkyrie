@@ -15,8 +15,7 @@ DATA		:= data
 RELEASE_DIR		:= ..\\releases
 RELEASE_NAME	:= release
 
-EXE			:= EB-chess.exe
-DEBUG_EXE	:= debug.exe
+EXE_NAME		:= EB-chess
 
 FILE_TYPES	:= *.c *.cpp *.cc *.cxx *.c++ *.C *.cp
 
@@ -42,6 +41,24 @@ DEBUG_DEPS	:= $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/$(DEBUG_DIR)/%.d, $(SRC_FILE
 -include $(MAIN_DEPS)
 -include $(DEBUG_DEPS)
 
+# ----- OS-SPECIFIC DEFINITIONS ------
+EXE =
+DEBUG_EXE =
+copy_data =
+rm =
+ifeq ($(OS), Windows_NT)
+	EXE += $(EXE_NAME).exe
+	DEBUG_EXE = $(EXE_NAME)-debug.exe
+	copy_data := xcopy "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)\\$(DATA)" /s /q /y /i /c
+	rm := rmdir /s
+else
+	EXE += $(EXE_NAME)
+	DEBUG_EXE = $(EXE_NAME)-debug
+	copy_data := rsync -rupE "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)"
+	rm := -r
+endif
+
+
 # ----- COMPILE AND RUN NORMALLY -----
 .PHONY: compile
 compile: $(BIN)/$(EXE)
@@ -65,8 +82,8 @@ run:
 # Build & Run Project
 .PHONY: clean
 clean:
-	if exist "$(BIN)" rmdir "$(BIN)" /s
-	if exist "$(BUILD)" rmdir "$(BUILD)" /s
+	if exist "$(BIN)" $(rm) "$(BIN)"
+	if exist "$(BUILD)" $(rm) "$(BUILD)"
 
 
 # ----- COMPILE WITH DEBUG -----
@@ -90,14 +107,7 @@ $(BUILD)/$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.cpp
 .PHONY: release
 release: $(RELEASE_DIR)/$(RELEASE_NAME)/$(BIN)/$(RELEASE_NAME).exe
 
-# OS specific copy commands
-copy_data =
-ifeq ($(OS), Windows_NT)
-	copy_data := xcopy "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)\\$(DATA)" /s /q /y /i /c
-else
-	copy_data := rsync -rupE "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)"
-endif
-
+# 
 $(RELEASE_DIR)/$(RELEASE_NAME)/$(BIN)/$(RELEASE_NAME).exe: $(SRC_FILES)
 	if not exist "$(dir $@)" mkdir "$(dir $@)"
 	$(copy_data)
