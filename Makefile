@@ -44,18 +44,21 @@ DEBUG_DEPS	:= $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/$(DEBUG_DIR)/%.d, $(SRC_FILE
 # ----- OS-SPECIFIC DEFINITIONS ------
 EXE =
 DEBUG_EXE =
-copy_data =
+make_dir = 
 rm =
+copy_data =
 ifeq ($(OS), Windows_NT)
-	EXE += $(EXE_NAME).exe
-	DEBUG_EXE = $(EXE_NAME)-debug.exe
-	copy_data := xcopy "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)\\$(DATA)" /s /q /y /i /c
+	EXE := $(EXE_NAME).exe
+	DEBUG_EXE := $(EXE_NAME)-debug.exe
+	make_dir = if not exist "$1" mkdir "$1"
 	rm := rmdir /s
+	copy_data := xcopy "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)\\$(DATA)" /s /q /y /i /c
 else
-	EXE += $(EXE_NAME)
-	DEBUG_EXE = $(EXE_NAME)-debug
+	EXE := $(EXE_NAME)
+	DEBUG_EXE := $(EXE_NAME)-debug
+	make_dir = if not exists "$1" then mkdir "$1" fi
+	rm := rmdir
 	copy_data := rsync -rupE "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)"
-	rm := -r
 endif
 
 
@@ -65,12 +68,12 @@ compile: $(BIN)/$(EXE)
 
 # Compile object files into executable
 $(BIN)/$(EXE): $(MAIN_OBJ)
-	if not exist "$(BIN)" mkdir "$(BIN)"
+	$(call make_dir,$(BIN))
 	$(CXX) $(CXX_FLAGS) $^ -o "$@" -I $(INCLUDE) -L $(LIBRARIES)
 
 # Compile object and dependancy files for each C/C++ file
 $(BUILD)/$(MAIN_DIR)/%.o: $(SRC_DIR)/%.cpp
-	if not exist "$(dir $@)" mkdir "$(dir $@)"
+	$(call make_dir,$(dir $@))
 	$(CXX) $(CXX_FLAGS) -c "$<" -o "$@" -I $(INCLUDE)
 	$(CXX) $(CXX_FLAGS) -MM $< -MT "$@" -MF "$(patsubst $(SRC_DIR)/%.cpp,$(BUILD)/$(MAIN_DIR)/%.d,$<)" -I $(INCLUDE)
 
@@ -93,12 +96,12 @@ debug: $(BIN)/$(DEBUG_EXE)
 
 # Compile debug exe
 $(BIN)/$(DEBUG_EXE): $(DEBUG_OBJ)
-	if not exist "$(BIN)" mkdir "$(BIN)"
+	$(call make_dir,$(BIN))
 	$(CXX) $(CXX_FLAGS) $(DEBUG_FLAGS) $^ -o "$@" -I $(INCLUDE) -L $(LIBRARIES)
 
 # Compile object file with debug flags
 $(BUILD)/$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.cpp
-	if not exist "$(dir $@)" mkdir "$(dir $@)"
+	$(call make_dir,$(dir $@))
 	$(CXX) $(CXX_FLAGS) $(DEBUG_FLAGS) -c "$<" -o "$@" -I $(INCLUDE)
 	$(CXX) $(CXX_FLAGS) -MM $< -MT "$@" -MF "$(patsubst $(SRC_DIR)/%.cpp,$(BUILD)/$(DEBUG_DIR)/%.d,$<)" -I $(INCLUDE)
 
@@ -109,6 +112,6 @@ release: $(RELEASE_DIR)/$(RELEASE_NAME)/$(BIN)/$(RELEASE_NAME).exe
 
 # 
 $(RELEASE_DIR)/$(RELEASE_NAME)/$(BIN)/$(RELEASE_NAME).exe: $(SRC_FILES)
-	if not exist "$(dir $@)" mkdir "$(dir $@)"
+	$(call make_dir,$(dir $@))
 	$(copy_data)
 	$(CXX) $(CXX_FLAGS) $(RELEASE_FLAGS) $^ -o "$@" -I $(INCLUDE) -L $(LIBRARIES)
