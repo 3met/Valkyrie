@@ -107,6 +107,40 @@ void ChessEngine::clear() {
 	}
 }
 
+// Updates variables keeping track of search time
+void ChessEngine::updateTimingVars() {
+	// Check if we have passed the minimum search time
+	if (!this->passedMinTime) {
+		if (this->minEndTime < chrono::high_resolution_clock::now()) {
+			this->passedMinTime = true;
+			// If passed, check if we have passed the optimal search time
+			if (!this->passedOptimalTime) {
+				if (this->optimalEndTime < chrono::high_resolution_clock::now()) {
+					this->passedOptimalTime = true;
+					// If passed, check if we hit hard cut off
+					if (this->hardEndTime < chrono::high_resolution_clock::now()) {
+						this->canSearch = false;
+					}
+				}
+			}
+		}
+	// Check if we have passed the optimal search time
+	} else if (!this->passedOptimalTime) {
+		if (this->optimalEndTime < chrono::high_resolution_clock::now()) {
+			this->passedOptimalTime = true;
+			// If passed, check if we hit hard cut off
+			if (this->hardEndTime < chrono::high_resolution_clock::now()) {
+				this->canSearch = false;
+			}
+		}
+	// Check if we hit hard cut off
+	} else if (this->canSearch) {
+		if (this->hardEndTime < chrono::high_resolution_clock::now()) {
+			this->canSearch = false;
+		}
+	}
+}
+
 // ----- Primary Operations -----
 
 // Head of recursive negamax search for the best move
@@ -132,28 +166,14 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 	for (U8 i(0); i<moveCount; ++i) {
 
+		// Every 4096 nodes, check search status
+		if (this->limitTime && (this->nodesTotal & 4095) == 0) {
+			updateTimingVars();
+		}
+
 		// Exit if no longer allowed to search
 		if (this->canSearch == false) {
 			return make_pair(Move(), alpha);	// Return null move
-		}
-
-		// Every 4096 nodes, check search status
-		if (this->limitTime && (this->nodesTotal & 4095) == 0) {
-			// Check if we have passed the optimal search time
-			if (!this->passedOptimalTime) {
-				if (this->optimalEndTime < chrono::high_resolution_clock::now()) {
-					this->passedOptimalTime = true;
-					// If passed, check if we hit hard cut off
-					if (this->hardEndTime < chrono::high_resolution_clock::now()) {
-						this->canSearch = false;
-					}
-				}
-			// If passed, check if we hit hard cut off
-			} else {
-				if (this->hardEndTime < chrono::high_resolution_clock::now()) {
-					this->canSearch = false;
-				}
-			}
 		}
 
 		cs->move(moveArr[0][i]);
@@ -248,28 +268,14 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 	for (U8 i(0); i<moveCount; ++i) {
 
+		// Every 4096 nodes, check search status
+		if (this->limitTime && (this->nodesTotal & 4095) == 0) {
+			updateTimingVars();
+		}
+
 		// Exit if no longer allowed to search
 		if (this->canSearch == false) {
 			return alpha;	// Return null move
-		}
-
-		// Every 4096 nodes, check search status
-		if (this->limitTime && (this->nodesTotal & 4095) == 0) {
-			// Check if we have passed the optimal search time
-			if (!this->passedOptimalTime) {
-				if (this->optimalEndTime < chrono::high_resolution_clock::now()) {
-					this->passedOptimalTime = true;
-					// If passed, check if we hit hard cut off
-					if (this->hardEndTime < chrono::high_resolution_clock::now()) {
-						this->canSearch = false;
-					}
-				}
-			// If passed, check if we hit hard cut off
-			} else {
-				if (this->hardEndTime < chrono::high_resolution_clock::now()) {
-					this->canSearch = false;
-				}
-			}
 		}
 
 		cs->move(moveArr[depth][i]);

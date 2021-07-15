@@ -29,9 +29,11 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	this->startTime = start;
 	this->currDepth = 0;
 	this->nodesTotal = 0;
-	this->canSearch = true;
 	this->currScore = 0;
 	this->limitTime = true;
+	this->passedMinTime = false;
+	this->passedOptimalTime = false;
+	this->canSearch = true;
 
 	// Check if position in opening book
 	if (this->openingTable.contains(&cs.bh)) {
@@ -43,42 +45,45 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	}
 
 	// Max time to choose move
-	U64 optimalTime(min((timeLeft/20) + timeInc, timeLeft-200));
-	U64 maxTime(optimalTime + 10);
-	this->optimalEndTime = start + chrono::microseconds(optimalTime);
-	this->hardEndTime = start + chrono::microseconds(maxTime);
+	this->minEndTime = start + chrono::microseconds(timeLeft/40);
+	this->optimalEndTime = start + chrono::microseconds(min((timeLeft/30) + timeInc, timeLeft/6));
+	this->hardEndTime = start + chrono::microseconds(min((timeLeft/15) + timeInc, timeLeft));
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
 	short i(1);
 	// Loop to increase depth until time is up
 	while (true) {
-
+		// Set search iteration parameters
 		this->currDepth = i;
 		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);
-		if (ratedMove.first.isNull()) {	// Look for null move
+
+		// Break on null move
+		if (ratedMove.first.isNull()) {
 			break;
 		}
 
 		moveList.push_back(ratedMove.first);
 		this->currScore = ratedMove.second;
-		
-		// Check if time remains
-		high_resolution_clock::time_point stop(high_resolution_clock::now());
-		U64 duration(duration_cast<microseconds>(stop - start).count());
-		// Break if more than 90% of the target time has passed
-		if (duration >= maxTime*0.90) {
+	
+		if (!this->canSearch) {
 			break;
 		}
 
 		// Break early if past 3 searches have the same result
-		// and more than half the target search time has passed
-		if (duration > maxTime*0.5 && moveList.size() >= 3
+		// and we have already searched the minimum amount of time
+		if (passedMinTime && moveList.size() >= 3
 			&& moveList[i-1] == moveList[i-2] && moveList[i-2] == moveList[i-3]) {
 
 			break;
+		}
+
+		// Break early if past 2 searches have the same result
+		// and we have already searched the optimal amount of time
+		if (passedOptimalTime && moveList.size() >= 2
+			&& moveList[i-1] == moveList[i-2]) {
 		}
 
 		i += 1;

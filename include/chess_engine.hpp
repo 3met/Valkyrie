@@ -68,7 +68,9 @@ private:
 
 	// Time management search variables
 	bool limitTime;		// Whether to limit time in search
+	bool passedMinTime;
 	bool passedOptimalTime;
+	chrono::high_resolution_clock::time_point minEndTime;
 	chrono::high_resolution_clock::time_point optimalEndTime;
 	chrono::high_resolution_clock::time_point hardEndTime;
 
@@ -97,6 +99,7 @@ private:
 	void genAllMoves(ChessState* cs, Move moves[218], U8* moveCount);
 
 	// Search Helper Methods
+	void updateTimingVars();
 	void sortMoves(Move moves[218], U8* moveCount, U8 depth);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
