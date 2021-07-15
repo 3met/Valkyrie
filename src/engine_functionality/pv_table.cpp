@@ -1,4 +1,5 @@
 
+#include <cstring>
 #include "pv_table.hpp"
 
 // Allocate memory for triangular PV Table
