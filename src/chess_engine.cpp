@@ -18,7 +18,7 @@ using namespace std;
 
 ChessEngine::ChessEngine() {
 	this->load();
-	transTable = new TranspostionTable(67108864);	// 64 MiB
+	transTable = new TranspostionTable(1000000);	// 1 MB
 }
 
 ChessEngine::~ChessEngine() {
