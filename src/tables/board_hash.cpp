@@ -26,7 +26,8 @@ ZobristValues BoardHash::zobristValues;
 void BoardHash::makeHash(const Bitboard pieces[2][7], const bool turn,
 	const bool castlePerms[2][2], const U8 enPassant) {
 
-	vector<U8> pieceLocations;
+	U8 pieceLocations[10];
+	U8 pieceCount;
 	U8 j, k;
 
 	// Initial hash value
@@ -36,9 +37,9 @@ void BoardHash::makeHash(const Bitboard pieces[2][7], const bool turn,
 	for (U8 i(0); i<2; ++i) {	// Loop through colors
 		for (j=0; j<6; ++j) {	// Loop through pieces
 			// Location of all pieces of current type
-			pieceLocations = pieces[i][j].getPosVec();
+			pieces[i][j].getPosArr(pieceLocations, &pieceCount);
 			// Hash located pieces
-			for (k=0; k<pieceLocations.size(); ++k) {
+			for (k=0; k<pieceCount; ++k) {
 				hash ^= zobristValues.pieces[i][j][pieceLocations[k]];
 			}
 		}
