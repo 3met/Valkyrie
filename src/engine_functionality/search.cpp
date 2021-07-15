@@ -84,6 +84,8 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 		// and we have already searched the optimal amount of time
 		if (passedOptimalTime && moveList.size() >= 2
 			&& moveList[i-1] == moveList[i-2]) {
+		
+			break;
 		}
 
 		i += 1;
