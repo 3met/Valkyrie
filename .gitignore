@@ -3,6 +3,9 @@
 bin
 build
 
+# Ignore any releases
+releases
+
 # Prerequisites
 *.d
 

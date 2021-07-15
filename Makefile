@@ -14,7 +14,7 @@ DATA		:= data
 
 EXE_NAME	:= EB-Chess
 
-RELEASE_DIR	:= ..\\releases
+RELEASE_DIR	:= releases
 
 FILE_TYPES	:= *.c *.cpp *.cc *.cxx *.c++ *.C *.cp
 
