@@ -12,10 +12,9 @@ LIBRARIES	:= lib
 BUILD		:= build
 DATA		:= data
 
-RELEASE_DIR		:= ..\\releases
-RELEASE_NAME	:= release
+EXE_NAME	:= EB-Chess
 
-EXE_NAME		:= EB-chess
+RELEASE_DIR	:= ..\\releases
 
 FILE_TYPES	:= *.c *.cpp *.cc *.cxx *.c++ *.C *.cp
 
@@ -48,14 +47,14 @@ ifeq ($(OS), Windows_NT)
 	DEBUG_EXE := $(EXE_NAME)-debug.exe
 	make_dir = if not exist "$1" mkdir "$1"
 	rm := rmdir /s
-	copy_data := xcopy "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)\\$(DATA)" /s /q /y /i /c
+	copy_data := xcopy "$(DATA)" "$(RELEASE_DIR)\\$(EXE_NAME)\\$(DATA)" /s /q /y /i /c
 else
 	CXX_FLAGS += -D LINUX
 	EXE := $(EXE_NAME)
 	DEBUG_EXE := $(EXE_NAME)-debug
 	make_dir = if [ ! -d "$1" ]; then mkdir -p "$1" ; fi
 	rm := rmdir
-	copy_data := rsync -rupE "$(DATA)" "$(RELEASE_DIR)\\$(RELEASE_NAME)"
+	copy_data := rsync -rupE "$(DATA)" "$(RELEASE_DIR)\\$(EXE_NAME)"
 endif
 
 
@@ -105,9 +104,9 @@ $(BUILD)/$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 # ----- CREATE RELEASE -----
 .PHONY: release
-release: $(RELEASE_DIR)/$(RELEASE_NAME)/$(BIN)/$(RELEASE_NAME).exe
+release: $(RELEASE_DIR)/$(EXE_NAME)/$(BIN)/$(EXE)
 
-$(RELEASE_DIR)/$(RELEASE_NAME)/$(BIN)/$(RELEASE_NAME).exe: $(SRC_FILES)
+$(RELEASE_DIR)/$(EXE_NAME)/$(BIN)/$(EXE): $(SRC_FILES)
 	$(call make_dir,$(dir $@))
 	$(copy_data)
 	$(CXX) $(CXX_FLAGS) $(RELEASE_FLAGS) $^ -o "$@" -I $(INCLUDE) -L $(LIBRARIES)
