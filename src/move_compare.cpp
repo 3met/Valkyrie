@@ -1,5 +1,9 @@
 
+#include "chess_state.hpp"
 #include "move_compare.hpp"
+
+// Shortcut
+#define CS ChessState
 
 using namespace std;
 
@@ -66,9 +70,13 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 	}
 
 	// Pawn promotions by decreasing value of new piece
-	if (a.promoted > b.promoted) {
-		return true;
-	} else if (b.promoted > a.promoted) {
+	if (a.promoted == CS::QUEEN) {
+		if (b.promoted == CS::QUEEN) {
+			return false;
+		} else {
+			return true;
+		}
+	} else if (b.promoted == CS::QUEEN) {
 		return false;
 	}
 
@@ -89,7 +97,7 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 	// Center bias prioritizes moves toward the center
 	if (centerBias[a.end] < centerBias[b.end]) {
 		return true;
-	} else if (centerBias[b.end] < centerBias[a.end]) {
+	} else if (centerBias[a.end] != centerBias[b.end]) {
 		return false;
 	}
 
