@@ -3,7 +3,7 @@ CXX			:= g++
 
 CXX_FLAGS		:= -std=c++17 -O3 -Wshadow -Wdouble-promotion -Wformat-overflow -Wformat-truncation -fno-common -pthread
 DEBUG_FLAGS		:= -ggdb -g -g3 -Og -Wall
-RELEASE_FLAGS	:= -static-libgcc -static-libstdc++ -static
+RELEASE_FLAGS	:= -static-libgcc -static-libstdc++
 
 BIN			:= bin
 SRC_DIR		:= src
