@@ -6,6 +6,9 @@
 // For UCI commands starting with "position".
 // Assumes input contains the full command starting with "position".
 void UCI::inputPosition(string input) {
+
+	this->isRunning = true;
+
 	// Break down input into words
 	std::vector<std::string> inVec;
 	UCI::splitString(input, &inVec);
@@ -34,4 +37,6 @@ void UCI::inputPosition(string input) {
 			pos += 1;
 		}		
 	}
+
+	this->isRunning = false;
 }

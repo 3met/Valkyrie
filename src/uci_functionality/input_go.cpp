@@ -1,4 +1,5 @@
 
+#include <chrono>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -10,6 +11,14 @@
 // Handles "go" input commands.
 // Runs engine searches based on input.
 void UCI::inputGo(string input) {
+
+	// Pauses command until whatever is running completes.
+	// This may be important for when a go command is sent
+	// immediately after a long position command.
+	while (this->isRunning) {
+		std::this_thread::sleep_for(std::chrono::microseconds(10));
+	}
+
 	this->isRunning = true;
 
 	// Break down input into words
