@@ -89,9 +89,13 @@ void UCI::inputGo(string input) {
 	}
 	this->outputInfo();
 
-	cout << "bestmove " << m << endl;
-	this->isRunning = false;
+	// Discontinue output stream before printing the
+	// bestmove to avoid printing at the same time
 	continueStream = false;
+
+	cout << "bestmove " << m << endl;
+	
+	this->isRunning = false;
 
 	outputThread.join();
 }
