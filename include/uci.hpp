@@ -81,6 +81,21 @@ private:
 		}
 	};
 
+	// String Option for UCI
+	class UciStringOption : public UciOption {
+	private:
+		string defaultValue;
+	public:
+		UciStringOption(string _name, string _defaultValue) {
+			name = _name;
+			defaultValue = _defaultValue;
+		};
+
+		string to_str() {
+			return "option name " + name + " type string default " + defaultValue;
+		}
+	};
+
 	// Engine and chess state for computations
 	ChessState cs;
 	ChessEngine engine;

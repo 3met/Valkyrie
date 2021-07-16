@@ -45,6 +45,8 @@ void UCI::inputSetOption(string input) {
 		} else {
 			engine.useOwnBook = false;
 		}
+	} else if (name == "UCI_EngineAbout") {
+
 	} else {
 		cout << "Unable to set option \"" << name << "\"" << endl;
 	}
