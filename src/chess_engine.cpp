@@ -224,9 +224,16 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		cs->reverseMove();
 	}
 
-	// Throw error if no move were legal
+	// If there is no valid move, it is either checkmate or stalemate
 	if (bestIndex == -1) {
-		throw ChessState::NoMoves();
+		// If the active player's king is not being attacked
+		// then the situation is stalemate
+		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
+			return make_pair(Move::NULL_MOVE, EvalScore(0));
+		}
+
+		// Else there is checkmate
+		return make_pair(Move::NULL_MOVE, EvalScore(-1, true, 0));
 	}
 
 	return make_pair(moveArr[0][bestIndex], alpha);

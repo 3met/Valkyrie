@@ -59,12 +59,6 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);
-		i += 1;
-
-		// Break on null move
-		if (ratedMove.first.isNull()) {
-			break;
-		}
 
 		// Break if no longer has search permission
 		if (!this->canSearch) {
@@ -79,6 +73,13 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 
 		moveList.push_back(ratedMove.first);
 		this->currScore = ratedMove.second;
+		
+		// Break on null move
+		if (ratedMove.first.isNull()) {
+			break;
+		}
+
+		i += 1;
 
 		// Break early if past 3 searches have the same result
 		// and we have already searched the minimum amount of time
@@ -121,12 +122,26 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 		this->maxDepth = i;
 
 		ratedMove = this->bestMove(&cs, i);
-		if (ratedMove.first.isNull()) {	// Look for null move
+
+		// If search stopped due to lack of permissions
+		if (!this->canSearch) {
+			// Only update the score if a better moves was found
+			if (ratedMove.second > this->currScore) {
+				m = ratedMove.first;
+				this->currScore = ratedMove.second;
+			}
+
 			break;
 		}
 
 		m = ratedMove.first;
 		this->currScore = ratedMove.second;
+		
+		// Break on returned null move
+		if (ratedMove.first.isNull()) {
+			break;
+		}
+
 
 		i += 1;
 	}
