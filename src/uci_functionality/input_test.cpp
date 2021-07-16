@@ -22,7 +22,6 @@ void UCI::inputTest(string input) {
 		verbose = true;
 	}
 
-	// 
 	if (inVec[1] == "perft") {
 		perftTest(verbose);
 	} else if (inVec[1] == "depth") {
@@ -33,5 +32,5 @@ void UCI::inputTest(string input) {
 		cout << "Unknown Test: " << inVec[1] << endl;
 	}
 
-	this->isRunning = true;
+	this->isRunning = false;
 }
