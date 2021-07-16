@@ -39,6 +39,12 @@ void UCI::inputSetOption(string input) {
 		this->moveOverhead = stoi(value);
 	} else if (name == "Threads") {
 		// TODO: add thread options
+	} else if (name == "OwnBook") {
+		if (value == "true" || value == "True" || value == "TRUE") {
+			engine.useOwnBook = true;
+		} else {
+			engine.useOwnBook = false;
+		}
 	} else {
 		cout << "Unable to set option \"" << name << "\"" << endl;
 	}

@@ -36,7 +36,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	this->canSearch = true;
 
 	// Check if position in opening book
-	if (this->openingTable.contains(&cs.bh)) {
+	if (useOwnBook && this->openingTable.contains(&cs.bh)) {
 		std::vector<Move> moves(this->openingTable.get(&cs.bh));
 		
 		++nSearches;

@@ -115,6 +115,7 @@ public:
 	
 	// Configurable option
 	float MAX_DEPTH_RATIO = 1.5;		// For search extensions
+	bool useOwnBook = true;
 
 	// Search Variables
 	U8 maxDepth;

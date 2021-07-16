@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "chess_engine.hpp"
+#include "chess_state.hpp"
 
 using namespace std;
 
@@ -57,6 +58,26 @@ private:
 
 		string to_str() {
 			return "option name " + name + " type button";
+		}
+	};
+
+	// Check Option for UCI
+	class UciCheckOption : public UciOption {
+	private:
+		bool defaultValue;
+	public:
+		UciCheckOption(string _name, bool _defaultValue) {
+			name = _name;
+			defaultValue = _defaultValue;
+		};
+
+		string to_str() {
+			string str = "option name " + name + " type check default ";
+			if (defaultValue) {
+				return str + "true";
+			} else {
+				return str + "false";
+			}
 		}
 	};
 
