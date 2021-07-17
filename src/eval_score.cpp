@@ -1,43 +1,61 @@
 
+#include <cmath>
+#include <iostream>
 #include "eval_score.hpp"
 
 using namespace std;
 
 EvalScore::EvalScore() {}
 
-EvalScore::EvalScore(short e) {
-	eval = e;
-	foundMate = false;
-}
-
-EvalScore::EvalScore(short e, bool fM) {
-	eval = e;
-	foundMate = fM;
-	movesToMate = 0;
-}
-
-EvalScore::EvalScore(short e, bool fM, U8 mTM) {
-	eval = e;
-	foundMate = fM;
-	movesToMate = mTM;
+EvalScore::EvalScore(short _eval) {
+	eval = _eval;
 }
 
 EvalScore::~EvalScore() {}
 
-// Prints the eval score
-ostream& operator<< (ostream &out, EvalScore const& obj) {
-	if (obj.eval > 0) {
-		out << '+';
-	}
+const EvalScore EvalScore::DEFAULT = EvalScore(0);
+const EvalScore EvalScore::DRAW = EvalScore(0);
+const EvalScore EvalScore::INFINITE = EvalScore(32700);
+const EvalScore EvalScore::MATE_IN_0 = EvalScore(32699);
+const EvalScore EvalScore::MAX_PLAIN_EVAL = EvalScore(32000);	// Max non-checkmate rating
 
-	if (obj.foundMate && obj.eval != 0) {
-		if (obj.eval < 0) {
-			out << '-';
+// Prints the evaluation
+ostream& operator<< (ostream &out, EvalScore const& obj) {
+	if (obj.hasMate()) {
+		if (obj.eval > 0) {
+			out << "+M";
+		} else {
+			out << "-M";
 		}
-		out << 'M' << short(obj.movesToMate);
+
+		out << (EvalScore::MATE_IN_0.eval - abs(obj.eval));
+
 	} else {
+		if (obj.eval > 0) {
+			out << '+';
+		}
+
 		out << obj.eval;
 	}
-    
-    return out;
+
+	return out;
+}
+
+// Returns whether the score is a checkmate
+bool EvalScore::hasMate() const {
+	return abs(eval) > MAX_PLAIN_EVAL.eval && abs(eval) < INFINITE.eval;
+}
+
+// Returns the number of halfmoves until checkmate
+short EvalScore::halfMovesToMate() const {
+	return MATE_IN_0.eval - abs(eval);
+}
+
+// Increments the number of halfmoves until checkmate
+void EvalScore::addHalfMoveToMate() {
+	if (eval > 0) {
+		eval -= 1;
+	} else {
+		eval += 1;
+	}
 }

@@ -95,7 +95,7 @@ void ChessEngine::clear() {
 	nSearches = 0;	// Number of searches preformed
 	currDepth = 0;
 	currSelDepth = 0;
-	currScore = EvalScore(0);
+	currScore = EvalScore::DEFAULT;
 	nodesTotal = 0;
 	this->transTable->clear();
 	this->pvTable.clear();
@@ -156,8 +156,8 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 	this->sortMoves(moveArr[0], &moveCount, 0);
 
-	EvalScore alpha(-1, true, 0);	// -INF; best score current color can achive 
-	EvalScore beta(1, true, 0);	// INF; best score other color can achive
+	EvalScore alpha = -EvalScore::INFINITE;	// best score current color can achive 
+	EvalScore beta = EvalScore::INFINITE;	// best score other color can achive
 	short bestIndex(-1);	    // -1 as default
 
 	EvalScore score;
@@ -205,8 +205,8 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			
 			score = -negamaxSearch(cs, 1, depth, -beta, -alpha);
 
-			if (score.foundMate) {
-				score.movesToMate += 1;
+			if (score.hasMate()) {
+				score.addHalfMoveToMate();
 			}
 
 			// This calculation must be the best value b/c there was no
@@ -229,11 +229,11 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		// If the active player's king is not being attacked
 		// then the situation is stalemate
 		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
-			return make_pair(Move::NULL_MOVE, EvalScore(0));
+			return make_pair(Move::NULL_MOVE, EvalScore::DRAW);
 		}
 
 		// Else there is checkmate
-		return make_pair(Move::NULL_MOVE, EvalScore(-1, true, 0));
+		return make_pair(Move::NULL_MOVE, -EvalScore::MATE_IN_0);
 	}
 
 	return make_pair(moveArr[0][bestIndex], alpha);
@@ -326,8 +326,8 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			hasValidMove = true;
 
-			if (score.foundMate) {
-				score.movesToMate += 1;
+			if (score.hasMate()) {
+				score.addHalfMoveToMate();
 			}
 
 			// This calculation must be the best value b/c there was no
@@ -357,11 +357,11 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		// If the active player's king is not being attacked
 		// then the situation is stalemate
 		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
-			return EvalScore(0);
+			return EvalScore::DRAW;
 		}
 
 		// Else there is checkmate
-		return EvalScore(-1, true, 0);
+		return -EvalScore::MATE_IN_0;
 	}
 
 	return alpha;
