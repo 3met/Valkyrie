@@ -11,10 +11,14 @@ using namespace std::chrono;
 void UCI::outputInfo() {
 	cout << "info depth " << engine.currDepth;
 	
-	if (engine.currScore.foundMate) {
-		cout << " score mate " << short(engine.currScore.movesToMate) * engine.currScore.eval;
+	if (engine.currScore.hasMate()) {
+		if (engine.currScore.eval < 0) {
+			cout << " score mate -" << short(engine.currScore.halfMovesToMate())/2;
+		} else {
+			cout << " score mate " << short(engine.currScore.halfMovesToMate())/2;
+		}
 	} else {
-		cout << " score cp " << engine.currScore;
+		cout << " score cp " << engine.currScore.eval;
 	}
 
 	cout << " nodes " << engine.nodesTotal;

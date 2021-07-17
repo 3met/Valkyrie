@@ -141,7 +141,7 @@ public:
 	// Information Variables
 	short currDepth = 0;
 	short currSelDepth = 0;
-	EvalScore currScore = EvalScore(0);
+	EvalScore currScore = EvalScore::DEFAULT;
 	chrono::high_resolution_clock::time_point startTime;
 	U64 nodesTotal = 0;
 
