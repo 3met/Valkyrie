@@ -33,6 +33,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	this->limitTime = true;
 	this->passedMinTime = false;
 	this->passedOptimalTime = false;
+	this->passedSoftEndTime = false;
 	this->canSearch = true;
 
 	// Check if position in opening book
