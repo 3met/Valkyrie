@@ -10,34 +10,23 @@
 bool killMoveOrdering(const Move& a, const Move& b) {
 	// Killed ordered by most valuable victim then least valuable attacker
 	// (MVV/LVA)
-	if (a.killed != -1) {
-		if (b.killed != -1) {
-			// If victims were the same
-			if (a.killed == b.killed) {
-				// If attacker A is worth less
-				if (a.piece < b.piece) {
-					return true;
-
-				// If attacker B is worth less
-				} else if (a.piece != b.piece) {
-					return false;
-				}
-
-			// If A has a more valuable victim
-			} else if (a.killed > b.killed) {
-				return true;
-			
-			// If B has a more valuable victim
-			} else {
-				return false;
-			}
-		} else {
-			// If only A is a kill
+	// If victims were the same
+	if (a.killed == b.killed) {
+		// If attacker A is worth less
+		if (a.piece < b.piece) {
 			return true;
+
+		// If attacker B is worth less
+		} else if (a.piece != b.piece) {
+			return false;
 		}
 
-	} else if (b.killed != -1) {
-		// If only B is a kill
+	// If A has a more valuable victim
+	} else if (a.killed > b.killed) {
+		return true;
+	
+	// If B has a more valuable victim
+	} else {
 		return false;
 	}
 
