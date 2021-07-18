@@ -13,6 +13,7 @@
 #include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
+#include "transposition_table.hpp"
 
 using namespace std;
 
@@ -162,6 +163,14 @@ void ChessEngine::updateTimingVars() {
 // Head of recursive negamax search for the best move
 pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	
+	// Check if the calculation has already been made
+	TTEntry* hashEntry = transTable->getEntryPointer(&cs->bh);
+	if (hashEntry->bh == cs->bh && hashEntry->depth >= depth) {
+		if (hashEntry->scoreType == hashEntry->EXACT_SCORE) {
+			return make_pair(hashEntry->bestMove, hashEntry->score);
+		}
+	}
+
 	// Generate psudo-legal moves
 	U8 moveCount;		// Number of moves (in moveArr)
 	genAllMoves(cs, moveArr[0], &moveCount);
@@ -199,25 +208,6 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 		cs->move(moveArr[0][i]);
 
-		// Use hash table value if it exists
-		if (this->transTable->contains(&cs->bh)) {
-			ttEntry = this->transTable->get(&cs->bh);
-			
-			if (ttEntry.depth >= depth) {
-				if (ttEntry.score > alpha) {
-					alpha = ttEntry.score;
-					bestIndex = i;
-					pvTable[0][0] = moveArr[0][i];
-					// TODO: NO NEXT TO COPY ....?
-				}
-
-				// Continue to next move at this point because the hash 
-				// table data has already looked further than we plan to
-				cs->reverseMove();
-				continue;
-			}
-		}
-
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			
 			score = -negamaxSearch(cs, 1, depth, -beta, -alpha);
@@ -225,10 +215,6 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			if (score.hasMate()) {
 				score.addHalfMoveToMate();
 			}
-
-			// This calculation must be the best value b/c there was no
-			// previous calculation good enough to use in its place
-			this->transTable->add(&cs->bh, score, depth);
 
 			if (score > alpha) {
 				alpha = score;
@@ -253,17 +239,38 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		return make_pair(Move::NULL_MOVE, -EvalScore::MATE_IN_0);
 	}
 
+	hashEntry->setMoveData(&cs->bh, depth, alpha, hashEntry->EXACT_SCORE, moveArr[0][bestIndex]);
 	return make_pair(moveArr[0][bestIndex], alpha);
 }
 
 // Recursive negamax search for the best move
 EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta) {
 
+	// Check if the calculation has already been made
+	TTEntry* hashEntry = transTable->getEntryPointer(&cs->bh);
+	if (hashEntry->bh == cs->bh && hashEntry->depth >= (depthTarget - depth)) {
+		if (hashEntry->scoreType == hashEntry->EXACT_SCORE) {
+			return hashEntry->score;
+		}
+		if (hashEntry->scoreType == hashEntry->ALPHA_SCORE
+			&& hashEntry->score <= alpha) {
+			return alpha;
+		}
+		if (hashEntry->scoreType == hashEntry->BETA_SCORE
+			&& hashEntry->score >= beta) {
+			return beta;
+		}
+	}
+
+	EvalScore score;
+
 	// Check for recursion termination
 	if (depth == depthTarget) {
 		// Return static if reached max depth
 		if (depthTarget >= this->maxDepth) {
-			return EvalScore(evalBoard(cs, cs->turn));
+			score = EvalScore(evalBoard(cs, cs->turn));
+			hashEntry->setScoreData(&cs->bh, 0, score, hashEntry->EXACT_SCORE);
+			return score;
 		// Extend if last move was a kill
 		} else if (cs->lastMove().killed != -1) {
 			depthTarget += 1;
@@ -274,7 +281,9 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		// } else if (isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
 			// depthTarget += 2;
 		} else {
-			return EvalScore(evalBoard(cs, cs->turn));
+			score = EvalScore(evalBoard(cs, cs->turn));
+			hashEntry->setScoreData(&cs->bh, 0, score, hashEntry->EXACT_SCORE);
+			return score;
 		}		 
 	}
 
@@ -291,8 +300,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	sortMoves(moveArr[depth], &moveCount, depth);
 
 	bool hasValidMove(false);
-	EvalScore score;
-	TTEntry ttEntry;	// Transposition table entry
+	short bestIndex(-1);
 
 	for (U8 i(0); i<moveCount; ++i) {
 
@@ -308,34 +316,6 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 		cs->move(moveArr[depth][i]);
 
-		// Use trans table value if it exists
-		if (this->transTable->contains(&cs->bh)) {
-			hasValidMove = true;
-
-			ttEntry = this->transTable->get(&cs->bh);
-
-			if (ttEntry.depth >= (depthTarget - depth)) {
-				if (ttEntry.score >= beta) {
-					cs->reverseMove();
-					if (moveArr[depth][i].killed == -1) {
-						this->addKillerMove(&moveArr[depth][i], &depth);
-					}
-					return beta;
-				}
-
-				if (ttEntry.score > alpha) {
-					alpha = ttEntry.score;
-					pvTable[depth][0] = moveArr[depth][i];
-					// TODO: NO NEXT TO COPY ....?
-				}
-
-				// Continue to next move at this point because the hash 
-				// table data has already looked further than we plan to
-				cs->reverseMove();
-				continue;
-			}
-		}
-
 		// Check if move is legal before preceding
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			
@@ -347,19 +327,17 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 				score.addHalfMoveToMate();
 			}
 
-			// This calculation must be the best value b/c there was no
-			// previous calculation good enough to use in its place
-			this->transTable->add(&cs->bh, score, (depthTarget - depth));
-
 			if (score >= beta) {
 				cs->reverseMove();
 				if (moveArr[depth][i].killed == -1) {
 					this->addKillerMove(&moveArr[depth][i], &depth);
 				}
+				hashEntry->setScoreData(&cs->bh, depthTarget-depth, beta, hashEntry->BETA_SCORE);
 				return beta;
 			}
 
 			if (score > alpha) {
+				bestIndex = i;
 				alpha = score;
 				pvTable[depth][0] = moveArr[depth][i];
 				pvTable.copyNext(depth);
@@ -374,12 +352,20 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 		// If the active player's king is not being attacked
 		// then the situation is stalemate
 		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
+			hashEntry->setScoreData(&cs->bh, 255, EvalScore::DRAW, hashEntry->EXACT_SCORE);
 			return EvalScore::DRAW;
 		}
 
 		// Else there is checkmate
+		hashEntry->setScoreData(&cs->bh, 255, -EvalScore::MATE_IN_0, hashEntry->EXACT_SCORE);
 		return -EvalScore::MATE_IN_0;
 	}
 
+	if (bestIndex == -1) {
+		hashEntry->setScoreData(&cs->bh, depthTarget-depth, alpha, hashEntry->ALPHA_SCORE);
+	} else {
+		hashEntry->setMoveData(&cs->bh, depthTarget-depth, alpha, hashEntry->EXACT_SCORE, moveArr[depth][bestIndex]);
+	}
+	
 	return alpha;
 }

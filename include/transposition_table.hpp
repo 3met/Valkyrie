@@ -4,26 +4,35 @@
 #define TRANSPOSITION_TABLE_HPP
 
 #include "board_hash.hpp"
-#include "chess_state.hpp"
 #include "eval_score.hpp"
+#include "move.hpp"
 #include "size_defs.hpp"
 
 // TTEntry stores info which the transposition table maps to.
 class TTEntry {
 public:
+	enum ScoreType {
+		EXACT_SCORE = 0,
+		ALPHA_SCORE,
+		BETA_SCORE,
+		UNKNOWN_SCORE,
+	};
+
 	BoardHash bh;
-	EvalScore score;
 	U8 depth;
+	EvalScore score;
+	U8 scoreType;
+	Move bestMove;
 
 	TTEntry();
-	TTEntry(const BoardHash* _bh, EvalScore _score, U8 _depth);
 	~TTEntry();
 
 	void setNull();
-	void setData(const BoardHash* _bh, EvalScore _score, U8 _depth) ;
+	void setScoreData(const BoardHash* bh, U8 depth, EvalScore score, U8 scoreType) ;
+	void setMoveData(const BoardHash* bh, U8 depth, EvalScore score, U8 scoreType, Move bestMove) ;
 };
 
-// Wrapper for a map between BoardHashes and their matching TTEntrys.
+// Transposition table is used to store previous enteries
 class TranspostionTable {
 private:
 	TTEntry* table;
@@ -38,12 +47,11 @@ public:
 	void resize(U64 memSize);
 	size_t size();
 
-	void add(const ChessState* cs, EvalScore score, U8 depth);
-	void add(const BoardHash* bh, EvalScore score, U8 depth);
-	bool contains(const ChessState* cs);
 	bool contains(const BoardHash* bh);
-	TTEntry get(const ChessState* cs);
 	TTEntry get(const BoardHash* bh);
+	EvalScore getScore(const BoardHash* bh);
+	Move getMove(const BoardHash* bh);
+	TTEntry* getEntryPointer(const BoardHash* bh);
 };
 
 #endif

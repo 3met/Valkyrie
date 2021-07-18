@@ -6,22 +6,33 @@
 
 TTEntry::TTEntry() {}
 
-TTEntry::TTEntry(const BoardHash* _bh, EvalScore _score, U8 _depth) {
-	bh = *_bh;
-	score = _score;
-	depth = _depth;
-}
-
 TTEntry::~TTEntry() {}
 
+// Clears the entry
 void TTEntry::setNull() {
 	bh.hash = 0;
+	depth = 0;
+	score = EvalScore::NULL_SCORE;
+	scoreType = UNKNOWN_SCORE;
+	bestMove = Move::NULL_MOVE;
 }
 
-void TTEntry::setData(const BoardHash* _bh, EvalScore _score, U8 _depth) {
+// Stores data for a score
+void TTEntry::setScoreData(const BoardHash* _bh, U8 _depth, EvalScore _score, U8 _scoreType) {
 	bh = *_bh;
-	score = _score;
 	depth = _depth;
+	score = _score;
+	scoreType = _scoreType;
+	bestMove = Move::NULL_MOVE;
+}
+
+// Stores data for a move
+void TTEntry::setMoveData(const BoardHash* _bh, U8 _depth, EvalScore _score, U8 _scoreType, Move _bestMove) {
+	bh = *_bh;
+	depth = _depth;
+	score = _score;
+	scoreType = _scoreType;
+	bestMove = _bestMove;
 }
 
 // ----- Transposition Table Methods -----
@@ -59,27 +70,23 @@ size_t TranspostionTable::size() {
 	return tableSize;
 }
 
-// Adds entry to the table
-void TranspostionTable::add(const ChessState* cs, EvalScore score, U8 depth) {
-	this->add(&cs->bh, score, depth);
-}
-
-void TranspostionTable::add(const BoardHash* bh, EvalScore score, U8 depth) {
-	this->table[bh->hash % tableSize].setData(bh, score, depth);
-}
-
-bool TranspostionTable::contains(const ChessState* cs) {
-	return this->contains(&cs->bh);
-}
-
+// Returns whether a given key is in the table
 bool TranspostionTable::contains(const BoardHash* bh) {
 	return this->table[bh->hash % tableSize].bh == *bh;
 }
 
-TTEntry TranspostionTable::get(const ChessState* cs) {
-	return this->get(&cs->bh);
-}
-
 TTEntry TranspostionTable::get(const BoardHash* bh) {
 	return this->table[bh->hash % tableSize];
+}
+
+EvalScore TranspostionTable::getScore(const BoardHash* bh) {
+	return this->table[bh->hash % tableSize].score;
+}
+
+Move TranspostionTable::getMove(const BoardHash* bh) {
+	return this->table[bh->hash % tableSize].bestMove;
+}
+
+TTEntry* TranspostionTable::getEntryPointer(const BoardHash* bh) {
+	return &this->table[bh->hash % tableSize];
 }
