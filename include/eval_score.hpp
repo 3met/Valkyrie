@@ -57,6 +57,14 @@ public:
 		return EvalScore(-obj.eval);
 	};
 
+	friend EvalScore operator+(const EvalScore& obj, const int& num) {
+		return EvalScore(obj.eval+num);
+	};
+
+	friend EvalScore operator-(const EvalScore& obj, const int& num) {
+		return EvalScore(obj.eval-num);
+	};
+
 	friend ostream& operator<<(ostream& out, const EvalScore& obj);
 
 	bool hasMate() const;
