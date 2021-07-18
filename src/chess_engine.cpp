@@ -263,28 +263,11 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	}
 
 	EvalScore score;
-
-	// Check for recursion termination
-	if (depth == depthTarget) {
-		// Return static if reached max depth
-		if (depthTarget >= this->maxDepth) {
-			score = EvalScore(evalBoard(cs, cs->turn));
-			hashEntry->setScoreData(&cs->bh, 0, score, hashEntry->EXACT_SCORE);
-			return score;
-		// Extend if last move was a kill
-		} else if (cs->lastMove().killed != -1) {
-			depthTarget += 1;
-		// Extend if a pawn was promoted
-		} else if (cs->lastMove().promoted != -1) {
-			depthTarget += 1;
-		// Extend if move was a check
-		// } else if (isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
-			// depthTarget += 2;
-		} else {
-			score = EvalScore(evalBoard(cs, cs->turn));
-			hashEntry->setScoreData(&cs->bh, 0, score, hashEntry->EXACT_SCORE);
-			return score;
-		}		 
+	
+	if (depth >= depthTarget) {
+		score = quiescence(cs, depth+1, alpha, beta);
+		hashEntry->setScoreData(&cs->bh, 0, score, hashEntry->EXACT_SCORE);
+		return score;
 	}
 
 	// Generate and sort moves

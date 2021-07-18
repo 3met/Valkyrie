@@ -16,7 +16,7 @@ void ChessEngine::genKMoves(ChessState* cs, Move moves[218], U8* moveCount){
 	moveBoard.popPosArr(posTargets, &targetCount);
 
 	S8 killed;
-	// Add moves to vector
+	// Add moves to array
 	for (U8 i(0); i<targetCount; ++i) {
 		// Check for killing a piece
 		if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(posTargets[i])) {
@@ -55,6 +55,30 @@ void ChessEngine::genKMoves(ChessState* cs, Move moves[218], U8* moveCount){
 		&& !isPosAttacked(cs, !cs->turn, kingPos[0]-2)) {
 
 		moves[*moveCount] = Move(cs->KING, kingPos[0], kingPos[0]-2);
+		++*moveCount;
+	}
+}
+
+// Generates all psudo-legal king killing moves
+void ChessEngine::genKKillMoves(ChessState* cs, Move moves[218], U8* moveCount){
+	
+	// Start position of the king
+	kingPos[0] = cs->pieces[cs->turn][cs->KING].getFirstPos();
+	// Get surrounding squares
+	killBoard.board = (KMoveDB[kingPos[0]].board);
+	// Get attacking squares
+	killBoard.board &= cs->pieces[!cs->turn][6].board;
+	// Positions of all target squares
+	moveBoard.popPosArr(posTargets, &targetCount);
+
+	S8 killed;
+	// Add moves to array
+	for (U8 i(0); i<targetCount; ++i) {
+		// Check for killing a piece
+		killed = cs->getPieceType(!cs->turn, posTargets[i]);
+
+		// Add to list of valid moves
+		moves[*moveCount] = Move(cs->KING, kingPos[0], posTargets[i], killed);
 		++*moveCount;
 	}
 }

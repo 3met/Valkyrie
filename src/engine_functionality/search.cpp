@@ -77,6 +77,8 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 
 		i += 1;
 
+		updateTimingVars();
+
 		// Break early if past 3 searches have the same result
 		// and we have already searched the minimum amount of time
 		if (passedMinTime && moveList.size() >= 3

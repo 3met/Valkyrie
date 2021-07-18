@@ -99,10 +99,19 @@ private:
 	void genQMoves(ChessState* cs, Move moves[218], U8* moveCount);
 	void genKMoves(ChessState* cs, Move moves[218], U8* moveCount);
 	void genAllMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genWhitePKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genBlackPKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genNKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genBKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genRKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genQKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genKKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genAllKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
 
 	// Search Helper Methods
 	void updateTimingVars();
 	void sortMoves(Move moves[218], U8* moveCount, U8 depth);
+	EvalScore quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
 
