@@ -116,9 +116,13 @@ void ChessEngine::updateTimingVars() {
 			if (!this->passedOptimalTime) {
 				if (this->optimalEndTime < chrono::high_resolution_clock::now()) {
 					this->passedOptimalTime = true;
-					// If passed, check if we hit hard cut off
-					if (this->hardEndTime < chrono::high_resolution_clock::now()) {
-						this->canSearch = false;
+					// If passed, check if we hit soft cut off
+					if (this->softEndTime < chrono::high_resolution_clock::now()) {
+						this->passedSoftEndTime = true;
+						// If passed, check if we hit hard cut off
+						if (this->hardEndTime < chrono::high_resolution_clock::now()) {
+							this->canSearch = false;
+						}
 					}
 				}
 			}
@@ -127,6 +131,19 @@ void ChessEngine::updateTimingVars() {
 	} else if (!this->passedOptimalTime) {
 		if (this->optimalEndTime < chrono::high_resolution_clock::now()) {
 			this->passedOptimalTime = true;
+			// If passed, check if we hit soft cut off
+			if (this->softEndTime < chrono::high_resolution_clock::now()) {
+				this->passedSoftEndTime = true;
+				// If passed, check if we hit hard cut off
+				if (this->hardEndTime < chrono::high_resolution_clock::now()) {
+					this->canSearch = false;
+				}
+			}
+		}
+	// Check if we hit soft cut off
+	} else if (!this->passedSoftEndTime) {
+		if (this->softEndTime < chrono::high_resolution_clock::now()) {
+			this->passedSoftEndTime = true;
 			// If passed, check if we hit hard cut off
 			if (this->hardEndTime < chrono::high_resolution_clock::now()) {
 				this->canSearch = false;

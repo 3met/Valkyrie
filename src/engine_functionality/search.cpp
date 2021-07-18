@@ -47,6 +47,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	// Max time to choose move
 	this->minEndTime = start + chrono::microseconds(timeLeft/40);
 	this->optimalEndTime = start + chrono::microseconds(min((timeLeft/30) + timeInc, timeLeft/6));
+	this->softEndTime = start + chrono::microseconds(min((timeLeft/20) + timeInc, timeLeft));
 	this->hardEndTime = start + chrono::microseconds(min((timeLeft/15) + timeInc, timeLeft));
 
 	pair<Move, EvalScore> ratedMove;
@@ -62,12 +63,6 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 
 		// Break if no longer has search permission
 		if (!this->canSearch) {
-			// Only update the score if a better moves was found
-			if (ratedMove.second > this->currScore) {
-				moveList.push_back(ratedMove.first);
-				this->currScore = ratedMove.second;
-			}
-
 			break;
 		}
 
@@ -95,7 +90,11 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 			&& moveList[i] == moveList[i-1]) {
 		
 			break;
-		}		
+		}
+
+		if (passedSoftEndTime) {
+			break;
+		}	
 	}
 
 	++nSearches;

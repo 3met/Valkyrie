@@ -70,8 +70,10 @@ private:
 	bool limitTime;		// Whether to limit time in search
 	bool passedMinTime;
 	bool passedOptimalTime;
+	bool passedSoftEndTime;
 	chrono::high_resolution_clock::time_point minEndTime;
 	chrono::high_resolution_clock::time_point optimalEndTime;
+	chrono::high_resolution_clock::time_point softEndTime;
 	chrono::high_resolution_clock::time_point hardEndTime;
 
 	// Opening book database
