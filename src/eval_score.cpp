@@ -16,6 +16,7 @@ EvalScore::~EvalScore() {}
 const EvalScore EvalScore::DEFAULT = EvalScore(0);
 const EvalScore EvalScore::DRAW = EvalScore(0);
 const EvalScore EvalScore::INFINITE = EvalScore(32700);
+const EvalScore EvalScore::NULL_SCORE = EvalScore(-32701);
 const EvalScore EvalScore::MATE_IN_0 = EvalScore(32699);
 const EvalScore EvalScore::MAX_PLAIN_EVAL = EvalScore(32000);	// Max non-checkmate rating
 

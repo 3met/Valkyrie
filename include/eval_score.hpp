@@ -22,6 +22,7 @@ public:
 	static const EvalScore DEFAULT;
 	static const EvalScore DRAW;
 	static const EvalScore INFINITE;
+	static const EvalScore NULL_SCORE;
 	static const EvalScore MATE_IN_0;
 	static const EvalScore MAX_PLAIN_EVAL;
 
