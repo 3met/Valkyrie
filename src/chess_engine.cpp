@@ -174,11 +174,6 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	// Generate psudo-legal moves
 	U8 moveCount;		// Number of moves (in moveArr)
 	genAllMoves(cs, moveArr[0], &moveCount);
-	
-	// Check if valid moves were generated
-	if (moveCount == 0) {
-		throw ChessState::NoMoves();
-	}
 
 	this->sortMoves(moveArr[0], &moveCount, 0);
 
@@ -264,7 +259,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 	EvalScore score;
 	
-	if (depth >= depthTarget) {
+	if (depth == depthTarget) {
 		score = quiescence(cs, depth+1, alpha, beta);
 		hashEntry->setScoreData(&cs->bh, 0, score, hashEntry->EXACT_SCORE);
 		return score;
