@@ -35,14 +35,14 @@ bool killMoveOrdering(const Move& a, const Move& b) {
 
 EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta) {
 
-	if (depth == this->maxDepth) return EvalScore(evalBoard(cs, cs->turn));;
+	if (depth == this->maxDepth) return EvalScore(evalBoard(cs, cs->turn));
 
 	EvalScore score = EvalScore(evalBoard(cs, cs->turn));
 	if (score >= beta) {
-	    return beta;
+		return beta;
 	}
 	if (score > alpha) {
-	    alpha = score;
+		alpha = score;
 	}
 
 	// Generate and sort moves
@@ -53,15 +53,20 @@ EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, Eva
 
 	for (U8 i(0); i<moveCount; ++i) {
 		cs->move(moveArr[depth][i]);
-		score = -quiescence(cs, depth+1, -beta, -alpha);
 
-		if(score >= beta) {
-			cs->reverseMove();
-			return beta;
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+
+			score = -quiescence(cs, depth+1, -beta, -alpha);
+
+			if (score >= beta) {
+				cs->reverseMove();
+				return beta;
+			}
+			if (score > alpha) {
+				alpha = score;
+			}
 		}
-		if(score > alpha) {
-			alpha = score;
-		}
+
 		cs->reverseMove();
 	}
 
