@@ -12,12 +12,13 @@ class MoveCompare {
 private:
 	ChessEngine* engine;
 	U8 depth;
+	const Move* hashMove;
 
 	// Center bias ranks square based on distance from the center
 	static const U8 centerBias[64];
 
 public:
-	MoveCompare(ChessEngine* _engine, U8 _depth);
+	MoveCompare(ChessEngine* _engine, U8 _depth, const Move* _hashMove);
 
 	bool operator()(const Move& a, const Move& b) const;
 };

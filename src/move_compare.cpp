@@ -19,9 +19,10 @@ const U8 MoveCompare::centerBias[64] {
 	8, 7, 6, 5, 5, 6, 7, 8,
 };
 
-MoveCompare::MoveCompare(ChessEngine* _engine, U8 _depth) {
+MoveCompare::MoveCompare(ChessEngine* _engine, U8 _depth, const Move* _hashMove) {
 	this->engine = _engine;
 	this->depth = _depth;
+	this->hashMove = _hashMove;
 };
 
 // Operator to compare moves for move ordering.
@@ -34,6 +35,13 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 		} else if (b == engine->pvTable[depth-1][1]) {
 			return false;
 		}
+	}
+
+	// Hash moves from previous calculations
+	if (a == *hashMove) {
+		return true;
+	} else if (b == *hashMove) {
+		return false;
 	}
 
 	// Killed ordered by most valuable victim then least valuable attacker

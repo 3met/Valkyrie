@@ -8,6 +8,6 @@
 using namespace std;
 
 // Call std::sort on vector of moves
-void ChessEngine::sortMoves(Move moves[218], U8* moveCount, U8 depth) {
-	sort(moves, moves+(*moveCount), MoveCompare(this, depth));
+void ChessEngine::sortMoves(Move moves[218], U8* moveCount, U8 depth, const Move* hashMove) {
+	sort(moves, moves+(*moveCount), MoveCompare(this, depth, hashMove));
 }

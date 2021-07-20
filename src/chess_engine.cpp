@@ -175,7 +175,11 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	U8 moveCount;		// Number of moves (in moveArr)
 	genAllMoves(cs, moveArr[0], &moveCount);
 
-	this->sortMoves(moveArr[0], &moveCount, 0);
+	if (hashEntry->bh == cs->bh) {
+		sortMoves(moveArr[0], &moveCount, 0, &hashEntry->bestMove);
+	} else {
+		sortMoves(moveArr[0], &moveCount, 0, &Move::NULL_MOVE);
+	}
 
 	EvalScore alpha = -EvalScore::INFINITE;	// best score current color can achive 
 	EvalScore beta = EvalScore::INFINITE;	// best score other color can achive
@@ -275,7 +279,12 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	}
 
 	// Move ordering
-	sortMoves(moveArr[depth], &moveCount, depth);
+	if (hashEntry->bh == cs->bh) {
+		sortMoves(moveArr[depth], &moveCount, depth, &hashEntry->bestMove);
+	} else {
+		sortMoves(moveArr[depth], &moveCount, depth, &Move::NULL_MOVE);
+	}
+	
 
 	bool hasValidMove(false);
 	short bestIndex(-1);

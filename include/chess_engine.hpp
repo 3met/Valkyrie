@@ -110,7 +110,7 @@ private:
 
 	// Search Helper Methods
 	void updateTimingVars();
-	void sortMoves(Move moves[218], U8* moveCount, U8 depth);
+	void sortMoves(Move moves[218], U8* moveCount, U8 depth, const Move* hashMove);
 	EvalScore quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
