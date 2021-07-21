@@ -93,9 +93,11 @@ string ChessState::stringFEN() {
 
 // Pastes target on array where bitboard is true
 void ChessState::mapBoardToChar(Bitboard b, char arr[64], char target) {
-	vector<U8> v(b.popPosVec());
-	for (U8 i(0); i<v.size(); ++i) {
-		arr[v[i]] = target;
+	U8 posArr[9];
+	U8 posArrSize;
+	b.popPosArr(posArr, &posArrSize);
+	for (U8 i(0); i<posArrSize; ++i) {
+		arr[posArr[i]] = target;
 	}
 }
 
