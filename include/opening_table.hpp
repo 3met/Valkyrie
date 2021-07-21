@@ -24,11 +24,8 @@ public:
 	void clear();
 	size_t size();
 
-	void add(const ChessState* cs, vector<Move>* moves);
 	void add(const BoardHash* bh, vector<Move>* moves);
-	bool contains(const ChessState* cs);
 	bool contains(const BoardHash* bh);
-	vector<Move> get(const ChessState* cs);
 	vector<Move> get(const BoardHash* bh);
 };
 
