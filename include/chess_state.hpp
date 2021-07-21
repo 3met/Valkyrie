@@ -40,6 +40,7 @@ public:
 	};
 
 	ChessState();
+	ChessState(string FEN);
 	~ChessState();
 
 	// Sort chess state by turn

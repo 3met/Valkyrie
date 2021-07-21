@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <string>
 #include <utility>
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -15,6 +16,10 @@ const U8 ChessState::ROOK_START[2][2] = {{7, 0}, {63, 56}};	// {{WK, WQ}, {BK, B
 
 ChessState::ChessState() {
 	this->reset();
+};
+
+ChessState::ChessState(string FEN) {
+	this->loadFEN(FEN);
 };
 
 ChessState::~ChessState() {};
