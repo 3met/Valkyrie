@@ -103,9 +103,7 @@ void ChessState::loadFEN(string FEN) {
 					this->castlePerms[this->BLACK][QUEEN_SIDE] = true;
 					break;
 				default:
-					cout << "ERROR: Invalid FEN"
-						<< " (\"" << FEN[FEN_index] << "\""
-						<< " is an invalid castle character)" << endl;
+					printf("ERROR: \"%c\" is an invalid castle character\n", FEN[FEN_index]);
 			}
 
 			++FEN_index;

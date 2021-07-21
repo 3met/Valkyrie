@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <stdio.h>
 #include <string>
 #include <vector>
 #include "chess_engine.hpp"
@@ -27,8 +28,8 @@ public:
 
 	void run(ChessEngine* engine, bool verbose=true) {
 		if (verbose) {
-			cout << "Position: " << FEN << endl;
-			cout << "Depth: " << short(depth) << endl;
+			cout << "Position: " << FEN << '\n';
+			printf("Depth: %d\n", short(depth));
 		}
 		engine->searchDepth(*cs, depth);
 	}
@@ -49,7 +50,7 @@ std::vector<DepthTestCase> DEPTH_TEST_LIST = {
 // Times a list of test cases.
 void depthTest(bool verbose) {
 	if (verbose) {
-		cout << "------ Begin Depth Test ------" << endl;
+		printf("------ Begin Depth Test ------\n");
 	}
 
 	ChessEngine engine;
@@ -59,7 +60,7 @@ void depthTest(bool verbose) {
 
 	for (short i(0); i<DEPTH_TEST_LIST.size(); ++i) {
 		if (verbose) {
-			cout << "Stage: " << (i+1) << "/" << DEPTH_TEST_LIST.size() << endl;
+			printf("Stage: %d/%d\n", i+1, short(DEPTH_TEST_LIST.size()));
 		}
 
 		engine.clear();
@@ -74,14 +75,14 @@ void depthTest(bool verbose) {
 		totalDuration += duration;
 
 		if (verbose) {
-			cout << "Duration: " << int(duration/1000) << " ms" << endl;
-			cout << "--------------------" << endl;
+			printf("Duration: %d ms\n", int(duration/1000));
+			printf("--------------------\n");
 		}
 	}
 
-	cout << "Total Duration: " << int(totalDuration/1000) << " ms" << endl;
+	printf("Total Duration: %d ms\n", int(totalDuration/1000));
 	
 	if (verbose) {
-		cout << "------- End Depth Test -------" << endl;
+		printf("------- End Depth Test -------\n");
 	}
 }

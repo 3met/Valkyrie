@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <stdio.h>
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -13,7 +14,7 @@ U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 		return 1;
 	}
 
-	cout << "--- Divide " << short(depth) << " Start ---" << endl;
+	printf("--- Divide %d Start ---\n", short(depth));
 
 	U8 moveCount;		// Number of moves (in moveArr)
 	genAllMoves(cs, moveArr[depth], &moveCount);
@@ -24,14 +25,14 @@ U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 		cs->move(moveArr[depth][i]);
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			moveTotal = perft(cs, depth-1);
-			cout << moveArr[depth][i] << ": " << moveTotal << endl;
+			cout << moveArr[depth][i] << ": " << moveTotal << '\n';
 			total += moveTotal;
 		}
 		cs->reverseMove();
 	}
 
-	cout << "Total: " << total << endl;
-	cout << "--- Divide " << short(depth) << " End ---" << endl << endl;
+	cout << "Total: " << total << '\n';
+	printf("--- Divide %d End ---\n\n", short(depth));
 
 	return total;
 }

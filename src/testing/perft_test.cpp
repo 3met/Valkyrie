@@ -30,19 +30,19 @@ public:
 
 	bool run(ChessEngine* engine, bool verbose=true) {
 		if (verbose) {
-			cout << "Position: " << FEN << endl;
+			cout << "Position: " << FEN << '\n';
 		}
 
 		U64 result(engine->perft(cs, depth));
 
 		if (verbose) {
 			if (result == target) {
-				cout << "Status: Passed" << endl;
+				printf("Status: Passed\n");
 			} else {
-				cout << "Status: Failed" << endl;
-				cout << "Depth: " << short(depth) << endl;
-				cout << "Target: " << target << endl;
-				cout << "Result: " << result << endl;
+				printf("Status: Failed\n");
+				printf("Depth: %d\n", short(depth));
+				cout << "Target: " << target << '\n';
+				cout << "Result: " << result << '\n';
 			}
 		}
 
@@ -109,7 +109,7 @@ std::vector<PerftTestCase> PERFT_TEST_LIST = {
 // Good assesment of moves generation speed.
 bool perftTest(bool verbose) {
 	if (verbose) {
-		cout << "------ Begin Perft Test ------" << endl;
+		printf("------ Begin Perft Test ------\n");
 	}
 
 	ChessEngine engine;
@@ -121,7 +121,7 @@ bool perftTest(bool verbose) {
 	short i(0);
 	for ( ; i<PERFT_TEST_LIST.size(); ++i) {
 		if (verbose) {
-			cout << "Stage: " << (i+1) << "/" << PERFT_TEST_LIST.size() << endl;
+			printf("Stage: %d/%d\n", i+1, short(PERFT_TEST_LIST.size()));
 		}
 
 		PERFT_TEST_LIST[i].load(&cs);
@@ -135,8 +135,8 @@ bool perftTest(bool verbose) {
 		totalDuration += duration;
 
 		if (verbose) {
-			cout << "Duration: " << int(duration/1000) << " ms" << endl;
-			cout << "--------------------" << endl;
+			printf("Duration: %d ms\n", int(duration/1000));
+			printf("--------------------\n");
 		}
 
 		if (!passed) {
@@ -144,22 +144,22 @@ bool perftTest(bool verbose) {
 		}
 	}
 
-	cout << "Total Duration: " << int(totalDuration/1000) << " ms" << endl;
+	printf("Total Duration: %d ms\n", int(totalDuration/1000));
 	
 	if (passed) {
-		cout << "Test Result: Pass" << endl;
+		printf("Test Result: Pass\n");
 	} else {
-		cout << "Test Result: Fail" << endl;
+		printf("Test Result: Fail\n");
 		if (!verbose) {	// Already printed by run()
-			cout << "Details:" << endl;
-			cout << "    FEN: " << PERFT_TEST_LIST[i].FEN << endl;
-			cout << "    Depth: " << short(PERFT_TEST_LIST[i].depth) << endl;
-			cout << "    Target: " << PERFT_TEST_LIST[i].target << endl;
+			printf("Details:\n");
+			cout << "    FEN: " << PERFT_TEST_LIST[i].FEN << '\n';
+			printf("    Depth: %d\n", short(PERFT_TEST_LIST[i].depth));
+			cout << "    Target: " << PERFT_TEST_LIST[i].target << '\n';
 		}
 	}
 
 	if (verbose) {
-		cout << "------- End Perft Test -------" << endl;
+		printf("------- End Perft Test -------\n");
 	}
 
 	if (passed) {

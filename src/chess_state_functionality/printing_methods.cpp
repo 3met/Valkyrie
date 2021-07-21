@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <stdio.h>
 #include <string>
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -115,26 +116,26 @@ void ChessState::show(bool show_coords) {
 	}
 
 	if (show_coords) {
-		cout << "-------------------" << endl;
+		printf("-------------------\n");
 	}
 	for (i=0; i<64; ++i) {
 		if (show_coords && (i+1) % 8 == 1) {
-			cout << ranks[i/8] << " | ";
-		}		
+			printf("%c | ", ranks[i/8]);
+		}
 
-		cout << board[Bitboard::SHOW_ORDER[i]] << ' ';
+		printf("%c ", board[Bitboard::SHOW_ORDER[i]]);
 
 		if ((i+1) % 8 == 0) {
-			cout << endl;
+			printf("\n");
 		}
 	}
 
 	if (show_coords) {
-		cout << "  +----------------" << endl;
-		cout << "    a b c d e f g h" << endl;
-		cout << "FEN: " << this->stringFEN() << endl;
-		cout << "BoardHash: " << this->bh.hash << endl;
-		cout << "-------------------" << endl;
+		printf("  +----------------\n");
+		printf("    a b c d e f g h\n");
+		cout << "FEN: " <<  this->stringFEN() << '\n';
+		cout << "BoardHash: " << this->bh.hash << '\n';
+		printf("-------------------\n");
 	}
 }
 

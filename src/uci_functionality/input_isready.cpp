@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include "uci.hpp"
 
 // Handles "isready" input command.
@@ -9,8 +10,8 @@ void UCI::inputIsready() {
 	}
 	
 	if (engine.isLoaded && this->runPerm && !this->isRunning) {
-		cout << "readyok" << endl;
+		printf("readyok\n");
 	} else {
-		cout << "notready" << endl;
+		printf("notready\n");
 	}
 }

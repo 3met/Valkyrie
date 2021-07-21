@@ -15,13 +15,13 @@
  *	
  */
 
-#include <iostream>
+#include <stdio.h>
 #include "uci.hpp"
 
 using namespace std;
 
 int main() {
-	cout << "Chess Engine | By Emet Behrendt" << endl;
+	printf("Chess Engine | By Emet Behrendt\n");
 
 	UCI uci;
 	uci.run();

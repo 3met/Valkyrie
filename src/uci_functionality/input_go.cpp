@@ -93,7 +93,7 @@ void UCI::inputGo(string input) {
 	// bestmove to avoid printing at the same time
 	continueStream = false;
 
-	cout << "bestmove " << m << endl;
+	cout << "bestmove " << m << '\n';
 	
 	this->isRunning = false;
 

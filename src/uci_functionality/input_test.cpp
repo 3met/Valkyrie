@@ -29,7 +29,7 @@ void UCI::inputTest(string input) {
 	} else if (inVec[1] == "ebf" || inVec[1] == "EBF") {
 		EBF_Test(verbose);
 	} else {
-		cout << "Unknown Test: " << inVec[1] << endl;
+		cout << "Unknown Test: " << inVec[1] << '\n';
 	}
 
 	this->isRunning = false;

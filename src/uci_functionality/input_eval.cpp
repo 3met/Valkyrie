@@ -20,6 +20,6 @@ void UCI::inputEval() {
 	printf("King:       \t%d\t%d\n", engine.kingEvalResult[cs.WHITE], engine.kingEvalResult[cs.BLACK]);
 	printf("King Safety:\t%d\t%d\n", engine.kingSafetyEvalResult[cs.WHITE], engine.kingSafetyEvalResult[cs.BLACK]);
 	printf("\n");
-	cout << "Overall: " << EvalScore(engine.evalBoard(&cs, cs.WHITE)) << endl;
+	cout << "Overall: " << EvalScore(engine.evalBoard(&cs, cs.WHITE)) << '\n';
 	printf("-----------------------------\n");
 }

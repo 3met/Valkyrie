@@ -199,15 +199,15 @@ inline U8 Bitboard::popLSB() {
 // ----- Output Methods -----
 // Displays Bitboard on Console
 void Bitboard::show() {
-	cout << "---------------" << endl;
+	printf("---------------\n");
 
 	for (U8 i(0); i<64; ++i) {
-		cout << ((board >> SHOW_ORDER[i]) & 1) << ' ';
+		printf("%d ", short((board >> SHOW_ORDER[i]) & 1));
 
 		if ((i+1) % 8 == 0) {
-			cout << endl;
+			printf("\n");
 		}
 	}
 
-	cout << "---------------" << endl;
+	printf("---------------\n");
 }

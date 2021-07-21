@@ -8,6 +8,6 @@ void UCI::inputReverse() {
 	if (cs.moveNumber > 1) {
 		cs.reverseMove();
 	} else {
-		cout << "Cannot Reverse" << endl;
+		printf("ERROR: Nothing to reverse.\n");
 	}
 }

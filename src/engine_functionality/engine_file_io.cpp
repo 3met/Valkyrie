@@ -15,7 +15,7 @@ bool ChessEngine::readBitboardTable(Bitboard table[64], string fileName) {
 
 	db_file.open(DATA_DIR + fileName);
 	if (!db_file) {
-		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
+		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << '\n';
 		return false;
 	} else {
 		U64 val;
@@ -34,7 +34,7 @@ bool ChessEngine::readMagicTable(U8 magicShifts[64], Bitboard magics[64], string
 
 	db_file.open(DATA_DIR + fileName);
 	if (!db_file) {
-		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
+		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << '\n';
 		return false;
 	} else {
 		short shift;
@@ -56,7 +56,7 @@ bool ChessEngine::readAttackTable(Bitboard* attackTable[64], string directory) {
 	for (U8 i(0); i<64; ++i) {
 		db_file.open(DATA_DIR + directory + to_string(i) + ".tab");
 		if (!db_file) {
-			cout << "Fatal Error: Unable to read " << DATA_DIR << directory << to_string(i) << ".tab" << endl;
+			cout << "Fatal Error: Unable to read " << DATA_DIR << directory << to_string(i) << ".tab" << '\n';
 			return false;
 		} else {
 			U64 val;
@@ -77,7 +77,7 @@ bool ChessEngine::readBonusTable(S8 bonusTable[64], string fileName, const U8 RE
 
 	db_file.open(DATA_DIR + fileName);
 	if (!db_file) {
-		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << endl;
+		cout << "Fatal Error: Unable to read " << DATA_DIR << fileName << '\n';
 		return false;
 	} else {
 		short val;
@@ -96,7 +96,7 @@ bool ChessEngine::readOpeningBook(OpeningTable* table, string fileName) {
 	db_file.open(DATA_DIR + fileName);
 
 	if (!db_file) {
-		cout << "Error: Unable to read " << DATA_DIR << fileName << endl;
+		cout << "Error: Unable to read " << DATA_DIR << fileName << '\n';
 		return false;
 	} else {
 		ChessState cs;

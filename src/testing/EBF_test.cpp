@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <iomanip>
+#include <stdio.h>
 #include <string>
 #include <vector>
 #include "chess_engine.hpp"
@@ -34,8 +35,8 @@ public:
 
 	float run(ChessEngine* engine, bool verbose=true) {
 		if (verbose) {
-			cout << "Position: " << FEN << endl;
-			cout << "Depth: " << short(depth) << endl;
+			cout << "Position: " << FEN << '\n';
+			printf("Depth: %d\n", short(depth));
 		}
 
 		engine->searchDepth(*cs, depth);
@@ -49,9 +50,7 @@ public:
 		float EBF = sqrt(N / N2);
 
 		if (verbose) {
-			cout << std::fixed;
-			cout << setprecision(3);
-			cout << "EBF: " << EBF << endl;
+			printf("EBF: %.3f\n", EBF);
 		}
 
 		return EBF;
@@ -73,7 +72,7 @@ std::vector<EBFTestCase> EBF_TEST_LIST = {
 // Times a list of test cases.
 void EBF_Test(bool verbose) {
 	if (verbose) {
-		cout << "------ Begin EBF Test ------" << endl;
+		printf("------ Begin EBF Test ------\n");
 	}
 
 	ChessEngine engine;
@@ -83,7 +82,7 @@ void EBF_Test(bool verbose) {
 
 	for (short i(0); i<EBF_TEST_LIST.size(); ++i) {
 		if (verbose) {
-			cout << "Stage: " << (i+1) << "/" << EBF_TEST_LIST.size() << endl;
+			printf("Stage: %d/%d\n", i+1, short(EBF_TEST_LIST.size()));
 		}
 
 		engine.clear();
@@ -93,16 +92,14 @@ void EBF_Test(bool verbose) {
 
 
 		if (verbose) {
-			cout << "--------------------" << endl;
+			printf("--------------------\n");
 		}
 	}
 
 	meanEBF /= EBF_TEST_LIST.size();
-	cout << std::fixed;
-	cout << setprecision(3);
-	cout << "Mean EBF: " << meanEBF << endl;
+	printf("Mean EBF: %.3f\n", meanEBF);
 	
 	if (verbose) {
-		cout << "------- End EBF Test -------" << endl;
+		printf("------- End EBF Test -------\n");
 	}
 }

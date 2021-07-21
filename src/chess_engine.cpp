@@ -86,7 +86,7 @@ void ChessEngine::load() {
 	if (success) {
 		isLoaded = true;
 	} else {
-		cout << "Error: Engine failed to load" << endl;
+		printf("Error: Engine failed to load\n");
 		isLoaded = false;
 	}
 }

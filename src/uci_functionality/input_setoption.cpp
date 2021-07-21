@@ -48,6 +48,6 @@ void UCI::inputSetOption(string input) {
 	} else if (name == "UCI_EngineAbout") {
 
 	} else {
-		cout << "Unable to set option \"" << name << "\"" << endl;
+		cout << "Unable to set option \"" << name << "\"" << '\n';
 	}
 }

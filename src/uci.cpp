@@ -74,7 +74,7 @@ void UCI::runCommand(string input) {
 	} else if (input == "clear" || input == "cls") {
 		this->inputClear();
 	} else {
-		cout << "Unknown Command: " << input << endl;
+		cout << "Unknown Command: " << input << '\n';
 	}
 }
 

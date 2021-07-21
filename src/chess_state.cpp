@@ -111,7 +111,7 @@ pair<bool, U8> ChessState::charToPiece(char piece) {
 		case 'k':
 			return make_pair(BLACK, KING);
 		default:
-			cout << "ERROR: \"" << piece << "\" is an invalid character" << endl;
+			printf("ERROR: \"%c\" is an invalid piece character\n", piece);
 			return make_pair(WHITE, -1);
 	}
 }
