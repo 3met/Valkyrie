@@ -5,7 +5,7 @@
 // Handles "reverse" command.
 // Used for debugging.
 void UCI::inputReverse() {
-	if (cs.moveNumber > 0) {
+	if (cs.moveNumber > 1) {
 		cs.reverseMove();
 	} else {
 		cout << "Cannot Reverse" << endl;
