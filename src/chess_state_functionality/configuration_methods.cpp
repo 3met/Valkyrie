@@ -46,7 +46,6 @@ void ChessState::clear() {
 // Loads FEN encoding into ChessState
 void ChessState::loadFEN(string FEN) {
 	this->clear();
-	moveNumber = 1;
 
 	U8 i(0);
 	pair<bool, U8> piece;
@@ -131,8 +130,7 @@ void ChessState::loadFEN(string FEN) {
 		return;
 	}
 
-	++FEN_index;	// Skip over space
-	++FEN_index;
+	FEN_index += 2;	// Skip over space
 
 	U8 nLength(1);	// Number digit length (567 ==> 3)
 	// Add halfmove count (allows varible number of digits)
@@ -154,8 +152,7 @@ void ChessState::loadFEN(string FEN) {
 		return;
 	}
 
-	++FEN_index;	// Skip over space
-	++FEN_index;
+	FEN_index += 2;	// Skip over space
 
 	nLength = 1;
 	// Add turn number (allows varible number of digits)
@@ -173,16 +170,13 @@ void ChessState::loadFEN(string FEN) {
 	this->bh.makeHash(pieces, turn, castlePerms, enPassantHistory[moveNumber-1]);
 }
 
-// Place piece on the board
+// Place piece on the board.
+// Does not update board hash or 'All' bitboard.
 void ChessState::place(bool color, U8 pieceType, U8 pos) {
-
 	pieces[color][pieceType].setPosOn(pos);
-	this->updateAllBitboard(color);
-
-	bh.updatePiece(color, pieceType, pos);
 }
 
-// Resets chess board to the start position.
+// Reset chess board to the starting position.
 void ChessState::reset() {
 
 	// Initial piece setup
