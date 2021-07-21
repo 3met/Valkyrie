@@ -21,6 +21,11 @@
 using namespace std;
 
 int main() {
+	// Turn off output buffering
+	setbuf(stdout, NULL);
+	setvbuf(stdout, NULL, _IONBF, 0);
+	fflush(NULL);
+
 	printf("Chess Engine | By Emet Behrendt\n");
 
 	UCI uci;
