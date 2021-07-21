@@ -83,6 +83,8 @@ private:
 	const static short materialVals[6];
 
 	// File IO methods
+	static string DATA_DIR;
+	static bool loadDataDir();
 	static bool readBitboardTable(Bitboard table[64], string fileName);
 	static bool readMagicTable(U8 magicShifts[64], Bitboard magics[64], string fileName);
 	static bool readAttackTable(Bitboard* attackTable[64], string directory);

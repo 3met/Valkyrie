@@ -1,13 +1,65 @@
 
 #include <fstream>
 #include <iostream>
+#include <stdio.h>
 #include <string>
 #include "bitboard.hpp"
 #include "chess_engine.hpp"
 #include "opening_table.hpp"
 #include "size_defs.hpp"
 
-string DATA_DIR = "../data/";
+#ifdef WINDOWS
+	#include <windows.h>
+#elif defined LINUX
+	#include <linux/limits.h>
+	#include <unistd.h>
+#endif
+
+string ChessEngine::DATA_DIR = "";
+
+bool ChessEngine::loadDataDir() {
+	ChessEngine::DATA_DIR = "";
+
+	#ifdef WINDOWS
+		char exePath[MAX_PATH];
+		HMODULE hModule = GetModuleHandle(NULL);
+		if (hModule != NULL) {
+			GetModuleFileName(hModule, exePath, (sizeof(exePath)));
+			// Copy exePath to data dir
+			for (short i=0; exePath[i]!='\0'; ++i) {
+				DATA_DIR += exePath[i];
+			}
+			// Find bin directory from full path
+			DATA_DIR = DATA_DIR.substr(0, DATA_DIR.find_last_of("/\\"));
+			// Find data directory from bin directory
+			DATA_DIR = DATA_DIR.substr(0, DATA_DIR.find_last_of("/\\"));
+			DATA_DIR += "\\data\\";
+			return true;
+		} else {
+			printf("Fatal Error: Unable to load data directory");
+			return false;
+		}
+	#elif defined LINUX
+		char exePath[PATH_MAX];
+		ssize_t count = readlink("/proc/self/exe", exePath, PATH_MAX);
+		if (count != -1) {
+			// Copy exePath to data dir
+			for (short i=0; exePath[i]!='\0'; ++i) {
+				DATA_DIR += exePath[i];
+			}
+			// Find bin directory from full path
+			DATA_DIR = DATA_DIR.substr(0, DATA_DIR.find_last_of("/\\"));
+			// Find data directory from bin directory
+			DATA_DIR = DATA_DIR.substr(0, DATA_DIR.find_last_of("/\\"));
+			DATA_DIR += "/data/";
+			return true;
+		} else {
+			printf("Fatal Error: Unable to load data directory");
+			return false;
+		}
+	#endif
+}
+
 
 // Reads files containing a table of bitboard data
 bool ChessEngine::readBitboardTable(Bitboard table[64], string fileName) {

@@ -42,6 +42,9 @@ void ChessEngine::load() {
 
 	bool success(true);
 
+	// Load data directory string
+	success &= loadDataDir();
+
 	// Load knight and king moves
 	success &= readBitboardTable(NMoveDB, "move-tables/knight/moves.dat");
 	success &= readBitboardTable(KMoveDB, "move-tables/king/moves.dat");
