@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// Similar to perft, except prints nodes for each starting child node
+// Similar to perft, except prints node count for each starting child node
 U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 
 	if (depth == 0) {

@@ -2,8 +2,8 @@
 #include "chess_state.hpp"
 
 // Moves a piece on the board.
-// Assumes move is valid.
-// Update boardHash with move
+// Assumes move is valid or null.
+// Updates boardHash with move.
 void ChessState::move(Move m) {
 
 	moveHistory[moveNumber] = m;
@@ -147,7 +147,7 @@ void ChessState::move(Move m) {
 }
 
 // Reverses a moves.
-// Assumes move is valid.
+// Assumes move is valid or null.
 void ChessState::reverseMove() {
 
 	turn = !turn;	// Swaps turn

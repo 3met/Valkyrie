@@ -77,7 +77,7 @@ void ChessEngine::evalPawns(bool side) {
 			pawnsPerFile[!side][Bitboard::FILE[pawnPosArr[!side][i]]] += 1;
 		}
 
-		// Pawn adjust placement based on game stage
+		// Consider pawn placement based on game stage
 		if (gameStage <= 51) {
 			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
 				pawnEvalResult[side] += pawnOpeningBonus[side][pawnPosArr[side][i]];
@@ -166,7 +166,7 @@ void ChessEngine::evalKnights(bool side) {
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
-		// Consider knight position on board
+		// Consider knight placement
 		for (U8 i(0); i<pieceCount[side][CS::KNIGHT]; ++i) {
 			knightEvalResult[side] += knightBonus[knightPosArr[side][i]];
 		}
@@ -186,7 +186,7 @@ void ChessEngine::evalBishops(bool side) {
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
-		// Consider bishop position on board
+		// Consider bishop placement
 		for (U8 i(0); i<pieceCount[side][CS::BISHOP]; ++i) {
 			bishopEvalResult[side] += bishopBonus[bishopPosArr[side][i]];
 		}
@@ -213,7 +213,7 @@ void ChessEngine::evalQueens(bool side) {
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
-		// Consider bishop position on board
+		// Consider queen placement
 		for (U8 i(0); i<pieceCount[side][CS::QUEEN]; ++i) {
 			queenEvalResult[side] += queenBonus[queenPosArr[side][i]];
 		}
@@ -224,7 +224,7 @@ void ChessEngine::evalKings(bool side) {
 	kingEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_PLACEMENT
-		// King adjust placement based on game stage
+		// Consider king placement based on game stage
 		if (gameStage <= 51) {
 			kingEvalResult[side] += kingOpeningBonus[side][kingPos[side]];
 		} else if (gameStage <= 102) {
@@ -239,6 +239,7 @@ void ChessEngine::evalKings(bool side) {
 	#endif
 }
 
+// Evaluates the safety of the king
 void ChessEngine::evalKingSafety(bool side) {
 	kingSafetyEvalResult[side] = 0;
 

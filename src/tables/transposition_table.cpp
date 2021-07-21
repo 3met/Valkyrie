@@ -87,6 +87,7 @@ Move TranspostionTable::getMove(const BoardHash* bh) {
 	return this->table[bh->hash % tableSize].bestMove;
 }
 
+// Returns a pointer to the entry matching the passed BoardHash
 TTEntry* TranspostionTable::getEntryPointer(const BoardHash* bh) {
 	return &this->table[bh->hash % tableSize];
 }
