@@ -1,8 +1,13 @@
 
-#include <iostream>
 #include <stdio.h>
+#include <iostream>
+#include <string>
+#include <vector>
 #include "eval_score.hpp"
+#include "testing.hpp"
 #include "uci.hpp"
+
+using namespace std;
 
 // Prints static evaluation of current board
 void UCI::inputEval() {
@@ -22,4 +27,46 @@ void UCI::inputEval() {
 	printf("\n");
 	cout << "Overall: " << EvalScore(engine.evalBoard(&cs, cs.WHITE)) << '\n';
 	printf("-----------------------------\n");
+}
+
+// Prints the current chess state.
+void UCI::inputPrint() {
+	cs.show();
+}
+
+// Handles "test" input commands.
+// Used for debugging.
+void UCI::inputTest(string input) {
+
+	this->isRunning = true;
+
+	// Parse input
+	std::vector<string> inVec;
+	this->splitString(input, &inVec);
+
+	bool verbose(false);
+	if (inVec.size() > 2 && inVec[2] == "verbose") {
+		verbose = true;
+	}
+
+	if (inVec[1] == "perft") {
+		perftTest(verbose);
+	} else if (inVec[1] == "depth") {
+		depthTest(verbose);
+	} else if (inVec[1] == "ebf" || inVec[1] == "EBF") {
+		EBF_Test(verbose);
+	} else {
+		cout << "Unknown Test: " << inVec[1] << '\n';
+	}
+
+	this->isRunning = false;
+}
+
+// Clears the console.
+void UCI::inputClear() {
+	#ifdef WINDOWS
+		system("cls");
+	#elif defined LINUX
+		system("clear");
+	#endif
 }

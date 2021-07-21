@@ -6,6 +6,20 @@
 #include "size_defs.hpp"
 #include "uci.hpp"
 
+// Splits a string into seperate words by using ' ' (space) as a break point
+void UCI::splitString(string str, vector<string>* strVec) {
+	size_t pos(str.find(' '));
+	size_t startPos(0);
+
+	while (pos != std::string::npos) {
+		strVec->push_back(str.substr(startPos, pos-startPos));
+		startPos = pos + 1;
+
+		pos = str.find(' ', startPos);
+	}
+	strVec->push_back(str.substr(startPos, pos-startPos));
+}
+
 using namespace std::chrono;
 
 // Prints search data with "info" output.
@@ -34,9 +48,10 @@ void UCI::outputInfo() {
 
 // Continuously streams outputInfo
 void UCI::streamOutputInfo(bool* continueStream) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	std::this_thread::sleep_for(milliseconds(500));
 	while (*continueStream) {
 		this->outputInfo();
-	    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		std::this_thread::sleep_for(milliseconds(500));
 	}
 }
+
