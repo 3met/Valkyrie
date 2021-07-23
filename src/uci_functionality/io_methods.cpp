@@ -28,9 +28,9 @@ void UCI::outputInfo() {
 	
 	if (engine.currScore.hasMate()) {
 		if (engine.currScore.eval < 0) {
-			printf(" score mate -%d\n", short(engine.currScore.halfMovesToMate())/2);
+			printf(" score mate -%d", short(engine.currScore.halfMovesToMate())/2);
 		} else {
-			printf(" score mate %d\n", short(engine.currScore.halfMovesToMate())/2);
+			printf(" score mate %d", short(engine.currScore.halfMovesToMate())/2);
 		}
 	} else {
 		printf(" score cp %d", engine.currScore.eval);
