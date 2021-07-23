@@ -9,7 +9,8 @@ void UCI::inputIsready() {
 		engine.load();
 	}
 	
-	if (engine.isLoaded && this->runPerm && !this->isRunning) {
+	// Ensure engine is loaded
+	if (engine.isLoaded && this->runPerm) {
 		printf("readyok\n");
 	} else {
 		printf("notready\n");

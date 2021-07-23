@@ -12,15 +12,6 @@
 // Runs engine searches based on input.
 void UCI::inputGo(string input) {
 
-	// Pauses command until whatever is running completes.
-	// This may be important for when a go command is sent
-	// immediately after a long position command.
-	while (this->isRunning) {
-		std::this_thread::sleep_for(std::chrono::microseconds(10));
-	}
-
-	this->isRunning = true;
-
 	// Break down input into words
 	std::vector<std::string> inVec;
 	UCI::splitString(input, &inVec);	
@@ -95,7 +86,5 @@ void UCI::inputGo(string input) {
 
 	cout << "bestmove " << m << '\n';
 	
-	this->isRunning = false;
-
 	outputThread.join();
 }

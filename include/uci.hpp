@@ -3,7 +3,10 @@
 #ifndef UCI_HPP
 #define UCI_HPP
 
+#include <chrono>
+#include <future>
 #include <string>
+#include <queue>
 #include <vector>
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
@@ -96,19 +99,20 @@ private:
 		}
 	};
 
-	// Engine and chess state for computations
-	ChessState cs;
-	ChessEngine engine;
-
-	// UCI options
-	vector<UciOption*> options;
-
-	// Status variables
-	bool isRunning = false;	// Whether a computation is running
-	bool runPerm = true;	// Whether the object has permission execute commands
-
-	// Engine options
-	int moveOverhead;		// Connection delay (ms)
+	class NoParallelCommand {
+	public:
+		void (UCI::*regMethod)();
+		void (UCI::*stringMethod)(string);
+		string input;
+		NoParallelCommand(void (UCI::*_method)()) {
+			regMethod = _method;
+			input = "";
+		};
+		NoParallelCommand(void (UCI::*_method)(string), string _input) {
+			stringMethod = _method;
+			input = _input;
+		};
+	};
 
 	// Calculation Commands
 	void inputDivide(string input);
@@ -138,6 +142,29 @@ private:
 	void streamOutputInfo(bool* continueStream);
 	static void splitString(string str, vector<string>* strVec);
 
+	// Engine and chess state for computations
+	ChessState cs;
+	ChessEngine engine;
+
+	// UCI options
+	vector<UciOption*> options;
+
+	// Engine options
+	int moveOverhead;		// Connection delay (ms)
+
+	// Runtime Config
+	static const chrono::microseconds queueWaitTime;
+	// Runtime Variables
+	bool runPerm = true;	// Whether the object has permission execute commands
+	bool noParallelRunning = false;	// Whether a "no parallel" computation is running
+	// Command queues and information
+	queue<future<void>> parallelFutures;
+	future<void> noParallelFuture;
+	bool noParallelFutureNull = true;
+	queue<NoParallelCommand> noParallelQueue;
+	// Handling commands at runtime
+	void noParallelManager();
+
 public:
 	UCI();
 	~UCI();
@@ -147,7 +174,6 @@ public:
 	static const string ENGINE_AUTHOR;
 
 	void run();
-	void runCommand(string input);
 };
 
 #endif

@@ -38,8 +38,6 @@ void UCI::inputPrint() {
 // Used for debugging.
 void UCI::inputTest(string input) {
 
-	this->isRunning = true;
-
 	// Parse input
 	std::vector<string> inVec;
 	this->splitString(input, &inVec);
@@ -58,8 +56,6 @@ void UCI::inputTest(string input) {
 	} else {
 		cout << "Unknown Test: " << inVec[1] << '\n';
 	}
-
-	this->isRunning = false;
 }
 
 // Clears the console.
