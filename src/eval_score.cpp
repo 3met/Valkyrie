@@ -21,8 +21,16 @@ const EvalScore EvalScore::MATE_IN_0 = EvalScore(32699);
 const EvalScore EvalScore::MAX_PLAIN_EVAL = EvalScore(32000);	// Max non-checkmate rating
 
 // Prints the evaluation
-ostream& operator<< (ostream &out, EvalScore const& obj) {
-	if (obj.hasMate()) {
+ostream& operator<<(ostream &out, EvalScore const& obj) {
+	if (abs(obj.eval) == EvalScore::INFINITE) {
+		if (obj.eval > 0) {
+			out << "+INF";
+		} else {
+			out << "-INF";
+		}
+	} else if (obj.eval == EvalScore::NULL_SCORE) {
+		out << "NullScore";
+	} else if (obj.hasMate()) {
 		if (obj.eval > 0) {
 			out << "+M";
 		} else {
