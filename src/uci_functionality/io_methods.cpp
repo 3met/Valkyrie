@@ -24,7 +24,7 @@ using namespace std::chrono;
 
 // Prints search data with "info" output.
 void UCI::outputInfo() {
-	printf("info depth %d", engine.currDepth);
+	printf("info depth %d", engine.uciDepth);
 	
 	if (engine.currScore.hasMate()) {
 		if (engine.currScore.eval < 0) {

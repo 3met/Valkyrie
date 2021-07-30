@@ -115,7 +115,7 @@ private:
 	void sortMoves(Move moves[218], U8* moveCount, U8 depth, const Move* hashMove);
 	EvalScore quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
-	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta);
+	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore alpha, EvalScore beta);
 
 	// Get + Set Methods
 	void addKillerMove(Move* m, U8* depth);
@@ -152,7 +152,7 @@ public:
 	bool canSearch = false;
 	short nSearches = 0;	// Number of searches preformed
 	// Information Variables
-	short currDepth = 0;
+	short uciDepth = 0;
 	short currSelDepth = 0;
 	EvalScore currScore = EvalScore::DEFAULT;
 	chrono::high_resolution_clock::time_point startTime;

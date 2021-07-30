@@ -27,7 +27,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 
 	// Set Stats
 	this->startTime = start;
-	this->currDepth = 0;
+	this->uciDepth = 0;
 	this->nodesTotal = 0;
 	this->currScore = 0;
 	this->limitTime = true;
@@ -57,7 +57,7 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	// Loop to increase depth until time is up
 	while (true) {
 		// Set search iteration parameters
-		this->currDepth = i;
+		this->uciDepth = i;
 		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);
@@ -109,7 +109,7 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 
 	// Set Stats
 	this->startTime = high_resolution_clock::now();
-	this->currDepth = 0;
+	this->uciDepth = 0;
 	this->nodesTotal = 0;
 	this->canSearch = true;
 	this->limitTime = false;
@@ -120,7 +120,7 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 	// Loop to increase depth until time is up
 	while (i <= depth) {
 
-		this->currDepth = i;
+		this->uciDepth = i;
 		this->maxDepth = i;
 
 		ratedMove = this->bestMove(&cs, i);
@@ -158,7 +158,7 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 
 	// Set Stats
 	this->startTime = high_resolution_clock::now();
-	this->currDepth = 0;
+	this->uciDepth = 0;
 	this->nodesTotal = 0;
 	this->canSearch = true;
 	this->limitTime = false;
@@ -169,7 +169,7 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 	// Loop to increase depth until time is up
 	while (true) {
 
-		this->currDepth = i;
+		this->uciDepth = i;
 		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);

@@ -97,7 +97,7 @@ void ChessEngine::load() {
 // Clear all temporary data
 void ChessEngine::clear() {
 	nSearches = 0;	// Number of searches preformed
-	currDepth = 0;
+	uciDepth = 0;
 	currSelDepth = 0;
 	currScore = EvalScore::DEFAULT;
 	nodesTotal = 0;
@@ -212,7 +212,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			
-			score = -negamaxSearch(cs, 1, depth, -beta, -alpha);
+			score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
 
 			if (score.hasMate()) {
 				score.addHalfMoveToMate();
@@ -246,11 +246,11 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 }
 
 // Recursive negamax search for the best move
-EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, EvalScore alpha, EvalScore beta) {
+EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore alpha, EvalScore beta) {
 
 	// Check if the calculation has already been made
 	TTEntry* hashEntry = transTable->getEntryPointer(&cs->bh);
-	if (hashEntry->bh == cs->bh && hashEntry->depth >= (depthTarget - depth)) {
+	if (hashEntry->bh == cs->bh && hashEntry->depth >= depth) {
 		if (hashEntry->scoreType == hashEntry->EXACT_SCORE) {
 			return hashEntry->score;
 		}
@@ -266,15 +266,15 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 	EvalScore score;
 	
-	if (depth == depthTarget) {
-		score = quiescence(cs, depth+1, alpha, beta);
+	if (depth == 0) {
+		score = quiescence(cs, ply+1, alpha, beta);
 		hashEntry->setScoreData(&cs->bh, 0, score, hashEntry->EXACT_SCORE);
 		return score;
 	}
 
 	// Generate and sort moves
 	U8 moveCount;		// Number of moves (in moveArr)
-	genAllMoves(cs, moveArr[depth], &moveCount);
+	genAllMoves(cs, moveArr[ply], &moveCount);
 	
 	// Check if valid moves were generated
 	if (moveCount == 0) {
@@ -283,9 +283,9 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 	// Move ordering
 	if (hashEntry->bh == cs->bh) {
-		sortMoves(moveArr[depth], &moveCount, depth, &hashEntry->bestMove);
+		sortMoves(moveArr[ply], &moveCount, ply, &hashEntry->bestMove);
 	} else {
-		sortMoves(moveArr[depth], &moveCount, depth, &Move::NULL_MOVE);
+		sortMoves(moveArr[ply], &moveCount, ply, &Move::NULL_MOVE);
 	}
 	
 
@@ -304,12 +304,12 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 			return alpha;	// Return null move
 		}
 
-		cs->move(moveArr[depth][i]);
+		cs->move(moveArr[ply][i]);
 
 		// Check if move is legal before preceding
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
 			
-			score = -negamaxSearch(cs, depth+1, depthTarget, -beta, -alpha);
+			score = -negamaxSearch(cs, depth-1, ply+1, -beta, -alpha);
 
 			hasValidMove = true;
 
@@ -319,18 +319,18 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 
 			if (score >= beta) {
 				cs->reverseMove();
-				if (moveArr[depth][i].killed == -1) {
-					this->addKillerMove(&moveArr[depth][i], &depth);
+				if (moveArr[ply][i].killed == -1) {
+					this->addKillerMove(&moveArr[ply][i], &ply);
 				}
-				hashEntry->setScoreData(&cs->bh, depthTarget-depth, beta, hashEntry->BETA_SCORE);
+				hashEntry->setScoreData(&cs->bh, depth, beta, hashEntry->BETA_SCORE);
 				return beta;
 			}
 
 			if (score > alpha) {
 				bestIndex = i;
 				alpha = score;
-				pvTable[depth][0] = moveArr[depth][i];
-				pvTable.copyNext(depth);
+				pvTable[ply][0] = moveArr[ply][i];
+				pvTable.copyNext(ply);
 			}
 		}
 
@@ -352,9 +352,9 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 depthTarget, E
 	}
 
 	if (bestIndex == -1) {
-		hashEntry->setScoreData(&cs->bh, depthTarget-depth, alpha, hashEntry->ALPHA_SCORE);
+		hashEntry->setScoreData(&cs->bh, depth, alpha, hashEntry->ALPHA_SCORE);
 	} else {
-		hashEntry->setMoveData(&cs->bh, depthTarget-depth, alpha, hashEntry->EXACT_SCORE, moveArr[depth][bestIndex]);
+		hashEntry->setMoveData(&cs->bh, depth, alpha, hashEntry->EXACT_SCORE, moveArr[ply][bestIndex]);
 	}
 	
 	return alpha;
