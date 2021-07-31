@@ -87,6 +87,8 @@ public:
 	// Move Methods
 	void move(Move m);
 	void reverseMove();
+	void moveNull();
+	void reverseNullMove();
 
 	// Configuration Methods
 	void clear();
