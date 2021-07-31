@@ -186,6 +186,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 	EvalScore alpha = -EvalScore::INFINITE;	// best score current color can achive 
 	EvalScore beta = EvalScore::INFINITE;	// best score other color can achive
+	this->inNullMoveSearch = false;
 	short bestIndex(-1);	    // -1 as default
 
 	EvalScore score;
@@ -270,6 +271,34 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 		score = quiescence(cs, ply+1, alpha, beta);
 		hashEntry->setScoreData(&cs->bh, 0, score, hashEntry->EXACT_SCORE);
 		return score;
+	}
+
+	// Null Move Pruning.
+	// If not already in a null move search and not currently in check.
+	if (!this->inNullMoveSearch && depth > 2) {
+
+		this->inNullMoveSearch = true;
+		cs->moveNull();
+
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+
+			U8 R = 2 + (depth / 5);
+
+			score = -zwSearch(cs, depth-1-R, ply+1, -beta+1);
+
+			if (score.hasMate()) {
+				score.addHalfMoveToMate();
+			}
+
+			if (score >= beta) {
+				cs->reverseNullMove();
+				this->inNullMoveSearch = false;
+				return beta;
+			}
+		}
+
+		cs->reverseNullMove();
+		this->inNullMoveSearch = false;
 	}
 
 	// Generate and sort moves

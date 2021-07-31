@@ -65,6 +65,7 @@ private:
 	U8 posTargets[27];		// Target location positions
 	U8 targetCount;			// Number of target positions
 	Move moveArr[MAX_SEARCH_DEPTH][218];
+	bool inNullMoveSearch;
 
 	// Time management search variables
 	bool limitTime;		// Whether to limit time in search
@@ -114,6 +115,7 @@ private:
 	void updateTimingVars();
 	void sortMoves(Move moves[218], U8* moveCount, U8 depth, const Move* hashMove);
 	EvalScore quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta);
+	EvalScore zwSearch(ChessState* cs, U8 depth, U8 ply, EvalScore beta);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore alpha, EvalScore beta);
 
