@@ -7,7 +7,7 @@
 // Generates all psudo-legal bishop moves
 void ChessEngine::genBMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get piece locations
-	cs->pieces[cs->turn][BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][0]);
+	pieceCount[0][0] = cs->pieces[cs->turn][BISHOP].getPosArr(bishopPosArr[0]);
 
 	U8 j;
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -26,7 +26,7 @@ void ChessEngine::genBMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 
 		// Add kill moves
 		if (killBoard.board != 0) {
-			killBoard.popPosArr(posTargets, &targetCount);
+			targetCount = killBoard.popPosArr(posTargets);
 			for (j=0; j<targetCount; ++j) {
 				moves[*moveCount] = Move(bishopPosArr[0][i],
 					posTargets[j],
@@ -38,7 +38,7 @@ void ChessEngine::genBMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 
 		// Add non-kill moves
 		if (moveBoard.board != 0) {
-			moveBoard.popPosArr(posTargets, &targetCount);
+			targetCount = moveBoard.popPosArr(posTargets);
 			for (j=0; j<targetCount; ++j) {
 				moves[*moveCount] = Move(bishopPosArr[0][i], posTargets[j], Move::QUIET, BISHOP);
 				++*moveCount;
@@ -50,7 +50,7 @@ void ChessEngine::genBMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 // Generates all psudo-legal bishop kill moves
 void ChessEngine::genBKillMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get piece locations
-	cs->pieces[cs->turn][BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][0]);
+	pieceCount[0][0] = cs->pieces[cs->turn][BISHOP].getPosArr(bishopPosArr[0]);
 
 	U8 j;
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -64,7 +64,7 @@ void ChessEngine::genBKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 
 		// Add kill moves
 		if (killBoard.board != 0) {
-			killBoard.popPosArr(posTargets, &targetCount);
+			targetCount = killBoard.popPosArr(posTargets);
 			for (j=0; j<targetCount; ++j) {
 				moves[*moveCount] = Move(bishopPosArr[0][i],
 					posTargets[j],

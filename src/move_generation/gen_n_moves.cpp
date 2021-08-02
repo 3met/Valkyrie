@@ -9,7 +9,7 @@ void ChessEngine::genNMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	U8 j;
 	
 	// Get all knight locations
-	cs->pieces[cs->turn][KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][0]);
+	pieceCount[0][0] = cs->pieces[cs->turn][KNIGHT].getPosArr(knightPosArr[0]);
 	
 	// Loop through pieces
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -18,7 +18,7 @@ void ChessEngine::genNMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		// Remove squares with same colored pieces
 		moveBoard.board &= ~(cs->pieces[cs->turn][ALL_PIECES].board);	
 		// Positions of all targets
-		moveBoard.popPosArr(posTargets, &targetCount);
+		targetCount = moveBoard.popPosArr(posTargets);
 
 		for (j=0; j<targetCount; ++j) {
 			// Check for killing a piece
@@ -41,7 +41,7 @@ void ChessEngine::genNKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 	U8 j;
 	
 	// Get all knight locations
-	cs->pieces[cs->turn][KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][0]);
+	pieceCount[0][0] = cs->pieces[cs->turn][KNIGHT].getPosArr(knightPosArr[0]);
 	
 	// Loop through pieces
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -50,7 +50,7 @@ void ChessEngine::genNKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 		// Positions of all target squares
 		killBoard.board &= cs->pieces[!cs->turn][6].board;
 		// Positions of all targets
-		killBoard.popPosArr(posTargets, &targetCount);
+		targetCount = killBoard.popPosArr(posTargets);
 
 		for (j=0; j<targetCount; ++j) {
 			// Create move

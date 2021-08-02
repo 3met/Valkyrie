@@ -36,17 +36,17 @@ void ChessEngine::setGameStage() {
 // than ChessEngine::evalBoard()
 void ChessEngine::prepEval(ChessState* cs) {
 	// Positions of all the pieces
-	cs->pieces[0][PAWN].getPosArr(pawnPosArr[0], &pieceCount[0][PAWN]);
-	cs->pieces[0][KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][KNIGHT]);
-	cs->pieces[0][BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][BISHOP]);
-	cs->pieces[0][ROOK].getPosArr(rookPosArr[0], &pieceCount[0][ROOK]);
-	cs->pieces[0][QUEEN].getPosArr(queenPosArr[0], &pieceCount[0][QUEEN]);
+	pieceCount[0][PAWN] = cs->pieces[0][PAWN].getPosArr(pawnPosArr[0]);
+	pieceCount[0][KNIGHT] = cs->pieces[0][KNIGHT].getPosArr(knightPosArr[0]);
+	pieceCount[0][BISHOP] = cs->pieces[0][BISHOP].getPosArr(bishopPosArr[0]);
+	pieceCount[0][ROOK] = cs->pieces[0][ROOK].getPosArr(rookPosArr[0]);
+	pieceCount[0][QUEEN] = cs->pieces[0][QUEEN].getPosArr(queenPosArr[0]);
 	kingPos[0] = cs->pieces[0][KING].getFirstPos();
-	cs->pieces[1][PAWN].getPosArr(pawnPosArr[1], &pieceCount[1][PAWN]);
-	cs->pieces[1][KNIGHT].getPosArr(knightPosArr[1], &pieceCount[1][KNIGHT]);
-	cs->pieces[1][BISHOP].getPosArr(bishopPosArr[1], &pieceCount[1][BISHOP]);
-	cs->pieces[1][ROOK].getPosArr(rookPosArr[1], &pieceCount[1][ROOK]);
-	cs->pieces[1][QUEEN].getPosArr(queenPosArr[1], &pieceCount[1][QUEEN]);
+	pieceCount[1][PAWN] = cs->pieces[1][PAWN].getPosArr(pawnPosArr[1]);
+	pieceCount[1][KNIGHT] = cs->pieces[1][KNIGHT].getPosArr(knightPosArr[1]);
+	pieceCount[1][BISHOP] = cs->pieces[1][BISHOP].getPosArr(bishopPosArr[1]);
+	pieceCount[1][ROOK] = cs->pieces[1][ROOK].getPosArr(rookPosArr[1]);
+	pieceCount[1][QUEEN] = cs->pieces[1][QUEEN].getPosArr(queenPosArr[1]);
 	kingPos[1] = cs->pieces[1][KING].getFirstPos();
 
 	setGameStage();

@@ -63,20 +63,24 @@ bool Bitboard::getPos(U8 pos) const {
 }
 
 // Returns the all positions with a positive value
-void Bitboard::getPosArr(U8 arr[], U8* n) const {
+U8 Bitboard::getPosArr(U8 arr[]) const {
 	Bitboard bb(this->board);
 
-	for (*n=0; bb.board != 0; ++(*n)) {
-		arr[*n] = bb.popLSB();
+	U8 n(0);
+	for ( ; bb.board != 0; ++n) {
+		arr[n] = bb.popLSB();
 	}
+	return n;
 }
 
 // Returns the all positions with a positive value .
 // Resets board to zero.
-void Bitboard::popPosArr(U8 arr[], U8* n) {
-	for (*n=0; this->board != 0; ++(*n)) {
-		arr[*n] = this->popLSB();
+U8 Bitboard::popPosArr(U8 arr[]) {
+	U8 n(0);
+	for ( ; this->board != 0; ++n) {
+		arr[n] = this->popLSB();
 	}
+	return n;
 }
 
 // Return the position of the first "true" bit

@@ -14,7 +14,7 @@ void ChessEngine::genKMoves(ChessState* cs, Move moves[218], U8* moveCount){
 	// Remove squares with same coloured pieces
 	moveBoard.board &= ~(cs->pieces[cs->turn][ALL_PIECES].board);
 	// Positions of all target squares
-	moveBoard.popPosArr(posTargets, &targetCount);
+	targetCount = moveBoard.popPosArr(posTargets);
 
 	// Add moves to array
 	for (U8 i(0); i<targetCount; ++i) {
@@ -68,7 +68,7 @@ void ChessEngine::genKKillMoves(ChessState* cs, Move moves[218], U8* moveCount){
 	// Get attacking squares
 	killBoard.board &= cs->pieces[!cs->turn][6].board;
 	// Positions of all target squares
-	moveBoard.popPosArr(posTargets, &targetCount);
+	targetCount = moveBoard.popPosArr(posTargets);
 
 	// Add moves to array
 	for (U8 i(0); i<targetCount; ++i) {

@@ -96,7 +96,7 @@ string ChessState::stringFEN() {
 void ChessState::mapBoardToChar(Bitboard b, char arr[64], char target) {
 	U8 posArr[9];
 	U8 posArrSize;
-	b.popPosArr(posArr, &posArrSize);
+	posArrSize = b.popPosArr(posArr);
 	for (U8 i(0); i<posArrSize; ++i) {
 		arr[posArr[i]] = target;
 	}

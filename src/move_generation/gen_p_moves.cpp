@@ -23,7 +23,7 @@ void ChessEngine::genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	// Removes all but kill positions (en passant included)
 	killBoard.board &= bufferBoard.board;
 	// Add moves to array
-	killBoard.popPosArr(posTargets, &targetCount);
+	targetCount = killBoard.popPosArr(posTargets);
 	U8 i(0);
 	for ( ; i<targetCount; ++i) {
 		// Check pawn promotion
@@ -59,7 +59,7 @@ void ChessEngine::genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	// Removes all but kill positions (en passant included)
 	killBoard.board &=  bufferBoard.board;
 	// Add moves to array
-	killBoard.popPosArr(posTargets, &targetCount);
+	targetCount = killBoard.popPosArr(posTargets);
 	for (i=0; i<targetCount; ++i) {
 		// Check pawn promotion
 		if (BOARD_RANK[posTargets[i]] == 7) {
@@ -94,7 +94,7 @@ void ChessEngine::genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	// Remove occupied squares
 	moveBoard.board &= bufferBoard.board;
 	// Get end positions
-	moveBoard.getPosArr(posTargets, &targetCount);
+	targetCount = moveBoard.getPosArr(posTargets);
 	for (i=0; i<targetCount; ++i) {
 		// Check pawn promotion
 		if (BOARD_RANK[posTargets[i]] == 7) {
@@ -119,7 +119,7 @@ void ChessEngine::genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	// Remove occupied squares
 	moveBoard.board &= bufferBoard.board;
 	// Get end positions
-	moveBoard.popPosArr(posTargets, &targetCount);
+	targetCount = moveBoard.popPosArr(posTargets);
 	// Add positions to array
 	for (i=0; i<targetCount; ++i) {
 		moves[*moveCount] = Move(posTargets[i]-16, posTargets[i], Move::QUIET, PAWN);
@@ -146,7 +146,7 @@ void ChessEngine::genBlackPMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	// Removes all but kill positions (en passant included)
 	killBoard.board &= bufferBoard.board;
 	// Add moves to array
-	killBoard.popPosArr(posTargets, &targetCount);
+	targetCount = killBoard.popPosArr(posTargets);
 	U8 i(0);
 	for ( ; i<targetCount; ++i) {
 		// Check pawn promotion
@@ -182,7 +182,7 @@ void ChessEngine::genBlackPMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	// Removes all but kill positions (en passant included)
 	killBoard.board &= bufferBoard.board;
 	// Add moves to array
-	killBoard.popPosArr(posTargets, &targetCount);
+	targetCount = killBoard.popPosArr(posTargets);
 	for (i=0; i<targetCount; ++i) {
 		// Check pawn promotion
 		if (BOARD_RANK[posTargets[i]] == 0) {
@@ -217,7 +217,7 @@ void ChessEngine::genBlackPMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	// Remove occupied squares
 	moveBoard.board &= bufferBoard.board;
 	// Get end positions
-	moveBoard.getPosArr(posTargets, &targetCount);
+	targetCount = moveBoard.getPosArr(posTargets);
 
 	for (i=0; i<targetCount; ++i) {
 		// Check pawn promotion
@@ -243,7 +243,7 @@ void ChessEngine::genBlackPMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	// Remove occupied squares
 	moveBoard.board &= bufferBoard.board;
 	// Get end positions
-	moveBoard.popPosArr(posTargets, &targetCount);
+	targetCount = moveBoard.popPosArr(posTargets);
 	// Add positions to array
 	for (i=0; i<targetCount; ++i) {
 		moves[*moveCount] = Move(posTargets[i]+16, posTargets[i], Move::QUIET, PAWN);
@@ -270,7 +270,7 @@ void ChessEngine::genWhitePKillMoves(ChessState* cs, Move moves[218], U8* moveCo
 	// Removes all but kill positions (en passant included)
 	killBoard.board &= bufferBoard.board;
 	// Add moves to array
-	killBoard.popPosArr(posTargets, &targetCount);
+	targetCount = killBoard.popPosArr(posTargets);
 	U8 i(0);
 	for ( ; i<targetCount; ++i) {
 		// Check pawn promotion
@@ -306,7 +306,7 @@ void ChessEngine::genWhitePKillMoves(ChessState* cs, Move moves[218], U8* moveCo
 	// Removes all but kill positions (en passant included)
 	killBoard.board &=  bufferBoard.board;
 	// Add moves to array
-	killBoard.popPosArr(posTargets, &targetCount);
+	targetCount = killBoard.popPosArr(posTargets);
 	for (i=0; i<targetCount; ++i) {
 		// Check pawn promotion
 		if (BOARD_RANK[posTargets[i]] == 7) {
@@ -353,7 +353,7 @@ void ChessEngine::genBlackPKillMoves(ChessState* cs, Move moves[218], U8* moveCo
 	// Removes all but kill positions (en passant included)
 	killBoard.board &= bufferBoard.board;
 	// Add moves to array
-	killBoard.popPosArr(posTargets, &targetCount);
+	targetCount = killBoard.popPosArr(posTargets);
 	U8 i(0);
 	for ( ; i<targetCount; ++i) {
 		// Check pawn promotion
@@ -389,7 +389,7 @@ void ChessEngine::genBlackPKillMoves(ChessState* cs, Move moves[218], U8* moveCo
 	// Removes all but kill positions (en passant included)
 	killBoard.board &= bufferBoard.board;
 	// Add moves to array
-	killBoard.popPosArr(posTargets, &targetCount);
+	targetCount = killBoard.popPosArr(posTargets);
 	for (i=0; i<targetCount; ++i) {
 		// Check pawn promotion
 		if (BOARD_RANK[posTargets[i]] == 0) {

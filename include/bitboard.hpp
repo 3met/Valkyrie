@@ -31,8 +31,8 @@ public:
 	bool getPos(U8 pos) const;
 
 	// Get all positive positions in a vector/array
-	void getPosArr(U8 arr[], U8* n) const;
-	void popPosArr(U8 arr[], U8* n);
+	U8 getPosArr(U8 arr[]) const;
+	U8 popPosArr(U8 arr[]);
 
 	// Other Get/Set
 	U8 getFirstPos();
