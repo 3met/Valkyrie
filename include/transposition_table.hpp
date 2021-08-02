@@ -22,14 +22,14 @@ public:
 	U8 depth;
 	EvalScore score;
 	U8 scoreType;
-	Move bestMove;
+	BaseMove bestMove;
 
 	TTEntry();
 	~TTEntry();
 
 	void setNull();
 	void setScoreData(const BoardHash* bh, U8 depth, EvalScore score, U8 scoreType) ;
-	void setMoveData(const BoardHash* bh, U8 depth, EvalScore score, U8 scoreType, Move bestMove) ;
+	void setMoveData(const BoardHash* bh, U8 depth, EvalScore score, U8 scoreType, BaseMove bestMove) ;
 };
 
 // Transposition table is used to store previous enteries

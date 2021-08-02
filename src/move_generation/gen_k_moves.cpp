@@ -16,19 +16,17 @@ void ChessEngine::genKMoves(ChessState* cs, Move moves[218], U8* moveCount){
 	// Positions of all target squares
 	moveBoard.popPosArr(posTargets, &targetCount);
 
-	S8 killed;
 	// Add moves to array
 	for (U8 i(0); i<targetCount; ++i) {
-		// Check for killing a piece
-		if (cs->pieces[!cs->turn][ALL_PIECES].getPos(posTargets[i])) {
-			killed = cs->getPieceType(!cs->turn, posTargets[i]);
-		} else {
-			killed = -1;	// Default
-		}
-
 		// Add to list of valid moves
-		moves[*moveCount] = Move(KING, kingPos[0], posTargets[i], killed);
-		++*moveCount;
+		if (cs->pieces[!cs->turn][ALL_PIECES].getPos(posTargets[i])) {
+			moves[*moveCount] = Move(kingPos[0], posTargets[i], Move::CAPTURE, KING);
+			++*moveCount;
+		} else {
+			// Add to list of valid moves
+			moves[*moveCount] = Move(kingPos[0], posTargets[i], Move::QUIET, KING);
+			++*moveCount;
+		}
 	}
 
 	// Castling Moves
@@ -41,7 +39,7 @@ void ChessEngine::genKMoves(ChessState* cs, Move moves[218], U8* moveCount){
 		&& !isPosAttacked(cs, !cs->turn, kingPos[0]+1)
 		&& !isPosAttacked(cs, !cs->turn, kingPos[0]+2)) {
 
-		moves[*moveCount] = Move(KING, kingPos[0], kingPos[0]+2);
+		moves[*moveCount] = Move(kingPos[0], kingPos[0]+2, Move::KING_CASTLE, KING);
 		++*moveCount;
 	}
 	if (cs->castlePerms[cs->turn][QUEEN_SIDE]
@@ -55,7 +53,7 @@ void ChessEngine::genKMoves(ChessState* cs, Move moves[218], U8* moveCount){
 		&& !isPosAttacked(cs, !cs->turn, kingPos[0]-1)
 		&& !isPosAttacked(cs, !cs->turn, kingPos[0]-2)) {
 
-		moves[*moveCount] = Move(KING, kingPos[0], kingPos[0]-2);
+		moves[*moveCount] = Move(kingPos[0], kingPos[0]-2, Move::QUEEN_CASTLE, KING);
 		++*moveCount;
 	}
 }
@@ -72,14 +70,10 @@ void ChessEngine::genKKillMoves(ChessState* cs, Move moves[218], U8* moveCount){
 	// Positions of all target squares
 	moveBoard.popPosArr(posTargets, &targetCount);
 
-	S8 killed;
 	// Add moves to array
 	for (U8 i(0); i<targetCount; ++i) {
-		// Check for killing a piece
-		killed = cs->getPieceType(!cs->turn, posTargets[i]);
-
 		// Add to list of valid moves
-		moves[*moveCount] = Move(KING, kingPos[0], posTargets[i], killed);
+		moves[*moveCount] = Move(kingPos[0], posTargets[i], Move::CAPTURE, KING);
 		++*moveCount;
 	}
 }

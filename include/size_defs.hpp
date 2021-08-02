@@ -11,6 +11,9 @@ using S8 = int8_t;
 // An unsigned 8-bit integer
 using U8 = uint8_t;
 
+// An unsigned 16-bit integer
+using U16 = uint16_t;
+
 // An unsigned 64-bit integer
 using U64 = uint64_t;
 

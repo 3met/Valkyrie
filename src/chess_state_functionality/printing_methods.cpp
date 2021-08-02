@@ -81,7 +81,7 @@ string ChessState::stringFEN() {
 	if (enPassantHistory[moveNumber-1] == -1) {
 		FEN += '-';
 	} else {
-		FEN += Move::posToCoord(enPassantHistory[moveNumber-1]);
+		FEN += BaseMove::posToCoord(enPassantHistory[moveNumber-1]);
 	}
 
 	FEN += ' ';

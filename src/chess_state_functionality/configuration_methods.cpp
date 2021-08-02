@@ -117,7 +117,7 @@ void ChessState::loadFEN(string FEN) {
 
 	// Read en passant
 	if (FEN[FEN_index] != '-') {
-		enPassantHistory[moveNumber-1] = Move::coordToPos(FEN.substr(FEN_index, 2));
+		enPassantHistory[moveNumber-1] = BaseMove::coordToPos(FEN.substr(FEN_index, 2));
 		++FEN_index;	// Move to last en passant character
 	}
 

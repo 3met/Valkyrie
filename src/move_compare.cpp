@@ -16,15 +16,16 @@ const U8 MoveCompare::centerBias[64] {
 	8, 7, 6, 5, 5, 6, 7, 8,
 };
 
-MoveCompare::MoveCompare(ChessEngine* _engine, U8 _depth, const Move* _hashMove) {
+MoveCompare::MoveCompare(ChessEngine* _engine, ChessState* _cs, U8 _depth, const BaseMove* _hashMove) {
 	this->engine = _engine;
+	this->cs = _cs;
 	this->depth = _depth;
 	this->hashMove = _hashMove;
 };
 
 // Operator to compare moves for move ordering.
 // Return true if A is the better move.
-bool MoveCompare::operator()(const Move& a, const Move& b) const {
+bool MoveCompare::operator()(Move& a, Move& b) const {
 	// PV Table Matches
 	if (depth != 0) {
 		if (a == engine->pvTable[depth-1][1]) {
@@ -43,21 +44,27 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 
 	// Killed ordered by most valuable victim then least valuable attacker
 	// (MVV/LVA)
-	if (a.killed != -1) {
-		if (b.killed != -1) {
+	if (a.isCapture()) {
+		if (b.isCapture()) {
+			cs->updateCapturedPiece(&a);
+			cs->updateCapturedPiece(&b);
+
 			// If victims were the same
-			if (a.killed == b.killed) {
+			if (a.getCapturedPiece() == b.getCapturedPiece()) {
+				cs->updateMovingPiece(&a);
+				cs->updateMovingPiece(&b);
+
 				// If attacker A is worth less
-				if (a.piece < b.piece) {
+				if (a.getMovingPiece() < b.getMovingPiece()) {
 					return true;
 
 				// If attacker B is worth less
-				} else if (a.piece != b.piece) {
+				} else if (a.getMovingPiece() != b.getMovingPiece()) {
 					return false;
 				}
 
 			// If A has a more valuable victim
-			} else if (a.killed > b.killed) {
+			} else if (a.getCapturedPiece() > b.getCapturedPiece()) {
 				return true;
 			
 			// If B has a more valuable victim
@@ -69,19 +76,19 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 			return true;
 		}
 
-	} else if (b.killed != -1) {
+	} else if (b.isCapture()) {
 		// If only B is a kill
 		return false;
 	}
 
 	// Pawn promotions by decreasing value of new piece
-	if (a.promoted == QUEEN) {
-		if (b.promoted == QUEEN) {
+	if (a.isPromotion() && a.promotionPiece() == QUEEN) {
+		if (b.isPromotion() && b.promotionPiece() == QUEEN) {
 			return false;
 		} else {
 			return true;
 		}
-	} else if (b.promoted == QUEEN) {
+	} else if (b.isPromotion() && b.promotionPiece() == QUEEN) {
 		return false;
 	}
 
@@ -100,9 +107,9 @@ bool MoveCompare::operator()(const Move& a, const Move& b) const {
 	}
 
 	// Center bias prioritizes moves toward the center
-	if (centerBias[a.end] < centerBias[b.end]) {
+	if (centerBias[a.getEnd()] < centerBias[b.getEnd()]) {
 		return true;
-	} else if (centerBias[a.end] != centerBias[b.end]) {
+	} else if (centerBias[a.getEnd()] != centerBias[b.getEnd()]) {
 		return false;
 	}
 

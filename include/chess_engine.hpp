@@ -114,7 +114,7 @@ private:
 
 	// Search Helper Methods
 	void updateTimingVars();
-	void sortMoves(Move moves[218], U8* moveCount, U8 depth, const Move* hashMove);
+	void sortMoves(Move moves[218], ChessState* cs, U8* moveCount, U8 depth, const BaseMove* hashMove);
 	EvalScore quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta);
 	EvalScore zwSearch(ChessState* cs, U8 depth, U8 ply, EvalScore beta);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);

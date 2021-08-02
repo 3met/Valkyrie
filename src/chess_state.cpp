@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include "bitboard.hpp"
 #include "board_defs.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -26,7 +27,7 @@ Move ChessState::lastMove() {
 }
 
 // Returns the type of piece at the given position
-S8 ChessState::getPieceType(bool color, U8 pos) {
+U8 ChessState::getPieceType(bool color, U8 pos) {
 
 	for (U8 i(0); i<6; ++i) {
 		if (pieces[color][i].getPos(pos)) {
@@ -34,7 +35,7 @@ S8 ChessState::getPieceType(bool color, U8 pos) {
 		}
 	}
 
-	return -1;
+	return NULL_PIECE;
 }
 
 // Updates the all pieces bitboard for the passed color
@@ -49,34 +50,48 @@ void ChessState::updateAllBitboard(bool color) {
 
 // Converts chess notation to Move object (a7b8q ==> Move)
 Move ChessState::notationToMove(string notation) {
-	U8 start(Move::coordToPos(notation.substr(0, 2)));
-	U8 end(Move::coordToPos(notation.substr(2, 2)));
+	U8 start(BaseMove::coordToPos(notation.substr(0, 2)));
+	U8 end(BaseMove::coordToPos(notation.substr(2, 2)));
 	U8 pieceType(getPieceType(turn, start));
+	U8 capturePiece(getPieceType(!turn, end));
 
-	U8 killed;
-	// Check for en passant killing
-	if (end == enPassantHistory[moveNumber-1] && pieceType == PAWN) {
-		killed = PAWN;
-	} else {
-		killed = getPieceType(!turn, end);
-	}
-	S8 promoted;
-	// Check for pawn promotion
-	if (pieceType == PAWN && (end >= 56 || end <= 7)) {
-		if (notation.size() >= 5) {
-			promoted = charToPiece(notation[4]).second;
-		} else {
-			promoted = QUEEN;
+	if (pieceType == PAWN) {
+		// Check for en passant killing
+		if (end == enPassantHistory[moveNumber-1]) {
+			return Move(start, end, Move::EP_CAPTURE, PAWN, PAWN);
 		}
-	} else {
-		promoted = -1;
+
+		// Check for pawn promotion
+		if (BOARD_RANK[end] == 0 || BOARD_RANK[end] == 7) {
+			// Get promotion type
+			U8 promotionType;
+			if (notation.size() >= 5) {
+				promotionType = charToPiece(notation[4]).second;
+			} else {
+				// Assume queen promotion if not specified
+				promotionType = QUEEN;
+			}
+
+			// Check for capture + promotion
+			if (capturePiece != NULL_PIECE) {
+				return Move(start, end, Move::promotionFlag(promotionType, true), PAWN, capturePiece);
+			} else {
+				return Move(start, end, Move::promotionFlag(promotionType, false), PAWN, NULL_PIECE);
+			}
+		}
+
+	} else if (pieceType == KING) {
+		if (end == start+2)
+			return Move(start, end, Move::KING_CASTLE, KING);
+		if (end == start-2)
+			return Move(start, end, Move::QUEEN_CASTLE, KING);
 	}
-	
-	return Move(pieceType,
-		start,
-		end,
-		killed,
-		promoted);
+
+	if (capturePiece != NULL_PIECE) {
+		return Move(start, end, Move::CAPTURE, pieceType, capturePiece);
+	} else {
+		return Move(start, end, Move::QUIET, pieceType);
+	}
 }
 
 // Returns color and types of piece
@@ -108,6 +123,6 @@ pair<bool, U8> ChessState::charToPiece(char piece) {
 			return make_pair(BLACK, KING);
 		default:
 			printf("ERROR: \"%c\" is an invalid piece character\n", piece);
-			return make_pair(WHITE, -1);
+			return make_pair(WHITE, NULL_PIECE);
 	}
 }

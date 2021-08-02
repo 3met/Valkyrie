@@ -64,6 +64,10 @@ public:
 			return "There are no legal moves.";
 		}
 	};
+
+	// Move Configuration
+	void updateMovingPiece(Move* m);
+	void updateCapturedPiece(Move* m);
 	
 	// Move Methods
 	void move(Move m);
@@ -84,7 +88,7 @@ public:
 
 	// Misc Methods
 	Move lastMove();
-	S8 getPieceType(bool color, U8 pos);
+	U8 getPieceType(bool color, U8 pos);
 	Move notationToMove(string notation);
 	static pair<bool, U8> charToPiece(char piece);
 };

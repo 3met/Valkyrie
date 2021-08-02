@@ -180,9 +180,9 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	genAllMoves(cs, moveArr[0], &moveCount);
 
 	if (hashEntry->bh == cs->bh) {
-		sortMoves(moveArr[0], &moveCount, 0, &hashEntry->bestMove);
+		sortMoves(moveArr[0], cs, &moveCount, 0, &hashEntry->bestMove);
 	} else {
-		sortMoves(moveArr[0], &moveCount, 0, &Move::NULL_MOVE);
+		sortMoves(moveArr[0], cs, &moveCount, 0, &Move::NULL_MOVE);
 	}
 
 	EvalScore alpha = -EvalScore::INFINITE;	// best score current color can achive 
@@ -313,9 +313,9 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 
 	// Move ordering
 	if (hashEntry->bh == cs->bh) {
-		sortMoves(moveArr[ply], &moveCount, ply, &hashEntry->bestMove);
+		sortMoves(moveArr[ply], cs, &moveCount, ply, &hashEntry->bestMove);
 	} else {
-		sortMoves(moveArr[ply], &moveCount, ply, &Move::NULL_MOVE);
+		sortMoves(moveArr[ply], cs, &moveCount, ply, &Move::NULL_MOVE);
 	}
 	
 
@@ -349,7 +349,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 
 			if (score >= beta) {
 				cs->reverseMove();
-				if (moveArr[ply][i].killed == -1) {
+				if (moveArr[ply][i].getFlags() == Move::QUIET) {
 					this->addKillerMove(&moveArr[ply][i], &ply);
 				}
 				hashEntry->setScoreData(&cs->bh, depth, beta, hashEntry->BETA_SCORE);

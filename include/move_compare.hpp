@@ -4,6 +4,7 @@
 #define MOVE_COMPARE_HPP
 
 #include "chess_engine.hpp"
+#include "chess_state.hpp"
 #include "move.hpp"
 #include "size_defs.hpp"
 
@@ -11,16 +12,17 @@
 class MoveCompare {
 private:
 	ChessEngine* engine;
+	ChessState* cs;
 	U8 depth;
-	const Move* hashMove;
+	const BaseMove* hashMove;
 
 	// Center bias ranks square based on distance from the center
 	static const U8 centerBias[64];
 
 public:
-	MoveCompare(ChessEngine* _engine, U8 _depth, const Move* _hashMove);
+	MoveCompare(ChessEngine* _engine, ChessState* _cs, U8 _depth, const BaseMove* _hashMove);
 
-	bool operator()(const Move& a, const Move& b) const;
+	bool operator()(Move& a, Move& b) const;
 };
 
 #endif

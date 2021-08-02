@@ -18,7 +18,7 @@ EvalScore ChessEngine::zwSearch(ChessState* cs, U8 depth, U8 ply, EvalScore beta
 	genAllMoves(cs, moveArr[ply], &moveCount);
 
 	// Move ordering
-	sortMoves(moveArr[ply], &moveCount, ply, &Move::NULL_MOVE);
+	sortMoves(moveArr[ply], cs, &moveCount, ply, &Move::NULL_MOVE);
 
 	EvalScore score;
 	

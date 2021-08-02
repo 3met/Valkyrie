@@ -7,7 +7,6 @@
 // Generates all psudo-legal knight moves
 void ChessEngine::genNMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	U8 j;
-	S8 killed;
 	
 	// Get all knight locations
 	cs->pieces[cs->turn][KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][0]);
@@ -24,14 +23,14 @@ void ChessEngine::genNMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		for (j=0; j<targetCount; ++j) {
 			// Check for killing a piece
 			if (cs->pieces[!cs->turn][ALL_PIECES].getPos(posTargets[j])) {
-				killed = cs->getPieceType(!cs->turn, posTargets[j]);
+				// Create move
+				moves[*moveCount] = Move(knightPosArr[0][i], posTargets[j], Move::CAPTURE, KNIGHT);
+				++*moveCount;
 			} else {
-				killed = -1;	// Default
+				// Create move
+				moves[*moveCount] = Move(knightPosArr[0][i], posTargets[j], Move::QUIET, KNIGHT);
+				++*moveCount;
 			}
-
-			// Create move
-			moves[*moveCount] = Move(KNIGHT, knightPosArr[0][i], posTargets[j], killed);
-			++*moveCount;
 		}
 	}
 }
@@ -40,7 +39,6 @@ void ChessEngine::genNMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 // Generates all psudo-legal knight kill moves
 void ChessEngine::genNKillMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	U8 j;
-	S8 killed;
 	
 	// Get all knight locations
 	cs->pieces[cs->turn][KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][0]);
@@ -55,10 +53,8 @@ void ChessEngine::genNKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 		killBoard.popPosArr(posTargets, &targetCount);
 
 		for (j=0; j<targetCount; ++j) {
-			killed = cs->getPieceType(!cs->turn, posTargets[j]);
-
 			// Create move
-			moves[*moveCount] = Move(KNIGHT, knightPosArr[0][i], posTargets[j], killed);
+			moves[*moveCount] = Move(knightPosArr[0][i], posTargets[j], Move::CAPTURE, KNIGHT);
 			++*moveCount;
 		}
 	}

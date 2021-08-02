@@ -30,10 +30,10 @@ void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(QUEEN,
-					queenPosArr[0][i],
+				moves[*moveCount] = Move(queenPosArr[0][i],
 					posTargets[j],
-					cs->getPieceType(!cs->turn, posTargets[j]));
+					Move::CAPTURE,
+					QUEEN);
 				++*moveCount;
 			}
 		}
@@ -41,7 +41,7 @@ void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (moveBoard.board != 0) {
 			moveBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(QUEEN, queenPosArr[0][i], posTargets[j]);
+				moves[*moveCount] = Move(queenPosArr[0][i], posTargets[j], Move::QUIET, QUEEN);
 				++*moveCount;
 			}
 		}
@@ -64,10 +64,10 @@ void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(QUEEN,
-					queenPosArr[0][i],
+				moves[*moveCount] = Move(queenPosArr[0][i],
 					posTargets[j],
-					cs->getPieceType(!cs->turn, posTargets[j]));
+					Move::CAPTURE,
+					QUEEN);
 				++*moveCount;
 			}
 		}
@@ -75,7 +75,7 @@ void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (moveBoard.board != 0) {
 			moveBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(QUEEN, queenPosArr[0][i], posTargets[j]);
+				moves[*moveCount] = Move(queenPosArr[0][i], posTargets[j], Move::QUIET, QUEEN);
 				++*moveCount;
 			}
 		}
@@ -103,10 +103,10 @@ void ChessEngine::genQKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(QUEEN,
-					queenPosArr[0][i],
+				moves[*moveCount] = Move(queenPosArr[0][i],
 					posTargets[j],
-					cs->getPieceType(!cs->turn, posTargets[j]));
+					Move::CAPTURE,
+					QUEEN);
 				++*moveCount;
 			}
 		}
@@ -124,10 +124,10 @@ void ChessEngine::genQKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(QUEEN,
-					queenPosArr[0][i],
+				moves[*moveCount] = Move(queenPosArr[0][i],
 					posTargets[j],
-					cs->getPieceType(!cs->turn, posTargets[j]));
+					Move::CAPTURE,
+					QUEEN);
 				++*moveCount;
 			}
 		}
