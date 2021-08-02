@@ -1,5 +1,5 @@
 
-#include "bitboard.hpp"
+#include "board_defs.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -11,9 +11,6 @@
 #define USE_ISOLATED_PAWNS	// Requires USE_MATERIAL_PLACEMENT
 #define USE_BACKWARD_PAWNS	// Requires USE_MATERIAL_PLACEMENT
 #define USE_BLOCKED_PAWNS	// Requires USE_MATERIAL_PLACEMENT
-
-// Shortcut
-#define CS ChessState
 
 // A measure of how far the game has progressed
 // 0-50		==> opening
@@ -39,18 +36,18 @@ void ChessEngine::setGameStage() {
 // than ChessEngine::evalBoard()
 void ChessEngine::prepEval(ChessState* cs) {
 	// Positions of all the pieces
-	cs->pieces[0][cs->PAWN].getPosArr(pawnPosArr[0], &pieceCount[0][cs->PAWN]);
-	cs->pieces[0][cs->KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][cs->KNIGHT]);
-	cs->pieces[0][cs->BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][cs->BISHOP]);
-	cs->pieces[0][cs->ROOK].getPosArr(rookPosArr[0], &pieceCount[0][cs->ROOK]);
-	cs->pieces[0][cs->QUEEN].getPosArr(queenPosArr[0], &pieceCount[0][cs->QUEEN]);
-	kingPos[0] = cs->pieces[0][cs->KING].getFirstPos();
-	cs->pieces[1][cs->PAWN].getPosArr(pawnPosArr[1], &pieceCount[1][cs->PAWN]);
-	cs->pieces[1][cs->KNIGHT].getPosArr(knightPosArr[1], &pieceCount[1][cs->KNIGHT]);
-	cs->pieces[1][cs->BISHOP].getPosArr(bishopPosArr[1], &pieceCount[1][cs->BISHOP]);
-	cs->pieces[1][cs->ROOK].getPosArr(rookPosArr[1], &pieceCount[1][cs->ROOK]);
-	cs->pieces[1][cs->QUEEN].getPosArr(queenPosArr[1], &pieceCount[1][cs->QUEEN]);
-	kingPos[1] = cs->pieces[1][cs->KING].getFirstPos();
+	cs->pieces[0][PAWN].getPosArr(pawnPosArr[0], &pieceCount[0][PAWN]);
+	cs->pieces[0][KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][KNIGHT]);
+	cs->pieces[0][BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][BISHOP]);
+	cs->pieces[0][ROOK].getPosArr(rookPosArr[0], &pieceCount[0][ROOK]);
+	cs->pieces[0][QUEEN].getPosArr(queenPosArr[0], &pieceCount[0][QUEEN]);
+	kingPos[0] = cs->pieces[0][KING].getFirstPos();
+	cs->pieces[1][PAWN].getPosArr(pawnPosArr[1], &pieceCount[1][PAWN]);
+	cs->pieces[1][KNIGHT].getPosArr(knightPosArr[1], &pieceCount[1][KNIGHT]);
+	cs->pieces[1][BISHOP].getPosArr(bishopPosArr[1], &pieceCount[1][BISHOP]);
+	cs->pieces[1][ROOK].getPosArr(rookPosArr[1], &pieceCount[1][ROOK]);
+	cs->pieces[1][QUEEN].getPosArr(queenPosArr[1], &pieceCount[1][QUEEN]);
+	kingPos[1] = cs->pieces[1][KING].getFirstPos();
 
 	setGameStage();
 }
@@ -59,7 +56,7 @@ void ChessEngine::evalPawns(bool side) {
 	pawnEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		pawnEvalResult[side] += pieceCount[side][CS::PAWN] * materialVals[CS::PAWN];
+		pawnEvalResult[side] += pieceCount[side][PAWN] * materialVals[PAWN];
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
@@ -68,34 +65,34 @@ void ChessEngine::evalPawns(bool side) {
 		U8 pawnsPerFile[2][8] = {{0},{0}};	// colors * files
 		U8 i;
 		// Fill Arrays
-		for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
-			pawnsPerRank[side][Bitboard::RANK[pawnPosArr[side][i]]] += 1;
-			pawnsPerFile[side][Bitboard::FILE[pawnPosArr[side][i]]] += 1;
+		for (i=0; i<pieceCount[side][PAWN]; ++i) {
+			pawnsPerRank[side][BOARD_RANK[pawnPosArr[side][i]]] += 1;
+			pawnsPerFile[side][BOARD_FILE[pawnPosArr[side][i]]] += 1;
 		}
-		for (i=0; i<pieceCount[!side][CS::PAWN]; ++i) {
-			pawnsPerRank[!side][Bitboard::RANK[pawnPosArr[!side][i]]] += 1;
-			pawnsPerFile[!side][Bitboard::FILE[pawnPosArr[!side][i]]] += 1;
+		for (i=0; i<pieceCount[!side][PAWN]; ++i) {
+			pawnsPerRank[!side][BOARD_RANK[pawnPosArr[!side][i]]] += 1;
+			pawnsPerFile[!side][BOARD_FILE[pawnPosArr[!side][i]]] += 1;
 		}
 
 		// Consider pawn placement based on game stage
 		if (gameStage <= 51) {
-			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+			for (i=0; i<pieceCount[side][PAWN]; ++i) {
 				pawnEvalResult[side] += pawnOpeningBonus[side][pawnPosArr[side][i]];
 			}
 		} else if (gameStage <= 102) {
-			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+			for (i=0; i<pieceCount[side][PAWN]; ++i) {
 				pawnEvalResult[side] += pawnEarlyBonus[side][pawnPosArr[side][i]];
 			}
 		} else if (gameStage <= 153) {
-			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+			for (i=0; i<pieceCount[side][PAWN]; ++i) {
 				pawnEvalResult[side] += pawnMidBonus[side][pawnPosArr[side][i]];
 			}
 		} else if (gameStage <= 204) {
-			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+			for (i=0; i<pieceCount[side][PAWN]; ++i) {
 				pawnEvalResult[side] += pawnLateBonus[side][pawnPosArr[side][i]];
 			}
 		} else {
-			for (i=0; i<pieceCount[side][CS::PAWN]; ++i) {
+			for (i=0; i<pieceCount[side][PAWN]; ++i) {
 				pawnEvalResult[side] += pawnEndBonus[side][pawnPosArr[side][i]];
 			}
 		}
@@ -158,16 +155,16 @@ void ChessEngine::evalKnights(bool side) {
 	knightEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		knightEvalResult[side] += pieceCount[side][CS::KNIGHT] * materialVals[CS::KNIGHT];
+		knightEvalResult[side] += pieceCount[side][KNIGHT] * materialVals[KNIGHT];
 
 		// Adjust knight value based on number of pawns
 		// +6 for each pawn above 5, -6 for each below
-		knightEvalResult[side] += pieceCount[side][CS::KNIGHT] * ((6*pieceCount[side][CS::PAWN]) - 30);
+		knightEvalResult[side] += pieceCount[side][KNIGHT] * ((6*pieceCount[side][PAWN]) - 30);
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
 		// Consider knight placement
-		for (U8 i(0); i<pieceCount[side][CS::KNIGHT]; ++i) {
+		for (U8 i(0); i<pieceCount[side][KNIGHT]; ++i) {
 			knightEvalResult[side] += knightBonus[knightPosArr[side][i]];
 		}
 	#endif
@@ -177,17 +174,17 @@ void ChessEngine::evalBishops(bool side) {
 	bishopEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		bishopEvalResult[side] += pieceCount[side][CS::BISHOP] * materialVals[CS::BISHOP];
+		bishopEvalResult[side] += pieceCount[side][BISHOP] * materialVals[BISHOP];
 
 		// Bonus for having two bishops
-		if (pieceCount[side][CS::BISHOP] == 2) {
+		if (pieceCount[side][BISHOP] == 2) {
 			bishopEvalResult[side] += 50;
 		}
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
 		// Consider bishop placement
-		for (U8 i(0); i<pieceCount[side][CS::BISHOP]; ++i) {
+		for (U8 i(0); i<pieceCount[side][BISHOP]; ++i) {
 			bishopEvalResult[side] += bishopBonus[bishopPosArr[side][i]];
 		}
 	#endif
@@ -197,11 +194,11 @@ void ChessEngine::evalRooks(bool side) {
 	rookEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		rookEvalResult[side] += pieceCount[side][CS::ROOK] * materialVals[CS::ROOK];
+		rookEvalResult[side] += pieceCount[side][ROOK] * materialVals[ROOK];
 
 		// Adjust rook value based on number of pawns
 		// -12 for each pawn above 5, +12 for each below
-		rookEvalResult[side] += pieceCount[side][CS::ROOK] * ((-12*pieceCount[side][CS::PAWN]) + 60);
+		rookEvalResult[side] += pieceCount[side][ROOK] * ((-12*pieceCount[side][PAWN]) + 60);
 	#endif
 }
 
@@ -209,12 +206,12 @@ void ChessEngine::evalQueens(bool side) {
 	queenEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
-		queenEvalResult[side] += pieceCount[side][CS::QUEEN] * materialVals[CS::QUEEN];
+		queenEvalResult[side] += pieceCount[side][QUEEN] * materialVals[QUEEN];
 	#endif
 
 	#ifdef USE_MATERIAL_PLACEMENT
 		// Consider queen placement
-		for (U8 i(0); i<pieceCount[side][CS::QUEEN]; ++i) {
+		for (U8 i(0); i<pieceCount[side][QUEEN]; ++i) {
 			queenEvalResult[side] += queenBonus[queenPosArr[side][i]];
 		}
 	#endif

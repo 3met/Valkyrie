@@ -1,4 +1,5 @@
 
+#include "board_defs.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -6,7 +7,7 @@
 // Generates all psudo-legal queen moves
 void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get piece locations
-	cs->pieces[cs->turn][cs->QUEEN].getPosArr(queenPosArr[0], &pieceCount[0][0]);
+	cs->pieces[cs->turn][QUEEN].getPosArr(queenPosArr[0], &pieceCount[0][0]);
 
 	U8 j;
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -29,7 +30,7 @@ void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->QUEEN,
+				moves[*moveCount] = Move(QUEEN,
 					queenPosArr[0][i],
 					posTargets[j],
 					cs->getPieceType(!cs->turn, posTargets[j]));
@@ -40,7 +41,7 @@ void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (moveBoard.board != 0) {
 			moveBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->QUEEN, queenPosArr[0][i], posTargets[j]);
+				moves[*moveCount] = Move(QUEEN, queenPosArr[0][i], posTargets[j]);
 				++*moveCount;
 			}
 		}
@@ -63,7 +64,7 @@ void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->QUEEN,
+				moves[*moveCount] = Move(QUEEN,
 					queenPosArr[0][i],
 					posTargets[j],
 					cs->getPieceType(!cs->turn, posTargets[j]));
@@ -74,7 +75,7 @@ void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (moveBoard.board != 0) {
 			moveBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->QUEEN, queenPosArr[0][i], posTargets[j]);
+				moves[*moveCount] = Move(QUEEN, queenPosArr[0][i], posTargets[j]);
 				++*moveCount;
 			}
 		}
@@ -84,7 +85,7 @@ void ChessEngine::genQMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 // Generates all psudo-legal queen kill moves
 void ChessEngine::genQKillMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get piece locations
-	cs->pieces[cs->turn][cs->QUEEN].getPosArr(queenPosArr[0], &pieceCount[0][0]);
+	cs->pieces[cs->turn][QUEEN].getPosArr(queenPosArr[0], &pieceCount[0][0]);
 
 	U8 j;
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -102,7 +103,7 @@ void ChessEngine::genQKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->QUEEN,
+				moves[*moveCount] = Move(QUEEN,
 					queenPosArr[0][i],
 					posTargets[j],
 					cs->getPieceType(!cs->turn, posTargets[j]));
@@ -123,7 +124,7 @@ void ChessEngine::genQKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->QUEEN,
+				moves[*moveCount] = Move(QUEEN,
 					queenPosArr[0][i],
 					posTargets[j],
 					cs->getPieceType(!cs->turn, posTargets[j]));

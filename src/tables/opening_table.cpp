@@ -1,7 +1,6 @@
 
 #include <vector>
 #include "board_hash.hpp"
-#include "chess_state.hpp"
 #include "move.hpp"
 #include "opening_table.hpp"
 

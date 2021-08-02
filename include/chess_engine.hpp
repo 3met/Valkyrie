@@ -6,6 +6,7 @@
 #include <chrono>
 #include <utility>
 #include "bitboard.hpp"
+#include "board_defs.hpp"
 #include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
@@ -89,7 +90,7 @@ private:
 	static bool readBitboardTable(Bitboard table[64], string fileName);
 	static bool readMagicTable(U8 magicShifts[64], Bitboard magics[64], string fileName);
 	static bool readAttackTable(Bitboard* attackTable[64], string directory);
-	static bool readBonusTable(S8 bonusTable[64], string fileName, const U8 READ_ORDER[64]=Bitboard::SHOW_ORDER);
+	static bool readBonusTable(S8 bonusTable[64], string fileName, const U8 READ_ORDER[64]=SHOW_ORDER);
 	static bool readOpeningBook(OpeningTable* openingTable, string fileName);
 
 	// Move Generation

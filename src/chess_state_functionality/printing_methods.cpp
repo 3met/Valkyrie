@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include "board_defs.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
 
@@ -16,20 +17,20 @@ string ChessState::stringFEN() {
 	}
 
 	for (i=0; i<6; ++i) {
-		this->mapBoardToChar(pieces[0][i], board, piece_names[0][i]);
-		this->mapBoardToChar(pieces[1][i], board, piece_names[1][i]);
+		this->mapBoardToChar(pieces[0][i], board, PIECE_NAMES[0][i]);
+		this->mapBoardToChar(pieces[1][i], board, PIECE_NAMES[1][i]);
 	}
 
 	U8 gap(0);
 	for (i=0; i<64; ++i) {
-		if (board[Bitboard::SHOW_ORDER[i]] == '.') {
+		if (board[SHOW_ORDER[i]] == '.') {
 			gap += 1;
 		} else {
 			if (gap > 0) {
 				FEN += to_string(gap);
 				gap = 0;
 			}
-			FEN += board[Bitboard::SHOW_ORDER[i]];
+			FEN += board[SHOW_ORDER[i]];
 		}
 
 		if (i != 0 && (i+1) % 8 == 0) {	
@@ -46,7 +47,7 @@ string ChessState::stringFEN() {
 
 	FEN += ' ';
 
-	if (this->turn == this->WHITE) {
+	if (this->turn == WHITE) {
 		FEN += 'w';
 	} else {
 		FEN += 'b';
@@ -113,8 +114,8 @@ void ChessState::show(bool show_coords) {
 
 	// Add pieces to array
 	for (i=0; i<6; ++i) {
-		this->mapBoardToChar(pieces[0][i], board, piece_names[0][i]);
-		this->mapBoardToChar(pieces[1][i], board, piece_names[1][i]);
+		this->mapBoardToChar(pieces[0][i], board, PIECE_NAMES[0][i]);
+		this->mapBoardToChar(pieces[1][i], board, PIECE_NAMES[1][i]);
 	}
 
 	if (show_coords) {
@@ -125,7 +126,7 @@ void ChessState::show(bool show_coords) {
 			printf("%c | ", ranks[i/8]);
 		}
 
-		printf("%c ", board[Bitboard::SHOW_ORDER[i]]);
+		printf("%c ", board[SHOW_ORDER[i]]);
 
 		if ((i+1) % 8 == 0) {
 			printf("\n");

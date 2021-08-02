@@ -1,4 +1,5 @@
 
+#include "board_defs.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -9,27 +10,27 @@ void ChessEngine::genNMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	S8 killed;
 	
 	// Get all knight locations
-	cs->pieces[cs->turn][cs->KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][0]);
+	cs->pieces[cs->turn][KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][0]);
 	
 	// Loop through pieces
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
 		// Get potential squares
 		moveBoard = NMoveDB[knightPosArr[0][i]];
 		// Remove squares with same colored pieces
-		moveBoard.board &= ~(cs->pieces[cs->turn][cs->ALL_PIECES].board);	
+		moveBoard.board &= ~(cs->pieces[cs->turn][ALL_PIECES].board);	
 		// Positions of all targets
 		moveBoard.popPosArr(posTargets, &targetCount);
 
 		for (j=0; j<targetCount; ++j) {
 			// Check for killing a piece
-			if (cs->pieces[!cs->turn][cs->ALL_PIECES].getPos(posTargets[j])) {
+			if (cs->pieces[!cs->turn][ALL_PIECES].getPos(posTargets[j])) {
 				killed = cs->getPieceType(!cs->turn, posTargets[j]);
 			} else {
 				killed = -1;	// Default
 			}
 
 			// Create move
-			moves[*moveCount] = Move(cs->KNIGHT, knightPosArr[0][i], posTargets[j], killed);
+			moves[*moveCount] = Move(KNIGHT, knightPosArr[0][i], posTargets[j], killed);
 			++*moveCount;
 		}
 	}
@@ -42,7 +43,7 @@ void ChessEngine::genNKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 	S8 killed;
 	
 	// Get all knight locations
-	cs->pieces[cs->turn][cs->KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][0]);
+	cs->pieces[cs->turn][KNIGHT].getPosArr(knightPosArr[0], &pieceCount[0][0]);
 	
 	// Loop through pieces
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -57,7 +58,7 @@ void ChessEngine::genNKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 			killed = cs->getPieceType(!cs->turn, posTargets[j]);
 
 			// Create move
-			moves[*moveCount] = Move(cs->KNIGHT, knightPosArr[0][i], posTargets[j], killed);
+			moves[*moveCount] = Move(KNIGHT, knightPosArr[0][i], posTargets[j], killed);
 			++*moveCount;
 		}
 	}

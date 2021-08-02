@@ -21,24 +21,6 @@ private:
 	void updateAllBitboard(bool color);
 
 public:
-	enum Color {
-		WHITE = 0,	// White must remain 0 for indexing to work
-		BLACK = 1,
-	};
-	enum PieceType {
-		PAWN = 0,	// Pawn must remain 0 for indexing to work
-		KNIGHT,		// Changing order may cause errors
-		BISHOP,
-		ROOK,
-		QUEEN,
-		KING,
-		ALL_PIECES,
-	};
-	enum CastleSide {
-		KING_SIDE = 0,
-		QUEEN_SIDE,
-	};
-
 	ChessState();
 	ChessState(string FEN);
 	~ChessState();
@@ -48,7 +30,6 @@ public:
 		return a.turn < b.turn;
 	}
 
-	static const char piece_names[2][6];	// Note: must match piece indexing
 	// Stores king and rook starting positions for castling
 	static const U8 KING_START[2];		// [color]
 	static const U8 ROOK_START[2][2];	// [color][king/queen side]

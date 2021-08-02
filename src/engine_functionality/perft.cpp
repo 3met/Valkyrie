@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <stdio.h>
+#include "board_defs.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -23,7 +24,7 @@ U64 ChessEngine::divide(ChessState* cs, U8 depth) {
 
 	for (U8 i(0); i<moveCount; ++i) {
 		cs->move(moveArr[depth][i]);
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 			moveTotal = perft(cs, depth-1);
 			cout << moveArr[depth][i] << ": " << moveTotal << '\n';
 			total += moveTotal;
@@ -50,7 +51,7 @@ U64 ChessEngine::perft(ChessState* cs, U8 depth) {
 
 	for (U8 i(0); i<moveCount; ++i) {
 		cs->move(moveArr[depth][i]);
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 			total += perft(cs, depth-1);
 		}
 		cs->reverseMove();

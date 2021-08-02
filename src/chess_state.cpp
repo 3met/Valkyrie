@@ -2,13 +2,9 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include "board_defs.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
-
-const char ChessState::piece_names[2][6] = {	// Note: must match piece indexing
-	{'P', 'N', 'B', 'R', 'Q', 'K'},
-	{'p', 'n', 'b', 'r', 'q', 'k'},
-};
 
 const U8 ChessState::KING_START[2] = {4, 60};	// {white, black}
 

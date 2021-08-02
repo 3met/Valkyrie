@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <stdlib.h>
 #include <utility>
+#include "board_defs.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "eval_score.hpp"
@@ -62,26 +63,26 @@ void ChessEngine::load() {
 	success &= readBonusTable(queenBonus, "bonus-tables/queen/table.tab");
 	// Load king bonus tables
 	success &= readBonusTable(kingOpeningBonus[0], "bonus-tables/king/opening-game-table.tab");
-	success &= readBonusTable(kingOpeningBonus[1], "bonus-tables/king/opening-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(kingOpeningBonus[1], "bonus-tables/king/opening-game-table.tab", SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(kingEarlyBonus[0], "bonus-tables/king/early-game-table.tab");
-	success &= readBonusTable(kingEarlyBonus[1], "bonus-tables/king/early-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(kingEarlyBonus[1], "bonus-tables/king/early-game-table.tab", SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(kingMidBonus[0], "bonus-tables/king/mid-game-table.tab");
-	success &= readBonusTable(kingMidBonus[1], "bonus-tables/king/mid-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(kingMidBonus[1], "bonus-tables/king/mid-game-table.tab", SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(kingLateBonus[0], "bonus-tables/king/late-game-table.tab");
-	success &= readBonusTable(kingLateBonus[1], "bonus-tables/king/late-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(kingLateBonus[1], "bonus-tables/king/late-game-table.tab", SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(kingEndBonus[0], "bonus-tables/king/end-game-table.tab");
-	success &= readBonusTable(kingEndBonus[1], "bonus-tables/king/end-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(kingEndBonus[1], "bonus-tables/king/end-game-table.tab", SHOW_ORDER_FLIPPED);
 	// Load pawn bonus tables
 	success &= readBonusTable(pawnOpeningBonus[0], "bonus-tables/pawn/opening-game-table.tab");
-	success &= readBonusTable(pawnOpeningBonus[1], "bonus-tables/pawn/opening-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(pawnOpeningBonus[1], "bonus-tables/pawn/opening-game-table.tab", SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(pawnEarlyBonus[0], "bonus-tables/pawn/early-game-table.tab");
-	success &= readBonusTable(pawnEarlyBonus[1], "bonus-tables/pawn/early-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(pawnEarlyBonus[1], "bonus-tables/pawn/early-game-table.tab", SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(pawnMidBonus[0], "bonus-tables/pawn/mid-game-table.tab");
-	success &= readBonusTable(pawnMidBonus[1], "bonus-tables/pawn/mid-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(pawnMidBonus[1], "bonus-tables/pawn/mid-game-table.tab", SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(pawnLateBonus[0], "bonus-tables/pawn/late-game-table.tab");
-	success &= readBonusTable(pawnLateBonus[1], "bonus-tables/pawn/late-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(pawnLateBonus[1], "bonus-tables/pawn/late-game-table.tab", SHOW_ORDER_FLIPPED);
 	success &= readBonusTable(pawnEndBonus[0], "bonus-tables/pawn/end-game-table.tab");
-	success &= readBonusTable(pawnEndBonus[1], "bonus-tables/pawn/end-game-table.tab", Bitboard::SHOW_ORDER_FLIPPED);
+	success &= readBonusTable(pawnEndBonus[1], "bonus-tables/pawn/end-game-table.tab", SHOW_ORDER_FLIPPED);
 
 	// Load built-in opening book
 	success &= readOpeningBook(&openingTable, "opening-book.dat");
@@ -211,7 +212,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 		cs->move(moveArr[0][i]);
 
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 			
 			score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
 
@@ -234,7 +235,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	if (bestIndex == -1) {
 		// If the active player's king is not being attacked
 		// then the situation is stalemate
-		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
+		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][KING].getFirstPos())) {
 			return make_pair(Move::NULL_MOVE, EvalScore::DRAW);
 		}
 
@@ -280,7 +281,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 		this->inNullMoveSearch = true;
 		cs->moveNull();
 
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 
 			U8 R = 2 + (depth / 5);
 
@@ -336,7 +337,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 		cs->move(moveArr[ply][i]);
 
 		// Check if move is legal before preceding
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 			
 			score = -negamaxSearch(cs, depth-1, ply+1, -beta, -alpha);
 
@@ -370,7 +371,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 	if (!hasValidMove) {
 		// If the active player's king is not being attacked
 		// then the situation is stalemate
-		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][cs->KING].getFirstPos())) {
+		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][KING].getFirstPos())) {
 			hashEntry->setScoreData(&cs->bh, 255, EvalScore::DRAW, hashEntry->EXACT_SCORE);
 			return EvalScore::DRAW;
 		}

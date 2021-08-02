@@ -1,7 +1,8 @@
 
 #include <string>
 #include <iostream>
-#include "chess_state.hpp"
+#include "board_defs.hpp"
+#include "size_defs.hpp"
 #include "move.hpp"
 
 using namespace std;
@@ -59,7 +60,7 @@ ostream& operator<<(ostream &os, const Move &m) {
 	if (m.piece != -1) {
 		os << Move::posToCoord(m.start) << Move::posToCoord(m.end);
 		if (m.promoted != -1) {
-			os << ChessState::piece_names[ChessState::BLACK][m.promoted];
+			os << PIECE_NAMES[BLACK][m.promoted];
 		}
 	} else {
 		os << "NullMove";

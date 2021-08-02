@@ -1,5 +1,6 @@
 
 #include "chess_state.hpp"
+#include "board_defs.hpp"
 
 // Moves a piece on the board.
 // Assumes move is valid.
@@ -105,7 +106,7 @@ void ChessState::move(Move m) {
 	if (m.piece == PAWN) {
 		if (turn == WHITE) {
 			// If pawn moved two squares forward
-			if (Bitboard::RANK[m.start] == 1 && Bitboard::RANK[m.end] == 3) {
+			if (BOARD_RANK[m.start] == 1 && BOARD_RANK[m.end] == 3) {
 				bh.updateEnPassant(enPassantHistory[moveNumber-1], m.end-8);
 				enPassantHistory[moveNumber] = m.end-8;
 			} else {
@@ -113,7 +114,7 @@ void ChessState::move(Move m) {
 				enPassantHistory[moveNumber] = -1;
 			}
 		} else {	// If black's turn
-			if (Bitboard::RANK[m.start] == 6 && Bitboard::RANK[m.end] == 4) {
+			if (BOARD_RANK[m.start] == 6 && BOARD_RANK[m.end] == 4) {
 				bh.updateEnPassant(enPassantHistory[moveNumber-1], m.end+8);
 				enPassantHistory[moveNumber] = m.end+8;
 			} else {

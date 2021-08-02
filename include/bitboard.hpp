@@ -22,11 +22,6 @@ public:
 	Bitboard(U64 b);
 	~Bitboard();
 
-	const static U8 SHOW_ORDER[64];				// Order that the positions are printed
-	const static U8 SHOW_ORDER_FLIPPED[64];		// SHOW_ORDER flipped over x axis
-	const static U8 RANK[64];					// Map position to rank
-	const static U8 FILE[64];					// Map position to file
-
 	U64 board;
 
 	// Set and Get Methods

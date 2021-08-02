@@ -6,7 +6,6 @@
 #include <map>
 #include <vector>
 #include "board_hash.hpp"
-#include "chess_state.hpp"
 #include "move.hpp"
 
 using namespace std;

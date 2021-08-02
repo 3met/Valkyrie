@@ -1,7 +1,7 @@
 
 #include <vector>
+#include "board_defs.hpp"
 #include "board_hash.hpp"
-#include "chess_state.hpp"
 #include "size_defs.hpp"
 #include "zobrist_values.hpp"
 
@@ -46,22 +46,22 @@ void BoardHash::makeHash(const Bitboard pieces[2][7], const bool turn,
 	}
 
 	// Add player turn to hash
-	if (turn == ChessState::WHITE) {
+	if (turn == WHITE) {
 		hash ^= zobristValues.whiteToMove;
 	}
 
 	// Add castling permissions to hash
-	if (castlePerms[ChessState::WHITE][ChessState::KING_SIDE]) {
-		hash ^= zobristValues.castlePerms[ChessState::WHITE][ChessState::KING_SIDE];
+	if (castlePerms[WHITE][KING_SIDE]) {
+		hash ^= zobristValues.castlePerms[WHITE][KING_SIDE];
 	}	
-	if (castlePerms[ChessState::WHITE][ChessState::QUEEN_SIDE]) {
-		hash ^= zobristValues.castlePerms[ChessState::WHITE][ChessState::QUEEN_SIDE];
+	if (castlePerms[WHITE][QUEEN_SIDE]) {
+		hash ^= zobristValues.castlePerms[WHITE][QUEEN_SIDE];
 	}	
-	if (castlePerms[ChessState::BLACK][ChessState::KING_SIDE]) {
-		hash ^= zobristValues.castlePerms[ChessState::BLACK][ChessState::KING_SIDE];
+	if (castlePerms[BLACK][KING_SIDE]) {
+		hash ^= zobristValues.castlePerms[BLACK][KING_SIDE];
 	}	
-	if (castlePerms[ChessState::BLACK][ChessState::QUEEN_SIDE]) {
-		hash ^= zobristValues.castlePerms[ChessState::BLACK][ChessState::QUEEN_SIDE];
+	if (castlePerms[BLACK][QUEEN_SIDE]) {
+		hash ^= zobristValues.castlePerms[BLACK][QUEEN_SIDE];
 	}
 
 	// Add en passant state to the hash

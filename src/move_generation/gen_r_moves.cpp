@@ -1,4 +1,5 @@
 
+#include "board_defs.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -6,7 +7,7 @@
 // Generates all psudo-legal rook moves
 void ChessEngine::genRMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get rook locations
-	cs->pieces[cs->turn][cs->ROOK].getPosArr(rookPosArr[0], &pieceCount[0][0]);
+	cs->pieces[cs->turn][ROOK].getPosArr(rookPosArr[0], &pieceCount[0][0]);
 
 	U8 j;
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -27,7 +28,7 @@ void ChessEngine::genRMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->ROOK,
+				moves[*moveCount] = Move(ROOK,
 					rookPosArr[0][i],
 					posTargets[j],
 					cs->getPieceType(!cs->turn, posTargets[j]));
@@ -38,7 +39,7 @@ void ChessEngine::genRMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (moveBoard.board != 0) {
 			moveBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->ROOK, rookPosArr[0][i], posTargets[j]);
+				moves[*moveCount] = Move(ROOK, rookPosArr[0][i], posTargets[j]);
 				++*moveCount;
 			}
 		}
@@ -48,7 +49,7 @@ void ChessEngine::genRMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 // Generates all psudo-legal rook kill moves
 void ChessEngine::genRKillMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get rook locations
-	cs->pieces[cs->turn][cs->ROOK].getPosArr(rookPosArr[0], &pieceCount[0][0]);
+	cs->pieces[cs->turn][ROOK].getPosArr(rookPosArr[0], &pieceCount[0][0]);
 
 	U8 j;
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -64,7 +65,7 @@ void ChessEngine::genRKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->ROOK,
+				moves[*moveCount] = Move(ROOK,
 					rookPosArr[0][i],
 					posTargets[j],
 					cs->getPieceType(!cs->turn, posTargets[j]));

@@ -1,6 +1,7 @@
 
-#include "chess_state.hpp"
+#include "board_defs.hpp"
 #include "chess_engine.hpp"
+#include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
 #include "size_defs.hpp"
@@ -26,7 +27,7 @@ EvalScore ChessEngine::zwSearch(ChessState* cs, U8 depth, U8 ply, EvalScore beta
 		cs->move(moveArr[ply][i]);
 
 		// Check if move is legal before preceding
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 			
 			score = -zwSearch(cs, depth-1, ply+1, -beta+1);
 

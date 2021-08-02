@@ -1,4 +1,5 @@
 
+#include "board_defs.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
@@ -6,7 +7,7 @@
 // Generates all psudo-legal bishop moves
 void ChessEngine::genBMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get piece locations
-	cs->pieces[cs->turn][cs->BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][0]);
+	cs->pieces[cs->turn][BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][0]);
 
 	U8 j;
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -27,7 +28,7 @@ void ChessEngine::genBMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->BISHOP,
+				moves[*moveCount] = Move(BISHOP,
 					bishopPosArr[0][i],
 					posTargets[j],
 					cs->getPieceType(!cs->turn, posTargets[j]));
@@ -39,7 +40,7 @@ void ChessEngine::genBMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 		if (moveBoard.board != 0) {
 			moveBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->BISHOP, bishopPosArr[0][i], posTargets[j]);
+				moves[*moveCount] = Move(BISHOP, bishopPosArr[0][i], posTargets[j]);
 				++*moveCount;
 			}
 		}
@@ -49,7 +50,7 @@ void ChessEngine::genBMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 // Generates all psudo-legal bishop kill moves
 void ChessEngine::genBKillMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	// Get piece locations
-	cs->pieces[cs->turn][cs->BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][0]);
+	cs->pieces[cs->turn][BISHOP].getPosArr(bishopPosArr[0], &pieceCount[0][0]);
 
 	U8 j;
 	for (U8 i(0); i<pieceCount[0][0]; ++i) {
@@ -65,7 +66,7 @@ void ChessEngine::genBKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 		if (killBoard.board != 0) {
 			killBoard.popPosArr(posTargets, &targetCount);
 			for (j=0; j<targetCount; ++j) {
-				moves[*moveCount] = Move(cs->BISHOP,
+				moves[*moveCount] = Move(BISHOP,
 					bishopPosArr[0][i],
 					posTargets[j],
 					cs->getPieceType(!cs->turn, posTargets[j]));

@@ -1,7 +1,8 @@
 
 #include <algorithm>
-#include "chess_state.hpp"
+#include "board_defs.hpp"
 #include "chess_engine.hpp"
+#include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
 #include "size_defs.hpp"
@@ -55,7 +56,7 @@ EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, Eva
 	for (U8 i(0); i<moveCount; ++i) {
 		cs->move(moveArr[depth][i]);
 
-		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][cs->KING].getFirstPos())) {
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 
 			score = -quiescence(cs, depth+1, -beta, -alpha);
 

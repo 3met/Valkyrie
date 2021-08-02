@@ -4,6 +4,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include "board_defs.hpp"
 #include "move.hpp"
 #include "size_defs.hpp"
 #include "uci.hpp"
@@ -73,7 +74,7 @@ void UCI::inputGo(string input) {
 		m = engine.searchInfinite(this->cs);
 	} else if (depth != -1) {
 		m = engine.searchDepth(this->cs, depth);
-	} else if (cs.turn == cs.WHITE) {
+	} else if (cs.turn == WHITE) {
 		m = engine.searchOnTimer(this->cs, wTime, wInc);
 	} else {
 		m = engine.searchOnTimer(this->cs, bTime, bInc);

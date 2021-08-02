@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include "board_defs.hpp"
 #include "chess_state.hpp"
 #include "size_defs.hpp"
 
@@ -65,7 +66,7 @@ void ChessState::loadFEN(string FEN) {
 		}
 
 		piece = charToPiece(FEN[FEN_index]);
-		this->place(piece.first, piece.second, Bitboard::SHOW_ORDER[i]);
+		this->place(piece.first, piece.second, SHOW_ORDER[i]);
 		++FEN_index;
 		++i;
 	}
@@ -91,16 +92,16 @@ void ChessState::loadFEN(string FEN) {
 		do {
 			switch (FEN[FEN_index]) {
 				case 'K':
-					this->castlePerms[this->WHITE][KING_SIDE] = true;
+					this->castlePerms[WHITE][KING_SIDE] = true;
 					break;
 				case 'Q':
-					this->castlePerms[this->WHITE][QUEEN_SIDE] = true;
+					this->castlePerms[WHITE][QUEEN_SIDE] = true;
 					break;
 				case 'k':
-					this->castlePerms[this->BLACK][KING_SIDE] = true;
+					this->castlePerms[BLACK][KING_SIDE] = true;
 					break;
 				case 'q':
-					this->castlePerms[this->BLACK][QUEEN_SIDE] = true;
+					this->castlePerms[BLACK][QUEEN_SIDE] = true;
 					break;
 				default:
 					printf("ERROR: \"%c\" is an invalid castle character\n", FEN[FEN_index]);
