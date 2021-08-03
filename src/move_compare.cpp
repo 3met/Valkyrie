@@ -26,21 +26,21 @@ MoveCompare::MoveCompare(ChessEngine* _engine, ChessState* _cs, U8 _depth, const
 // Operator to compare moves for move ordering.
 // Return true if A is the better move.
 bool MoveCompare::operator()(Move& a, Move& b) const {
-	// PV Table Matches
-	if (depth != 0) {
-		if (a == engine->pvTable[depth-1][1]) {
-			return true;
-		} else if (b == engine->pvTable[depth-1][1]) {
-			return false;
-		}
-	}
+	// // PV Table Matches
+	// if (depth != 0) {
+	// 	if (a == engine->pvTable[depth-1][1]) {
+	// 		return true;
+	// 	} else if (b == engine->pvTable[depth-1][1]) {
+	// 		return false;
+	// 	}
+	// }
 
-	// Hash moves from previous calculations
-	if (a == *hashMove) {
-		return true;
-	} else if (b == *hashMove) {
-		return false;
-	}
+	// // Hash moves from previous calculations
+	// if (a == *hashMove) {
+	// 	return true;
+	// } else if (b == *hashMove) {
+	// 	return false;
+	// }
 
 	// Killed ordered by most valuable victim then least valuable attacker
 	// (MVV/LVA)
@@ -93,25 +93,25 @@ bool MoveCompare::operator()(Move& a, Move& b) const {
 	}
 
 	// Evaluate Killer Heuristic
-	if (a == engine->killerHeuristic[depth][!engine->killerHeuristicNext[depth]]) {
-		return true;
-	} else if (b == engine->killerHeuristic[depth][!engine->killerHeuristicNext[depth]]) {
-		return false;
-	}
+	// if (a == engine->killerHeuristic[depth][!engine->killerHeuristicNext[depth]]) {
+	// 	return true;
+	// } else if (b == engine->killerHeuristic[depth][!engine->killerHeuristicNext[depth]]) {
+	// 	return false;
+	// }
 
-	// Second Killer Heuristic
-	if (a == engine->killerHeuristic[depth][engine->killerHeuristicNext[depth]]) {
-		return true;
-	} else if (b == engine->killerHeuristic[depth][engine->killerHeuristicNext[depth]]) {
-		return false;
-	}
+	// // // Second Killer Heuristic
+	// if (a == engine->killerHeuristic[depth][engine->killerHeuristicNext[depth]]) {
+	// 	return true;
+	// } else if (b == engine->killerHeuristic[depth][engine->killerHeuristicNext[depth]]) {
+	// 	return false;
+	// }
 
 	// Center bias prioritizes moves toward the center
-	if (centerBias[a.getEnd()] < centerBias[b.getEnd()]) {
-		return true;
-	} else if (centerBias[a.getEnd()] != centerBias[b.getEnd()]) {
-		return false;
-	}
+	// if (centerBias[a.getEnd()] < centerBias[b.getEnd()]) {
+	// 	return true;
+	// } else if (centerBias[a.getEnd()] != centerBias[b.getEnd()]) {
+	// 	return false;
+	// }
 
 	return false;	// Default
 }
