@@ -180,9 +180,9 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	genAllMoves(cs, moveArr[0], &moveCount);
 
 	if (hashEntry->bh == cs->bh) {
-		sortMoves(moveArr[0], cs, &moveCount, 0, &hashEntry->bestMove);
+		sortMain(moveArr[0], 0, moveCount-1, cs, 0, hashEntry->bestMove);
 	} else {
-		sortMoves(moveArr[0], cs, &moveCount, 0, &Move::NULL_MOVE);
+		sortMainNoHash(moveArr[0], 0, moveCount-1, cs, 0);
 	}
 
 	EvalScore alpha = -EvalScore::INFINITE;	// best score current color can achive 
@@ -313,9 +313,9 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 
 	// Move ordering
 	if (hashEntry->bh == cs->bh) {
-		sortMoves(moveArr[ply], cs, &moveCount, ply, &hashEntry->bestMove);
+		sortMain(moveArr[ply], 0, moveCount-1, cs, ply, hashEntry->bestMove);
 	} else {
-		sortMoves(moveArr[ply], cs, &moveCount, ply, &Move::NULL_MOVE);
+		sortMainNoHash(moveArr[ply], 0, moveCount-1, cs, ply);
 	}
 	
 

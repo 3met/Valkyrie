@@ -114,11 +114,26 @@ private:
 
 	// Search Helper Methods
 	void updateTimingVars();
-	void sortMoves(Move moves[218], ChessState* cs, U8* moveCount, U8 depth, const BaseMove* hashMove);
 	EvalScore quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta);
 	EvalScore zwSearch(ChessState* cs, U8 depth, U8 ply, EvalScore beta);
 	pair<Move, EvalScore> bestMove(ChessState* cs, U8 depth);
 	EvalScore negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore alpha, EvalScore beta);
+
+	// Move Ordering
+	static const U8 centerBias[64];
+	void swap(Move moves[218], U8 a, U8 b);
+	bool sortPV(Move moves[218], U8 left, U8 right, U8 depth);
+	bool sortHashMove(Move moves[218], U8 left, U8 right, Move hashMove);
+	U8 sortKillerMoves(Move moves[218], U8 left, U8 right, U8 depth);
+	U8 separateCaptures(Move moves[218], U8 left, U8 right);
+	U8 separatePromotions(Move moves[218], U8 left, U8 right);
+	U8 separateNonQuiet(Move moves[218], U8 left, U8 right);
+	void sortMVVLVA(Move moves[218], U8 left, U8 right, ChessState* cs);
+	void sortCenter(Move moves[218], U8 left, U8 right);
+	void sortQuiet(Move moves[218], U8 left, U8 right, U8 depth);
+	void sortNonQuiet(Move moves[218], U8 left, U8 right, ChessState* cs);
+	void sortMain(Move moves[218], U8 left, U8 right, ChessState* cs, U8 depth, Move hashMove);
+	void sortMainNoHash(Move moves[218], U8 left, U8 right, ChessState* cs, U8 depth);
 
 	// Get + Set Methods
 	void addKillerMove(Move* m, U8* depth);

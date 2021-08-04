@@ -1,38 +1,10 @@
 
-#include <algorithm>
 #include "board_defs.hpp"
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
 #include "eval_score.hpp"
 #include "move.hpp"
 #include "size_defs.hpp"
-
-// Move ordering for kill moves
-bool killMoveOrdering(const Move& a, const Move& b) {
-	// Killed ordered by most valuable victim then least valuable attacker
-	// (MVV/LVA)
-	// If victims were the same
-	// if (a.killed == b.killed) {
-	// 	// If attacker A is worth less
-	// 	if (a.piece < b.piece) {
-	// 		return true;
-
-	// 	// If attacker B is worth less
-	// 	} else if (a.piece != b.piece) {
-	// 		return false;
-	// 	}
-
-	// // If A has a more valuable victim
-	// } else if (a.killed > b.killed) {
-	// 	return true;
-	
-	// // If B has a more valuable victim
-	// } else {
-	// 	return false;
-	// }
-
-	return false;
-}
 
 // Quiescence search used for avoiding the horizon effect
 EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta) {
@@ -51,7 +23,9 @@ EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, Eva
 	U8 moveCount;		// Number of moves (in moveArr)
 	genAllKillMoves(cs, moveArr[depth], &moveCount);
 
-	sort(moveArr[depth], moveArr[depth] + moveCount, killMoveOrdering);
+	if (moveCount > 2) {
+		sortMVVLVA(moveArr[depth], 0, moveCount-1, cs);
+	}
 
 	for (U8 i(0); i<moveCount; ++i) {
 		cs->move(moveArr[depth][i]);
