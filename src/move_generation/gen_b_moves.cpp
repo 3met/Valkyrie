@@ -68,7 +68,7 @@ void ChessEngine::genBKillMoves(ChessState* cs, Move moves[218], U8* moveCount) 
 			for (j=0; j<targetCount; ++j) {
 				moves[*moveCount] = Move(bishopPosArr[0][i],
 					posTargets[j],
-					Move::QUIET,
+					Move::CAPTURE,
 					BISHOP);
 				++*moveCount;
 			}
