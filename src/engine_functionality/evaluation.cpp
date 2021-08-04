@@ -53,6 +53,13 @@ void ChessEngine::prepEval(ChessState* cs) {
 }
 
 void ChessEngine::evalPawns(bool side) {
+	
+	// Penalty for having no pawns
+	if (pieceCount[side][PAWN] == 0) {
+		pawnEvalResult[side] = -50;
+		return;
+	}
+
 	pawnEvalResult[side] = 0;
 
 	#ifdef USE_MATERIAL_VALUE
@@ -103,7 +110,7 @@ void ChessEngine::evalPawns(bool side) {
 			// Subtract 45 if on the edge
 			// Seems to run much faster without a loop
 			if (pawnsPerFile[side][0] > 1)
-				pawnEvalResult[side] -= (pawnsPerFile[side][0]-1) * 40;
+				pawnEvalResult[side] -= (pawnsPerFile[side][0]-1) * 45;
 			if (pawnsPerFile[side][1] > 1)
 				pawnEvalResult[side] -= (pawnsPerFile[side][1]-1) * 40;
 			if (pawnsPerFile[side][2] > 1)
@@ -117,31 +124,46 @@ void ChessEngine::evalPawns(bool side) {
 			if (pawnsPerFile[side][6] > 1)
 				pawnEvalResult[side] -= (pawnsPerFile[side][6]-1) * 40;
 			if (pawnsPerFile[side][7] > 1)
-				pawnEvalResult[side] -= (pawnsPerFile[side][7]-1) * 40;
+				pawnEvalResult[side] -= (pawnsPerFile[side][7]-1) * 45;
 
 			// TODO: types of doubled pawns
 			// https://en.wikipedia.org/wiki/Chess_piece_relative_value
 		#endif
 
 		#ifdef USE_ISOLATED_PAWNS
+			
 			// Penalize isolated pawns
-			// Substract 10 centipawns for each isolated pawn
-			i = 0;	// File
-			while (i < 7) {	// Files a to g
-				if (pawnsPerFile[side][i] > 0) {
+			// Substract 15 centipawns for each edge isolated pawn
+			if (pawnsPerFile[side][0] != 0) {
+				if (pawnsPerFile[side][1] == 0) {
+					pawnEvalResult[side] -= 15 * pawnsPerFile[side][0];
+					i = 2;
+				} else {
+					i = 3;
+				}
+			} else {
+				i = 1;
+			}
+			// Substract 10 centipawns for each non-edge isolated pawn
+			while (i < 7) {
+				if (pawnsPerFile[side][i] != 0) {
 					if (pawnsPerFile[side][i+1] == 0) {
-						pawnEvalResult[side] -= 10 * pawnsPerFile[side][i];
+						if (pawnsPerFile[side][i-1] == 0) {
+							pawnEvalResult[side] -= 10 * pawnsPerFile[side][i];
+						}
 						i += 2;
 					} else {
 						i += 3;
-					}
+					}				
 				} else {
-					++i;
+					i += 1;
 				}
 			}
-			if (i == 7 && pawnsPerFile[side][7] > 0 && pawnsPerFile[side][6] == 0) {
-				// Pawn on last file (h)
-				pawnEvalResult[side] -= 10 * pawnsPerFile[side][7];
+			// Substract 15 centipawns for each edge isolated pawn
+			if (i == 7 && pawnsPerFile[side][7] != 0
+				&& pawnsPerFile[side][6] == 0) {
+
+				pawnEvalResult[side] -= 15 * pawnsPerFile[side][7];
 			}
 		#endif
 
