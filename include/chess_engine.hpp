@@ -48,7 +48,7 @@ private:
 	inline static S8 kingEndBonus[2][64];
 
 	// Maximum depth the engine can search
-	static const short MAX_SEARCH_DEPTH = 256;
+	static const short MAX_SEARCH_DEPTH = 100;
 
 	// Move Generation and Evaluation Variables
 	// In some methods, the only first index of these arrays are used
