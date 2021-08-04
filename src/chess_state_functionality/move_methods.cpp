@@ -12,6 +12,11 @@ void ChessState::updateMovingPiece(Move* m) {
 // Ensures the moving piece stored in passed move is updated
 void ChessState::updateCapturedPiece(Move* m) {
 	if (m->getCapturedPiece() == UNKNOWN_PIECE) {
+		if (m->getFlags() == Move::EP_CAPTURE) {
+			m->setCapturedPiece(PAWN);
+			return;
+		}
+
 		m->setCapturedPiece(getPieceType(!turn, m->getEnd()));
 	}
 }
