@@ -58,7 +58,6 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	while (true) {
 		// Set search iteration parameters
 		this->uciDepth = i;
-		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);
 
@@ -121,7 +120,6 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 	while (i <= depth) {
 
 		this->uciDepth = i;
-		this->maxDepth = i;
 
 		ratedMove = this->bestMove(&cs, i);
 
@@ -170,7 +168,6 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 	while (true) {
 
 		this->uciDepth = i;
-		this->maxDepth = i * MAX_DEPTH_RATIO;
 
 		ratedMove = this->bestMove(&cs, i);
 		if (ratedMove.first.isNull()) {	// Look for null move

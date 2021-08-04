@@ -145,11 +145,9 @@ public:
 	static bool isLoaded;
 	
 	// Configurable option
-	float MAX_DEPTH_RATIO = 1.5;		// For search extensions
 	bool useOwnBook = true;
 
 	// Search Variables
-	U8 maxDepth;
 	TranspostionTable* transTable;					// Transposition table
 	bool killerHeuristicNext[MAX_SEARCH_DEPTH] = {false};
 	Move killerHeuristic[MAX_SEARCH_DEPTH][2];		// Killer Heuristic

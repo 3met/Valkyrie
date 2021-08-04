@@ -9,8 +9,6 @@
 // Quiescence search used for avoiding the horizon effect
 EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta) {
 
-	if (depth == this->maxDepth) return EvalScore(evalBoard(cs, cs->turn));
-
 	EvalScore score = EvalScore(evalBoard(cs, cs->turn));
 	if (score >= beta) {
 		return beta;
