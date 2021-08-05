@@ -216,10 +216,6 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 			
 			score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
 
-			if (score.hasMate()) {
-				score.addHalfMoveToMate();
-			}
-
 			if (score > alpha) {
 				alpha = score;
 				bestIndex = i;
@@ -287,10 +283,6 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 
 			score = -zwSearch(cs, depth-1-R, ply+1, -beta+1);
 
-			if (score.hasMate()) {
-				score.addHalfMoveToMate();
-			}
-
 			if (score >= beta) {
 				cs->reverseNullMove();
 				this->inNullMoveSearch = false;
@@ -306,11 +298,6 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 	U8 moveCount;		// Number of moves (in moveArr)
 	genAllMoves(cs, moveArr[ply], &moveCount);
 	
-	// Check if valid moves were generated
-	if (moveCount == 0) {
-		throw ChessState::NoMoves();
-	}
-
 	// Move ordering
 	if (hashEntry->bh == cs->bh) {
 		sortMain(moveArr[ply], 0, moveCount-1, cs, ply, hashEntry->bestMove);
@@ -318,7 +305,6 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 		sortMainNoHash(moveArr[ply], 0, moveCount-1, cs, ply);
 	}
 	
-
 	bool hasValidMove(false);
 	short bestIndex(-1);
 
@@ -331,7 +317,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 
 		// Exit if no longer allowed to search
 		if (this->canSearch == false) {
-			return alpha;	// Return null move
+			return alpha;
 		}
 
 		cs->move(moveArr[ply][i]);
@@ -342,10 +328,6 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 			score = -negamaxSearch(cs, depth-1, ply+1, -beta, -alpha);
 
 			hasValidMove = true;
-
-			if (score.hasMate()) {
-				score.addHalfMoveToMate();
-			}
 
 			if (score >= beta) {
 				cs->reverseMove();
@@ -377,8 +359,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 		}
 
 		// Else there is checkmate
-		hashEntry->setScoreData(&cs->bh, 255, -EvalScore::MATE_IN_0, hashEntry->EXACT_SCORE);
-		return -EvalScore::MATE_IN_0;
+		return -EvalScore::MATE_IN_0 + ply;
 	}
 
 	if (bestIndex == -1) {

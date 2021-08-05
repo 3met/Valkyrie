@@ -21,6 +21,7 @@ EvalScore ChessEngine::zwSearch(ChessState* cs, U8 depth, U8 ply, EvalScore beta
 	sortMainNoHash(moveArr[ply], 0, moveCount-1, cs, ply);
 
 	EvalScore score;
+	bool hasValidMove(false);
 	
 	for (U8 i(0); i<moveCount; ++i) {
 
@@ -29,11 +30,8 @@ EvalScore ChessEngine::zwSearch(ChessState* cs, U8 depth, U8 ply, EvalScore beta
 		// Check if move is legal before preceding
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 			
+			hasValidMove = true;
 			score = -zwSearch(cs, depth-1, ply+1, -beta+1);
-
-			if (score.hasMate()) {
-				score.addHalfMoveToMate();
-			}
 
 			if (score >= beta) {
 				cs->reverseMove();
@@ -42,6 +40,18 @@ EvalScore ChessEngine::zwSearch(ChessState* cs, U8 depth, U8 ply, EvalScore beta
 		}
 
 		cs->reverseMove();
+	}
+
+	// If there is no valid move, it is either checkmate or stalemate
+	if (!hasValidMove) {
+		// If the active player's king is not being attacked
+		// then the situation is stalemate
+		if (!isPosAttacked(cs, !cs->turn, cs->pieces[cs->turn][KING].getFirstPos())) {
+			return EvalScore::DRAW;
+		}
+
+		// Else there is checkmate
+		return -EvalScore::MATE_IN_0 + ply;
 	}
 
 	return beta-1;
