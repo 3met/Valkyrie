@@ -272,7 +272,7 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 
 	// Null Move Pruning.
 	// If not already in a null move search and not currently in check.
-	if (!this->inNullMoveSearch && depth > 2) {
+	if (!this->inNullMoveSearch && depth > 2 && cs->zugzwangSafe()) {
 
 		this->inNullMoveSearch = true;
 		cs->moveNull();

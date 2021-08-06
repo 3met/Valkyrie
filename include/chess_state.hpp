@@ -90,6 +90,7 @@ public:
 	Move lastMove();
 	U8 getPieceType(bool color, U8 pos);
 	Move notationToMove(string notation);
+	bool zugzwangSafe();
 	static pair<bool, U8> charToPiece(char piece);
 };
 

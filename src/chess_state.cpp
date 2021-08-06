@@ -126,3 +126,14 @@ pair<bool, U8> ChessState::charToPiece(char piece) {
 			return make_pair(WHITE, NULL_PIECE);
 	}
 }
+
+// Evaluates whether the current position should
+// be treated as though it could be a zugzwang
+bool ChessState::zugzwangSafe() {
+	// Check if major or minor pieces on the board
+	if (pieces[turn][KNIGHT].board != 0) return true;
+	if (pieces[turn][BISHOP].board != 0) return true;
+	if (pieces[turn][ROOK].board != 0) return true;
+	if (pieces[turn][QUEEN].board != 0) return true;
+	return false;
+}
