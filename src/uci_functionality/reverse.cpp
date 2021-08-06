@@ -8,6 +8,8 @@ void UCI::inputReverse() {
 	if (cs.moveNumber > 1) {
 		cs.reverseMove();
 	} else {
+		outputMutex.lock();
 		printf("ERROR: Nothing to reverse.\n");
+		outputMutex.unlock();
 	}
 }

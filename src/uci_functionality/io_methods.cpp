@@ -24,6 +24,7 @@ using namespace std::chrono;
 
 // Prints search data with "info" output.
 void UCI::outputInfo() {
+	outputMutex.lock();
 	printf("info depth %d", engine.uciDepth);
 	
 	if (engine.currScore.hasMate()) {
@@ -44,6 +45,7 @@ void UCI::outputInfo() {
 			 << " nps " << ((engine.nodesTotal * 1000000) / time);
 	}
 	printf("\n");
+	outputMutex.unlock();
 }
 
 // Continuously streams outputInfo

@@ -85,7 +85,9 @@ void UCI::inputGo(string input) {
 	// bestmove to avoid printing at the same time
 	continueStream = false;
 
+	outputMutex.lock();
 	cout << "bestmove " << m << '\n';
-	
+	outputMutex.unlock();
+
 	outputThread.join();
 }

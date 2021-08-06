@@ -5,6 +5,7 @@
 
 // Handles "uci" command.
 void UCI::inputUCI() {
+	outputMutex.lock();
 	cout << "id name " << this->ENGINE_NAME << '\n';
 	cout << "id author " << this->ENGINE_AUTHOR << '\n';
 
@@ -21,4 +22,5 @@ void UCI::inputUCI() {
 		engine.load();
 	}
 	printf("uciok\n");
+	outputMutex.unlock();
 }

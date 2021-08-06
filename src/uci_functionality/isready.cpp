@@ -11,8 +11,13 @@ void UCI::inputIsready() {
 	
 	// Ensure engine is loaded
 	if (engine.isLoaded && this->runPerm) {
+		outputMutex.lock();
 		printf("readyok\n");
+		outputMutex.unlock();
 	} else {
+		outputMutex.lock();
 		printf("notready\n");
+		outputMutex.unlock();
 	}
+	
 }

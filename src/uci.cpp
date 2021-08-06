@@ -143,7 +143,9 @@ void UCI::run() {
 		} else if (input == "clear" || input == "cls") {
 			parallelFutures.push(async(&UCI::inputClear, this));
 		} else {
+			outputMutex.lock();
 			cout << "Unknown Command: " << input << '\n';
+			outputMutex.unlock();
 		}
 
 		// Delete old futures

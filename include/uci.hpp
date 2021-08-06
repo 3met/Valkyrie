@@ -5,8 +5,9 @@
 
 #include <chrono>
 #include <future>
-#include <string>
+#include <mutex>
 #include <queue>
+#include <string>
 #include <vector>
 #include "chess_engine.hpp"
 #include "chess_state.hpp"
@@ -164,6 +165,9 @@ private:
 	queue<NoParallelCommand> noParallelQueue;
 	// Handling commands at runtime
 	void noParallelManager();
+
+	// Output Mutex
+	mutex outputMutex;
 
 public:
 	UCI();

@@ -13,7 +13,7 @@ using namespace std;
 // Prints static evaluation of current board
 void UCI::inputEval() {
 	engine.evalBoard(&cs, WHITE);	
-
+	outputMutex.lock();
 	printf("-----------------------------\n");
 	printf("Game Stage: %d\n", engine.gameStage);
 	printf("\n");
@@ -28,6 +28,7 @@ void UCI::inputEval() {
 	printf("\n");
 	cout << "Overall: " << EvalScore(engine.evalBoard(&cs, WHITE)) << '\n';
 	printf("-----------------------------\n");
+	outputMutex.unlock();
 }
 
 // Prints the current chess state.
@@ -55,7 +56,9 @@ void UCI::inputTest(string input) {
 	} else if (inVec[1] == "ebf" || inVec[1] == "EBF") {
 		EBF_Test(verbose);
 	} else {
+		outputMutex.lock();
 		cout << "Unknown Test: " << inVec[1] << '\n';
+		outputMutex.unlock();
 	}
 }
 

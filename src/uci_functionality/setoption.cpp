@@ -48,6 +48,8 @@ void UCI::inputSetOption(string input) {
 	} else if (name == "UCI_EngineAbout") {
 
 	} else {
+		outputMutex.lock();
 		cout << "Unable to set option \"" << name << "\"" << '\n';
+		outputMutex.unlock();
 	}
 }
