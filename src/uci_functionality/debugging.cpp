@@ -64,9 +64,11 @@ void UCI::inputTest(string input) {
 
 // Clears the console.
 void UCI::inputClear() {
+	outputMutex.lock();
 	#ifdef WINDOWS
 		system("cls");
 	#elif defined LINUX
 		system("clear");
 	#endif
+	outputMutex.unlock();
 }
