@@ -21,7 +21,7 @@ UCI::UCI() {
 	options.push_back(new UciSpinOption("Move Overhead", moveOverhead, 0, 10000));
 	options.push_back(new UciSpinOption("Threads", defaultThreads, 1, 1));
 	options.push_back(new UciCheckOption("OwnBook", defaultOwnBook));
-	options.push_back(new UciStringOption("UCI_EngineAbout", "EB-Chess, By Emet Behrendt"));
+	options.push_back(new UciStringOption("UCI_EngineAbout", "Valkyrie, By Emet Behrendt"));
 
 	// Apply default settings
 	engine.transTable->resize(defaultHash * 1000000);
@@ -37,7 +37,7 @@ UCI::~UCI() {
 };
 
 // --- Static Members ---
-const string UCI::ENGINE_NAME("Chess Engine v1");
+const string UCI::ENGINE_NAME("Valkyrie");
 const string UCI::ENGINE_AUTHOR("Emet Behrendt");
 
 const chrono::microseconds UCI::queueWaitTime(1500);

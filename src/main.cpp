@@ -1,10 +1,9 @@
 /*
- *	Chess Engine
+ *	Valkyrie
  *	Version 1
  *	By Emet Behrendt
  *	
  *	w/b ==> white/black
- *	Capital/lowercase ==> White/black
  *	
  *	P/p ==> Pawn
  *	N/n ==> Knight
@@ -26,7 +25,7 @@ int main() {
 	setvbuf(stdout, NULL, _IONBF, 0);
 	fflush(NULL);
 
-	printf("Chess Engine | By Emet Behrendt\n");
+	printf("Valkyrie | By Emet Behrendt\n");
 
 	UCI uci;
 	uci.run();

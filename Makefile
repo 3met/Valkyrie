@@ -12,7 +12,7 @@ LIBRARIES	:= lib
 BUILD		:= build
 DATA		:= data
 
-EXE_NAME	:= EB-Chess
+EXE_NAME	:= valkyrie
 
 RELEASE_DIR	:= releases
 
