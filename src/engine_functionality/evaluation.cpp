@@ -13,22 +13,52 @@
 #define USE_BLOCKED_PAWNS	// Requires USE_MATERIAL_PLACEMENT
 
 // A measure of how far the game has progressed
-// 0-50		==> opening
-// 51-101	==> early game
-// 102-152	==> mid game
-// 153-203	==> late game
-// 204-255	==> end game
+// 0   - 31  ==> opening
+// 32  - 63  ==> late opening
+// 64  - 95  ==> early game
+// 96  - 127 ==> late early game
+// 128 - 159 ==> mid game
+// 160 - 191 ==> late mid game
+// 192 - 223 ==> end game
+// 224 - 255 ==> late end game
 void ChessEngine::setGameStage() {
-	gameStage = -(pieceCount[0][0] << 2);
-	gameStage -= pieceCount[1][0] << 2;
-	gameStage -= pieceCount[0][1] * 10;
-	gameStage -= pieceCount[1][1] * 10;
-	gameStage -= pieceCount[0][2] * 10;
-	gameStage -= pieceCount[1][2] * 10;
-	gameStage -= pieceCount[0][3] << 4;
-	gameStage -= pieceCount[1][3] << 4;
-	gameStage -= pieceCount[0][4] * 24;
-	gameStage -= pieceCount[1][4] * 24;	
+	gameStage = -(pieceCount[0][PAWN] << 1);
+	gameStage -= pieceCount[1][PAWN] << 1;
+	gameStage -= pieceCount[0][KNIGHT] * 12;
+	gameStage -= pieceCount[1][KNIGHT] * 12;
+	gameStage -= pieceCount[0][BISHOP] * 12;
+	gameStage -= pieceCount[1][BISHOP] * 12;
+	gameStage -= pieceCount[0][ROOK] * 18;
+	gameStage -= pieceCount[1][ROOK] * 18;
+	gameStage -= pieceCount[0][QUEEN] * 28;
+	gameStage -= pieceCount[1][QUEEN] * 28;
+
+	// Consider pawn placement based on game stage
+	if (gameStage < 32) {
+		gameStage = OPENING;
+		return;
+	} else if (gameStage < 64) {
+		gameStage = LATE_OPENING;
+		return;
+	} else if (gameStage < 96) {
+		gameStage = EARLY_GAME;
+		return;
+	} else if (gameStage < 128) {
+		gameStage = LATE_EARLY_GAME;
+		return;
+	} else if (gameStage < 160) {
+		gameStage = MID_GAME;
+		return;
+	} else if (gameStage < 192) {
+		gameStage = LATE_MID_GAME;
+		return;
+	} else if (gameStage < 224) {
+		gameStage = END_GAME;
+		return;
+	} else {
+		gameStage = LATE_END_GAME;
+		return;
+	}
 }
 
 // Prepare the object for evaluation.
@@ -71,37 +101,18 @@ void ChessEngine::evalPawns(bool side) {
 		U8 pawnsPerRank[2][8] = {{0},{0}};	// colors * ranks
 		U8 pawnsPerFile[2][8] = {{0},{0}};	// colors * files
 		U8 i;
-		// Fill Arrays
+		// Loop through friendly pawn positions
 		for (i=0; i<pieceCount[side][PAWN]; ++i) {
 			pawnsPerRank[side][BOARD_RANK[pawnPosArr[side][i]]] += 1;
 			pawnsPerFile[side][BOARD_FILE[pawnPosArr[side][i]]] += 1;
+
+			// Consider pawn placement based on game stage
+			pawnEvalResult[side] += pawnBonus[gameStage][side][pawnPosArr[side][i]];
 		}
+		// Loop through enemy pawn positions
 		for (i=0; i<pieceCount[!side][PAWN]; ++i) {
 			pawnsPerRank[!side][BOARD_RANK[pawnPosArr[!side][i]]] += 1;
 			pawnsPerFile[!side][BOARD_FILE[pawnPosArr[!side][i]]] += 1;
-		}
-
-		// Consider pawn placement based on game stage
-		if (gameStage <= 51) {
-			for (i=0; i<pieceCount[side][PAWN]; ++i) {
-				pawnEvalResult[side] += pawnOpeningBonus[side][pawnPosArr[side][i]];
-			}
-		} else if (gameStage <= 102) {
-			for (i=0; i<pieceCount[side][PAWN]; ++i) {
-				pawnEvalResult[side] += pawnEarlyBonus[side][pawnPosArr[side][i]];
-			}
-		} else if (gameStage <= 153) {
-			for (i=0; i<pieceCount[side][PAWN]; ++i) {
-				pawnEvalResult[side] += pawnMidBonus[side][pawnPosArr[side][i]];
-			}
-		} else if (gameStage <= 204) {
-			for (i=0; i<pieceCount[side][PAWN]; ++i) {
-				pawnEvalResult[side] += pawnLateBonus[side][pawnPosArr[side][i]];
-			}
-		} else {
-			for (i=0; i<pieceCount[side][PAWN]; ++i) {
-				pawnEvalResult[side] += pawnEndBonus[side][pawnPosArr[side][i]];
-			}
 		}
 
 		#ifdef USE_DOUBLED_PAWNS
@@ -257,17 +268,8 @@ void ChessEngine::evalKings(bool side) {
 
 	#ifdef USE_MATERIAL_PLACEMENT
 		// Consider king placement based on game stage
-		if (gameStage <= 51) {
-			kingEvalResult[side] += kingOpeningBonus[side][kingPos[side]];
-		} else if (gameStage <= 102) {
-			kingEvalResult[side] += kingEarlyBonus[side][kingPos[side]];
-		} else if (gameStage <= 153) {
-			kingEvalResult[side] += kingMidBonus[side][kingPos[side]];
-		} else if (gameStage <= 204) {
-			kingEvalResult[side] += kingLateBonus[side][kingPos[side]];
-		} else {
-			kingEvalResult[side] += kingEndBonus[side][kingPos[side]];
-		}
+
+		kingEvalResult[side] += kingBonus[gameStage][side][kingPos[side]];
 	#endif
 }
 

@@ -17,6 +17,25 @@
 
 using namespace std;
 
+// ----- Game Stages -----
+// A measure of how far the game has progressed
+// 0   - 31  ==> opening
+// 32  - 63  ==> late opening
+// 64  - 95  ==> early game
+// 96  - 127 ==> late early game
+// 128 - 159 ==> mid game
+// 160 - 191 ==> late mid game
+// 192 - 223 ==> end game
+// 224 - 255 ==> late end game
+const U8 OPENING = 0;
+const U8 LATE_OPENING = 1;
+const U8 EARLY_GAME = 2;
+const U8 LATE_EARLY_GAME = 3;
+const U8 MID_GAME = 4;
+const U8 LATE_MID_GAME = 5;
+const U8 END_GAME = 6;
+const U8 LATE_END_GAME = 7;
+
 class ChessEngine {
 private:
 	// King and knight move databases
@@ -36,16 +55,8 @@ private:
 	inline static S8 knightBonus[64];
 	inline static S8 bishopBonus[64];
 	inline static S8 queenBonus[64];
-	inline static S8 pawnOpeningBonus[2][64];	// Flipped for black and white
-	inline static S8 pawnEarlyBonus[2][64];
-	inline static S8 pawnMidBonus[2][64];
-	inline static S8 pawnLateBonus[2][64];
-	inline static S8 pawnEndBonus[2][64];
-	inline static S8 kingOpeningBonus[2][64];	// Flipped for black and white
-	inline static S8 kingEarlyBonus[2][64];
-	inline static S8 kingMidBonus[2][64];
-	inline static S8 kingLateBonus[2][64];
-	inline static S8 kingEndBonus[2][64];
+	inline static S8 pawnBonus[8][2][64]; // (game stage, colour, position)
+	inline static S8 kingBonus[8][2][64]; // (game stage, colour, position)
 
 	// Maximum depth the engine can search
 	static const short MAX_SEARCH_DEPTH = 100;
