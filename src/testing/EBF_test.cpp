@@ -50,7 +50,7 @@ public:
 		float EBF = sqrt(N / N2);
 
 		if (verbose) {
-			printf("EBF: %.3f\n", EBF);
+			printf("EBF: %.3f\n", double(EBF));
 		}
 
 		return EBF;
@@ -80,9 +80,9 @@ void EBF_Test(bool verbose) {
 
 	float meanEBF(0);
 
-	for (short i(0); i<EBF_TEST_LIST.size(); ++i) {
+	for (size_t i(0); i<EBF_TEST_LIST.size(); ++i) {
 		if (verbose) {
-			printf("Stage: %d/%d\n", i+1, short(EBF_TEST_LIST.size()));
+			printf("Stage: %d/%d\n", short(i)+1, short(EBF_TEST_LIST.size()));
 		}
 
 		engine.clear();
@@ -97,7 +97,7 @@ void EBF_Test(bool verbose) {
 	}
 
 	meanEBF /= EBF_TEST_LIST.size();
-	printf("Mean EBF: %.3f\n", meanEBF);
+	printf("Mean EBF: %.3f\n", double(meanEBF));
 	
 	if (verbose) {
 		printf("------- End EBF Test -------\n");

@@ -31,7 +31,7 @@ UCI::UCI() {
 
 UCI::~UCI() {
 	// Free memory option storage
-	for (int i(0); i<options.size(); ++i) {
+	for (size_t i(0); i<options.size(); ++i) {
 		delete options[i];
 	}
 };

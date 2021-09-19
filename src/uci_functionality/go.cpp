@@ -29,7 +29,7 @@ void UCI::inputGo(string input) {
 	U64 moveTime(-1);
 
 	// Fetching search specifications
-	short i(1);
+	size_t i(1);
 	while (true) {
 		if (i == inVec.size()) {
 			break;

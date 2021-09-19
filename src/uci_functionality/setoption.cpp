@@ -10,7 +10,7 @@ void UCI::inputSetOption(string input) {
 
 	// Fetch option name
 	string name = "";
-	short pos(2);
+	size_t pos(2);
 	while (pos != inVec.size() && inVec[pos] != "value") {
 		if (name != "") {
 			name += ' ';

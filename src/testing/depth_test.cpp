@@ -58,9 +58,9 @@ void depthTest(bool verbose) {
 
 	U64 totalDuration(0);
 
-	for (short i(0); i<DEPTH_TEST_LIST.size(); ++i) {
+	for (size_t i(0); i<DEPTH_TEST_LIST.size(); ++i) {
 		if (verbose) {
-			printf("Stage: %d/%d\n", i+1, short(DEPTH_TEST_LIST.size()));
+			printf("Stage: %d/%d\n", short(i)+1, short(DEPTH_TEST_LIST.size()));
 		}
 
 		engine.clear();

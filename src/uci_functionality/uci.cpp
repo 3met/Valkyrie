@@ -13,7 +13,7 @@ void UCI::inputUCI() {
 	if (options.size() > 0) {
 		printf("\n");
 
-		for (short i(0); i<options.size(); ++i) {
+		for (size_t i(0); i<options.size(); ++i) {
 			cout << options[i]->to_str() << '\n';
 		}
 	}

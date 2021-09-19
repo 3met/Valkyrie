@@ -35,7 +35,7 @@ void ChessEngine::genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount)
 			++*moveCount;
 			moves[*moveCount] = Move(posTargets[i]-9, posTargets[i], Move::ROOK_PROMO_CAPTURE, PAWN);
 			++*moveCount;
-			moves[*moveCount] = Move(posTargets[i]-9, posTargets[i], Move::BISHOP_PROMO_CAPTURE), PAWN;
+			moves[*moveCount] = Move(posTargets[i]-9, posTargets[i], Move::BISHOP_PROMO_CAPTURE, PAWN);
 			++*moveCount;
 		} else {
 			// Account for en passant

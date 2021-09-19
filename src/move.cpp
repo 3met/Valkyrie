@@ -106,6 +106,7 @@ U8 BaseMove::promotionFlag(U8 piece, bool addCapture) {
 				return BISHOP_PROMO;
 		}
 	}
+	return UNKNOWN_FLAG;
 }
 
 

@@ -28,6 +28,8 @@ private:
 			name = _name;
 		};
 
+		virtual ~UciOption() {};
+
 		virtual string to_str() = 0;
 	};
 

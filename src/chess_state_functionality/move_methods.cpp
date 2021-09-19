@@ -36,7 +36,6 @@ void ChessState::move(Move m) {
 	if (m.isCapture()) {
 
 		updateCapturedPiece(&m);
-		U8 capturedPiece = m.getCapturedPiece();
 
 		// Check for special en passant capture
 		if (m.getFlags() == Move::EP_CAPTURE) {

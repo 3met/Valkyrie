@@ -118,10 +118,10 @@ bool perftTest(bool verbose) {
 	bool passed(true);
 	U64 totalDuration(0);
 
-	short i(0);
+	size_t i(0);
 	for ( ; i<PERFT_TEST_LIST.size(); ++i) {
 		if (verbose) {
-			printf("Stage: %d/%d\n", i+1, short(PERFT_TEST_LIST.size()));
+			printf("Stage: %d/%d\n", short(i)+1, short(PERFT_TEST_LIST.size()));
 		}
 
 		PERFT_TEST_LIST[i].load(&cs);

@@ -26,7 +26,7 @@ public:
 	// First bit indicates promotions.
 	// Second bit indicates captures.
 	static const U8 QUIET = 0;
-	// static const U8 OTHER = 1;            // For special use
+	static const U8 UNKNOWN_FLAG = 1;
 	static const U8 KING_CASTLE = 2;
 	static const U8 QUEEN_CASTLE = 3;
 	static const U8 CAPTURE = 4;

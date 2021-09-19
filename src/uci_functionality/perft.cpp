@@ -13,6 +13,6 @@ void UCI::inputPerft(string input) {
 	U64 n(this->engine.perft(&cs, stoi(inVec[1])));
 
 	outputMutex.lock();
-	cout << this->engine.perft(&cs, stoi(inVec[1])) << '\n';
+	cout << n << '\n';
 	outputMutex.unlock();
 }
