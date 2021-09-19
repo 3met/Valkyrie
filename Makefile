@@ -1,8 +1,8 @@
 
 CXX			:= g++
 
-CXX_FLAGS		:= -std=c++17 -O3 -Ofast -Wshadow -Wdouble-promotion -Wformat-overflow -Wformat-truncation -fno-common -pthread
-DEBUG_FLAGS		:= -ggdb -g -g3 -Og -Wall
+CXX_FLAGS		:= -std=c++17 -O3 -Ofast -pthread
+DEBUG_FLAGS		:= -ggdb -g -g3 -Og -Wall -Wshadow -Wdouble-promotion -Wformat-overflow -Wformat-truncation -fno-common
 RELEASE_FLAGS	:= -static-libgcc -static-libstdc++
 
 BIN			:= bin
@@ -16,7 +16,7 @@ EXE_NAME	:= valkyrie
 
 RELEASE_DIR	:= releases
 
-FILE_TYPES	:= *.c *.cpp *.cc *.cxx *.c++ *.C *.cp
+FILE_TYPES	:= *.cpp
 
 # Where to store .o and .d files
 MAIN_DIR	:= main
