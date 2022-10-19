@@ -67,9 +67,11 @@ void UCI::inputGo(string input) {
 
 	this->engine.canSearch = true;
 
-	Move m;
+	// Output info stream
 	bool continueStream(true);
 	thread outputThread(&UCI::streamOutputInfo, this, &continueStream);
+
+	Move m;
 	if (infinite) {
 		m = engine.searchInfinite(this->cs);
 	} else if (depth != -1) {
