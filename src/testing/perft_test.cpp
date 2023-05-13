@@ -102,6 +102,16 @@ std::vector<PerftTestCase> PERFT_TEST_LIST = {
 	PerftTestCase("r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1", 5, 15833292),
 	PerftTestCase("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8", 5, 89941194),
 	PerftTestCase("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10", 5, 164075551),
+	// Mid Game Positions
+	// Taken From: https://www.talkchess.com/forum3/viewtopic.php?t=58359&start=2
+	PerftTestCase("1kr5/3n4/q3p2p/p2n2p1/PppB1P2/5BP1/1P2Q2P/3R2K1 w - -", 5, 93431288),
+	PerftTestCase("1n5k/3q3p/pp1p2pB/5r2/1PP1Qp2/P6P/6P1/2R3K1 w - -", 5, 38942132),
+	PerftTestCase("1n6/4bk1r/1p2rp2/pP2pN1p/K1P1N2P/8/P5R1/3R4 w - -", 6, 328845658),
+	PerftTestCase("1nr5/1k5r/p3pqp1/3p4/1P1P1PP1/R4N2/3Q1PK1/R7 w - -", 5, 103996088),
+	PerftTestCase("1q4k1/5p1p/p1rprnp1/3R4/N1P1P3/1P6/P5PP/3Q1R1K w - -", 5, 88571028),
+	PerftTestCase("1qr1k2r/1p2bp2/pBn1p3/P2pPbpp/5P2/2P1QBPP/1P1N3R/R4K2 b k -", 5, 127495691),
+	PerftTestCase("1r1b2k1/2r2ppp/p1qp4/3R1NPP/1pn1PQB1/8/PPP3R1/1K6 w - -", 5, 112492381),
+	PerftTestCase("1r1qk1nr/p3ppbp/3p2p1/1pp5/2bPP3/4B1P1/2PQNPBP/R2R2K1 w k -", 5, 80254241),
 };
 
 // Times perft test cases.
