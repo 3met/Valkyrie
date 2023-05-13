@@ -7,14 +7,14 @@ using namespace std;
 
 // Ranked by manhattan distance from center
 const U8 ChessEngine::centerBias[64] {
-	6, 5, 4, 3, 3, 4, 5, 6,
-	5, 4, 3, 2, 2, 3, 4, 5,
-	4, 3, 2, 1, 1, 2, 3, 4,
-	3, 2, 1, 0, 0, 1, 2, 3,
-	3, 2, 1, 0, 0, 1, 2, 3,
-	4, 3, 2, 1, 1, 2, 3, 4,
-	5, 4, 3, 2, 2, 3, 4, 5,
-	6, 5, 4, 3, 3, 4, 5, 6,
+	60, 50, 45, 35, 35, 45, 50, 60,
+	50, 40, 30, 25, 25, 30, 40, 50,
+	45, 30, 20, 10, 10, 20, 30, 45,
+	35, 25, 10,  0,  0, 10, 25, 35,
+	35, 25, 10,  0,  0, 10, 25, 35,
+	45, 30, 20, 10, 10, 20, 30, 45,
+	50, 40, 30, 25, 25, 30, 40, 50,
+	60, 50, 45, 35, 35, 45, 50, 60,
 };
 
 // Swaps moves by index
@@ -78,7 +78,7 @@ U8 ChessEngine::sortKillerMoves(Move moves[218], U8 left, U8 right, U8 depth) {
 // Returns number of capture moves.
 U8 ChessEngine::separateCaptures(Move moves[218], U8 left, U8 right) {
 	U8 oldLeft = left;
-	while (left != right) {
+	while (1) {
 		while (moves[left].isCapture()) {
 			if (left == right) {
 				break;
@@ -228,12 +228,6 @@ void ChessEngine::sortNonQuiet(Move moves[218], U8 left, U8 right, ChessState* c
 	if (n > 1) {
 		for (U8 j=left; j<=left+n-1; ++j) {
 			if (moves[j].promotionPiece() == QUEEN) {
-				swap(moves, left, j);
-				++left;
-			}
-		}
-		for (U8 j=left; j<=left+n-1; ++j) {
-			if (moves[j].promotionPiece() == KNIGHT) {
 				swap(moves, left, j);
 				++left;
 			}
