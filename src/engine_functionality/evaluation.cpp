@@ -142,40 +142,32 @@ void ChessEngine::evalPawns(bool side) {
 		#endif
 
 		#ifdef USE_ISOLATED_PAWNS
-			
-			// Penalize isolated pawns
 			// Substract 15 centipawns for each edge isolated pawn
-			if (pawnsPerFile[side][0] != 0) {
-				if (pawnsPerFile[side][1] == 0) {
-					pawnEvalResult[side] -= 15 * pawnsPerFile[side][0];
-					i = 2;
-				} else {
-					i = 3;
-				}
-			} else {
-				i = 1;
-			}
 			// Substract 10 centipawns for each non-edge isolated pawn
-			while (i < 7) {
-				if (pawnsPerFile[side][i] != 0) {
-					if (pawnsPerFile[side][i+1] == 0) {
-						if (pawnsPerFile[side][i-1] == 0) {
-							pawnEvalResult[side] -= 10 * pawnsPerFile[side][i];
-						}
-						i += 2;
-					} else {
-						i += 3;
-					}				
-				} else {
-					i += 1;
-				}
-			}
-			// Substract 15 centipawns for each edge isolated pawn
-			if (i == 7 && pawnsPerFile[side][7] != 0
-				&& pawnsPerFile[side][6] == 0) {
-
+			// a file
+			if (pawnsPerFile[side][1] == 0)
+				pawnEvalResult[side] -= 15 * pawnsPerFile[side][0];
+			// b file
+			if (pawnsPerFile[side][0] == 0 && pawnsPerFile[side][2] == 0)
+				pawnEvalResult[side] -= 10 * pawnsPerFile[side][1];
+			// c file
+			if (pawnsPerFile[side][1] == 0 && pawnsPerFile[side][3] == 0)
+				pawnEvalResult[side] -= 10 * pawnsPerFile[side][2];
+			// d file
+			if (pawnsPerFile[side][2] == 0 && pawnsPerFile[side][4] == 0)
+				pawnEvalResult[side] -= 10 * pawnsPerFile[side][3];
+			// e file
+			if (pawnsPerFile[side][3] == 0 && pawnsPerFile[side][5] == 0)
+				pawnEvalResult[side] -= 10 * pawnsPerFile[side][4];
+			// f file
+			if (pawnsPerFile[side][4] == 0 && pawnsPerFile[side][6] == 0)
+				pawnEvalResult[side] -= 10 * pawnsPerFile[side][5];
+			// g file
+			if (pawnsPerFile[side][5] == 0 && pawnsPerFile[side][7] == 0)
+				pawnEvalResult[side] -= 10 * pawnsPerFile[side][6];
+			// h file
+			if (pawnsPerFile[side][6] == 0)
 				pawnEvalResult[side] -= 15 * pawnsPerFile[side][7];
-			}
 		#endif
 
 		// Penalize backward pawns
