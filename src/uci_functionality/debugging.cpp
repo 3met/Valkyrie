@@ -31,6 +31,13 @@ void UCI::inputEval() {
 	outputMutex.unlock();
 }
 
+// Prints the static evaluation score of current board
+void UCI::inputQuickEval() {
+	outputMutex.lock();
+	cout << "info score cp " << EvalScore(engine.evalBoard(&cs, WHITE)).eval << '\n';
+	outputMutex.unlock();
+}
+
 // Prints the current chess state.
 void UCI::inputPrint() {
 	cs.show();

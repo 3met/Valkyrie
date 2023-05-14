@@ -132,6 +132,8 @@ void UCI::run() {
 			noParallelQueue.push(NoParallelCommand(&UCI::inputReverse));
 		} else if (input == "eval") {
 			noParallelQueue.push(NoParallelCommand(&UCI::inputEval));
+		} else if (input == "quickeval") {
+			noParallelQueue.push(NoParallelCommand(&UCI::inputQuickEval));
 		} else if (input.substr(0, 6) == "perft ") {
 			noParallelQueue.push(NoParallelCommand(&UCI::inputPerft, input));
 		} else if (input.substr(0, 7) == "divide ") {

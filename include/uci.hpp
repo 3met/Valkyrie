@@ -139,6 +139,7 @@ private:
 	void inputTest(string input);
 	void inputPrint();
 	void inputEval();
+	void inputQuickEval();
 
 	// Miscellaneous
 	void outputInfo();
