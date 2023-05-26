@@ -32,6 +32,16 @@ void ChessState::move(Move m) {
 	U8 end = m.getEnd();
 	U8 piece = m.getMovingPiece();
 
+	// Updates position history for three-move repetition
+	hashHistory[moveNumber] = bh;
+	// Updates half clock count for three-move repetition and 50-move draw
+	halfmoveClockHistory[moveNumber] = halfmoveClock;
+	if (piece == PAWN || m.isCapture()) {
+		halfmoveClock = 0;
+	} else {
+		++halfmoveClock;
+	}
+
 	// Removes potential killed piece from bitboard
 	if (m.isCapture()) {
 
@@ -210,28 +220,25 @@ void ChessState::reverseMove() {
 
 	Move& m = moveHistory[moveNumber];
 
+	// Fetch old halfmove clock
+	halfmoveClock = halfmoveClockHistory[moveNumber];
+	// Fetch old board hash
+	bh = hashHistory[moveNumber];
+
 	U8 start = m.getStart();
 	U8 end = m.getEnd();
 	U8 piece = m.getMovingPiece();
-
-	// If en passant variable needs to be updated
-	if (enPassantHistory[moveNumber] != enPassantHistory[moveNumber-1]) {
-		bh.updateEnPassant(enPassantHistory[moveNumber], enPassantHistory[moveNumber-1]);
-	}
 
 	// Updates moving piece location on bitboard
 	// Reverse piece change if there was a promotion
 	if (m.isPromotion()) {
 		U8 promotionPiece = m.promotionPiece();
 		pieces[turn][promotionPiece].setPosOff(end);
-		bh.updatePiece(turn, promotionPiece, end);
 	} else {
 		pieces[turn][piece].setPosOff(end);
-		bh.updatePiece(turn, piece, end);
 	}
 	// Add piece to start location
 	pieces[turn][piece].setPosOn(start);
-	bh.updatePiece(turn, piece, start);
 
 	// Adds previously killed piece to bitboard
 	if (m.isCapture()) {
@@ -239,17 +246,14 @@ void ChessState::reverseMove() {
 			// Place killed en passant piece
 			if (turn == WHITE) {
 				pieces[BLACK][PAWN].setPosOn(end-8);
-				bh.updatePiece(BLACK, PAWN, end-8);
 			} else {	// Black's turn
 				pieces[WHITE][PAWN].setPosOn(end+8);
-				bh.updatePiece(WHITE, PAWN, end+8);
 			}
 		} else {
 
 			U8 captured = m.getCapturedPiece();
 
 			pieces[!turn][captured].setPosOn(end);
-			bh.updatePiece(!turn, captured, end);
 		}
 
 		this->updateAllBitboard(!turn);
@@ -261,13 +265,9 @@ void ChessState::reverseMove() {
 				if (end == KING_START[turn]+2) {
 					pieces[turn][ROOK].setPosOn(KING_START[turn]+3);
 					pieces[turn][ROOK].setPosOff(KING_START[turn]+1);
-					bh.updatePiece(turn, ROOK, KING_START[turn]+3);
-					bh.updatePiece(turn, ROOK, KING_START[turn]+1);
 				} else if (end == KING_START[turn]-2) {
 					pieces[turn][ROOK].setPosOn(KING_START[turn]-4);
 					pieces[turn][ROOK].setPosOff(KING_START[turn]-1);
-					bh.updatePiece(turn, ROOK, KING_START[turn]-4);
-					bh.updatePiece(turn, ROOK, KING_START[turn]-1);
 				}
 			}
 		}
@@ -277,23 +277,19 @@ void ChessState::reverseMove() {
 	if (moveLostCastlePerms[turn][KING_SIDE] == moveNumber) {
 		castlePerms[turn][KING_SIDE] = true;
 		moveLostCastlePerms[turn][KING_SIDE] = -1;
-		bh.updateCastlePerms(turn, KING_SIDE);
 	}
 	if (moveLostCastlePerms[turn][QUEEN_SIDE] == moveNumber) {
 		castlePerms[turn][QUEEN_SIDE] = true;
 		moveLostCastlePerms[turn][QUEEN_SIDE] = -1;
-		bh.updateCastlePerms(turn, QUEEN_SIDE);
 	}
 	// One can lose castle perms regardless of turn
 	if (moveLostCastlePerms[!turn][KING_SIDE] == moveNumber) {
 		castlePerms[!turn][KING_SIDE] = true;
 		moveLostCastlePerms[!turn][KING_SIDE] = -1;
-		bh.updateCastlePerms(!turn, KING_SIDE);
 	}
 	if (moveLostCastlePerms[!turn][QUEEN_SIDE] == moveNumber) {
 		castlePerms[!turn][QUEEN_SIDE] = true;
 		moveLostCastlePerms[!turn][QUEEN_SIDE] = -1;
-		bh.updateCastlePerms(!turn, QUEEN_SIDE);
 	}
 
 	// Update both universal bitboards

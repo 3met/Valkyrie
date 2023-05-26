@@ -226,7 +226,20 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 			
-			score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
+			// Check for draw by repetition or 50-moves
+			if (cs->halfmoveClock >= 8) {
+				// Check for three-move repetition
+				if (cs->isThreeRepetition()) {
+					score = EvalScore::DRAW;
+				// Check for draw by 50-move rule
+				} else if (cs->is50MoveDraw()) {
+					score = EvalScore::DRAW;
+				} else {
+					score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
+				}
+			} else {
+				score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
+			}
 
 			if (score > alpha) {
 				alpha = score;
@@ -257,6 +270,18 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 // Recursive negamax search for the best move
 EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore alpha, EvalScore beta) {
+
+	// Check for draw by repetition or 50-moves
+	if (cs->halfmoveClock >= 8) {
+		// Check for three-move repetition
+		if (cs->isThreeRepetition()) {
+			return EvalScore::DRAW;
+		}
+		// Check for draw by 50-move rule
+		if (cs->is50MoveDraw()) {
+			return EvalScore::DRAW;
+		}
+	}
 
 	// Check if the calculation has already been made
 	TTEntry* hashEntry = transTable->getEntryPointer(&cs->bh);

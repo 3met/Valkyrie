@@ -137,3 +137,25 @@ bool ChessState::zugzwangSafe() {
 	if (pieces[turn][QUEEN].board != 0) return true;
 	return false;
 }
+
+// Checks whether a three-move repetition draw has occured 
+bool ChessState::isThreeRepetition() {
+	// Count repetitions
+	U8 repetitionCount(0);
+	for (short i(moveNumber); i>=0; i-=2) {
+		if (this->bh == hashHistory[moveNumber-i]) {
+			++repetitionCount;
+		}
+	}
+	// Check for two previous instances + current instance
+	if (repetitionCount >= 2) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+// Checks whether a 50-move draw has occured
+bool ChessState::is50MoveDraw() {
+	return this->halfmoveClock >= 50;
+}

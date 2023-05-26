@@ -45,13 +45,14 @@ public:
 	bool castlePerms[2][2];				// [color][king/queen side]
 	short moveLostCastlePerms[2][2];	// Used for reversing moves; indexing based on turn and castleSide
 	
-	array<S8, MAX_MOVES> enPassantHistory;		// History of en passant for reverseMove()
+	U16 halfmoveClock;		// # of halfmoves since last capture or pawn move
+	U16 turnNumber;			// Game turn number
+	U16 moveNumber;
 
-	array<Move, MAX_MOVES> moveHistory;	// List of moves that lead to current game state
-	
-	short halfmoveClock;		// # of halfmoves since last capture or pawn move
-	short turnNumber;			// Game turn number
-	short moveNumber;
+	array<S8, MAX_MOVES> enPassantHistory;		// History of en passant for reverseMove()
+	array<Move, MAX_MOVES> moveHistory;			// List of moves that lead to current game state
+	array<U16, MAX_MOVES> halfmoveClockHistory;	// Used to check for three-move repetition + 50 move draw
+	array<BoardHash, MAX_MOVES> hashHistory;	// Used to check for three-move repetition
 
 	BoardHash bh;	// Current chess board hash
 
@@ -91,6 +92,8 @@ public:
 	U8 getPieceType(bool color, U8 pos);
 	Move notationToMove(string notation);
 	bool zugzwangSafe();
+	bool isThreeRepetition();
+	bool is50MoveDraw();
 	static pair<bool, U8> charToPiece(char piece);
 };
 

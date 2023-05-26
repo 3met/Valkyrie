@@ -9,7 +9,23 @@
 // Quiescence search used for avoiding the horizon effect
 EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, EvalScore beta) {
 
-	EvalScore score = EvalScore(evalBoard(cs, cs->turn));
+	EvalScore score;
+
+	// Check for draw by repetition or 50-moves
+	if (cs->halfmoveClock >= 8) {
+		// Check for three-move repetition
+		if (cs->isThreeRepetition()) {
+			score = EvalScore::DRAW;
+		// Check for draw by 50-move rule
+		} else if (cs->is50MoveDraw()) {
+			score = EvalScore::DRAW;
+		} else {
+			score = EvalScore(evalBoard(cs, cs->turn));
+		}
+	} else {
+		score = EvalScore(evalBoard(cs, cs->turn));
+	}
+
 	if (score >= beta) {
 		return beta;
 	}
