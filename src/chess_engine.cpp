@@ -208,7 +208,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	for (U8 i(0); i<moveCount; ++i) {
 
 		// Every 4096 nodes, check search status
-		if (this->limitTime && (this->nodesTotal & 4095) == 0) {
+		if (this->limitTime && (this->nodesTotal & U64(4095)) == 0) {
 			updateTimingVars();
 		}
 
