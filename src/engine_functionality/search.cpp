@@ -20,13 +20,10 @@ mt19937 gen(rd());
 // Time is in microseconds.
 // "timeLeft" is time left on the clock.
 // "timeInc" is the time increment per move.
-Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
-	
-	// Start timer
-	high_resolution_clock::time_point start(high_resolution_clock::now());
+Move ChessEngine::searchOnClock(ChessState cs, U64 timeLeft, U64 timeInc) {
 
 	// Set Stats
-	this->startTime = start;
+	this->startTime = high_resolution_clock::now();		// Start timer
 	this->uciDepth = 0;
 	this->nodesTotal = 0;
 	this->currScore = 0;
@@ -46,10 +43,10 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	}
 
 	// Max time to choose move
-	this->minEndTime = start + chrono::microseconds(timeLeft/40);
-	this->optimalEndTime = start + chrono::microseconds(min((timeLeft/30) + timeInc, timeLeft/6));
-	this->softEndTime = start + chrono::microseconds(min((timeLeft/20) + timeInc, timeLeft));
-	this->hardEndTime = start + chrono::microseconds(min((timeLeft/15) + timeInc, timeLeft));
+	this->minEndTime = this->startTime + chrono::microseconds(timeLeft/40);
+	this->optimalEndTime = this->startTime + chrono::microseconds(min((timeLeft/30) + timeInc, timeLeft/6));
+	this->softEndTime = this->startTime + chrono::microseconds(min((timeLeft/20) + timeInc, timeLeft));
+	this->hardEndTime = this->startTime + chrono::microseconds(min((timeLeft/15) + timeInc, timeLeft));
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
@@ -102,6 +99,75 @@ Move ChessEngine::searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc) {
 	++nSearches;
 	return *(moveList.end()-1);
 }
+
+
+// Needs to be run in it's own thread in order to execute properly.
+// Time is in microseconds.
+// "movetime" is the target time to search for
+Move ChessEngine::searchSetTime(ChessState cs, U64 movetime) {
+
+	// Set Stats
+	this->startTime = high_resolution_clock::now();		// Start timer
+	this->uciDepth = 0;
+	this->nodesTotal = 0;
+	this->currScore = 0;
+	this->limitTime = true;
+	this->passedMinTime = false;
+	this->passedOptimalTime = false;
+	this->passedSoftEndTime = false;
+	this->canSearch = true;
+
+	// Check if position in opening book
+	if (useOwnBook && this->openingTable.contains(&cs.bh)) {
+		std::vector<Move> moves(this->openingTable.get(&cs.bh));
+		
+		++nSearches;
+		uniform_int_distribution<> distr(0, moves.size()-1);
+		return moves[distr(gen)];
+	}
+
+	// Timing variables to control the search
+	this->minEndTime 	 = this->startTime + chrono::microseconds(movetime - 2000);
+	this->optimalEndTime = this->startTime + chrono::microseconds(movetime - 1000);
+	this->softEndTime	 = this->startTime + chrono::microseconds(movetime);
+	this->hardEndTime	 = this->startTime + chrono::microseconds(movetime + 400);
+
+	pair<Move, EvalScore> ratedMove;
+	std::vector<Move> moveList;
+	short i(1);
+	// Loop to increase depth until time is up
+	while (true) {
+		// Set search iteration parameters
+		this->uciDepth = i;
+
+		ratedMove = this->bestMove(&cs, i);
+
+		// Break if no longer has search permission
+		if (!this->canSearch) {
+			break;
+		}
+
+		moveList.push_back(ratedMove.first);
+		this->currScore = ratedMove.second;
+		
+		// Break on null move
+		if (ratedMove.first.isNull()) {
+			break;
+		}
+
+		i += 1;
+
+		updateTimingVars();
+
+		if (passedOptimalTime) {
+			break;
+		}	
+	}
+
+	++nSearches;
+	return *(moveList.end()-1);
+}
+
 
 // Seaches to a specific depth as specified
 Move ChessEngine::searchDepth(ChessState cs, U8 depth) {

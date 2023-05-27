@@ -26,7 +26,7 @@ void UCI::inputGo(string input) {
 	S8 depth(-1);
 	U64 nodes(0);
 	bool infinite(false);
-	U64 moveTime(-1);
+	U64 moveTime(0);
 
 	// Fetching search specifications
 	size_t i(1);
@@ -76,10 +76,12 @@ void UCI::inputGo(string input) {
 		m = engine.searchInfinite(this->cs);
 	} else if (depth != -1) {
 		m = engine.searchDepth(this->cs, depth);
+	} else if (moveTime != 0) {
+		m = engine.searchSetTime(this->cs, moveTime);
 	} else if (cs.turn == WHITE) {
-		m = engine.searchOnTimer(this->cs, wTime, wInc);
+		m = engine.searchOnClock(this->cs, wTime, wInc);
 	} else {
-		m = engine.searchOnTimer(this->cs, bTime, bInc);
+		m = engine.searchOnClock(this->cs, bTime, bInc);
 	}
 	this->outputInfo();
 

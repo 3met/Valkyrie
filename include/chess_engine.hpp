@@ -199,7 +199,8 @@ public:
 	short evalBoard(ChessState* cs, bool side);
 	
 	// Search Methods
-	Move searchOnTimer(ChessState cs, U64 timeLeft, U64 timeInc);
+	Move searchOnClock(ChessState cs, U64 timeLeft, U64 timeInc);
+	Move searchSetTime(ChessState cs, U64 movetime);
 	Move searchInfinite(ChessState cs);
 	Move searchNodes(ChessState cs);
 	Move searchDepth(ChessState cs, U8 depth);
