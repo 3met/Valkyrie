@@ -1,4 +1,9 @@
 
+// Required library for linux but not windows
+#ifdef LINUX
+	#include <thread>
+#endif
+
 #include <chrono>
 #include <future>
 #include <iostream>
