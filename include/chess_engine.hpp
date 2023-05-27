@@ -208,6 +208,7 @@ public:
 
 	// Miscellaneous Methods
 	static void load();
+	static void unload();
 	static bool isPosAttacked(ChessState* cs, bool turn, U8 pos);
 	void clear();
 

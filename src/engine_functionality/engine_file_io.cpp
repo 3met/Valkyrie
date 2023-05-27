@@ -21,7 +21,7 @@ bool ChessEngine::loadDataDir() {
 	ChessEngine::DATA_DIR = "";
 
 	#ifdef WINDOWS
-		char exePath[MAX_PATH];
+		char exePath[MAX_PATH] = "\0";
 		HMODULE hModule = GetModuleHandle(NULL);
 		if (hModule != NULL) {
 			GetModuleFileName(hModule, exePath, (sizeof(exePath)));
@@ -40,7 +40,7 @@ bool ChessEngine::loadDataDir() {
 			return false;
 		}
 	#elif defined LINUX
-		char exePath[PATH_MAX];
+		char exePath[PATH_MAX] = "\0";
 		ssize_t count = readlink("/proc/self/exe", exePath, PATH_MAX);
 		if (count != -1) {
 			// Copy exePath to data dir

@@ -107,6 +107,16 @@ void ChessEngine::load() {
 	}
 }
 
+// Deleted memory allocated during load
+void ChessEngine::unload() {
+	isLoaded = false;
+	
+	for (U8 i=0; i<64; ++i) {
+		delete [] bishopAttackTable[i];
+		delete [] rookAttackTable[i];
+	}
+}
+
 // Clear all temporary data
 void ChessEngine::clear() {
 	nSearches = 0;	// Number of searches preformed

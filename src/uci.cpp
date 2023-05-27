@@ -35,6 +35,9 @@ UCI::UCI() {
 };
 
 UCI::~UCI() {
+	// Deallocates engine class memory
+	engine.unload();
+
 	// Free memory option storage
 	for (size_t i(0); i<options.size(); ++i) {
 		delete options[i];
