@@ -36,28 +36,20 @@ void ChessEngine::setGameStage() {
 	// Consider pawn placement based on game stage
 	if (gameStage < 32) {
 		gameStage = OPENING;
-		return;
 	} else if (gameStage < 64) {
 		gameStage = LATE_OPENING;
-		return;
 	} else if (gameStage < 96) {
 		gameStage = EARLY_GAME;
-		return;
 	} else if (gameStage < 128) {
 		gameStage = LATE_EARLY_GAME;
-		return;
 	} else if (gameStage < 160) {
 		gameStage = MID_GAME;
-		return;
 	} else if (gameStage < 192) {
 		gameStage = LATE_MID_GAME;
-		return;
 	} else if (gameStage < 224) {
 		gameStage = END_GAME;
-		return;
 	} else {
 		gameStage = LATE_END_GAME;
-		return;
 	}
 }
 
@@ -286,18 +278,9 @@ short ChessEngine::evalSide(bool side) {
 	this->evalKings(side);
 	this->evalKingSafety(side);
 
-	short rating(pawnEvalResult[side]);
-	rating += knightEvalResult[side];
-	rating += bishopEvalResult[side];
-	rating += rookEvalResult[side];
-	rating += queenEvalResult[side];
-	rating += kingEvalResult[side];
-	rating += kingSafetyEvalResult[side];
-
-	// --- Adjustment for Mobility ---
-	// TODO
-
-	return rating;
+	return pawnEvalResult[side] + knightEvalResult[side] + bishopEvalResult[side]
+		+ rookEvalResult[side] + queenEvalResult[side] + kingEvalResult[side]
+		+ kingSafetyEvalResult[side];
 }
 
 // Evaluates the state of the entire board
@@ -310,7 +293,5 @@ short ChessEngine::evalBoard(ChessState* cs, bool side) {
 
 	this->prepEval(cs);
 
-	short rating(evalSide(side) - evalSide(!side));
-
-	return rating;
+	return evalSide(side) - evalSide(!side);
 }
