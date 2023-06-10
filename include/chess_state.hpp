@@ -47,7 +47,7 @@ public:
 	
 	U16 halfmoveClock;		// # of halfmoves since last capture or pawn move
 	U16 turnNumber;			// Game turn number
-	U16 moveNumber;
+	U16 moveNumber;			// Moves since the starting position
 
 	array<S8, MAX_MOVES> enPassantHistory;		// History of en passant for reverseMove()
 	array<Move, MAX_MOVES> moveHistory;			// List of moves that lead to current game state
@@ -55,9 +55,6 @@ public:
 	array<BoardHash, MAX_MOVES> hashHistory;	// Used to check for three-move repetition
 
 	BoardHash bh;	// Current chess board hash
-
-	// TODO: add Threefold repetition
-	// https://en.wikipedia.org/wiki/Threefold_repetition
 
 	// --- Custom Exception ---
 	struct NoMoves : public exception {
