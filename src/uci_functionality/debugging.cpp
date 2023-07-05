@@ -62,6 +62,8 @@ void UCI::inputTest(string input) {
 		depthTest(verbose);
 	} else if (inVec[1] == "ebf" || inVec[1] == "EBF") {
 		EBF_Test(verbose);
+	} else if (inVec[1] == "puzzle") {
+		puzzleTest(verbose);
 	} else {
 		outputMutex.lock();
 		cout << "Unknown Test: " << inVec[1] << '\n';
