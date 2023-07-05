@@ -48,6 +48,7 @@ public:
 
 	friend ostream& operator<<(ostream& os, const BaseMove& m);
 	friend bool operator==(const BaseMove& a, const BaseMove& b);
+	friend bool operator!=(const BaseMove& a, const BaseMove& b);
 
 	static const BaseMove NULL_MOVE;
 
