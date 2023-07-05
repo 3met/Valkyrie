@@ -60,6 +60,10 @@ bool operator==(const BaseMove& a, const BaseMove& b) {
 	return (a.data == b.data);
 }
 
+bool operator!=(const BaseMove& a, const BaseMove& b) { 
+	return !(a == b);
+}
+
 // Returns the promotion piece associated with the move flag.
 // Assumes there is a promotion value set.
 U8 BaseMove::promotionPiece() const {
