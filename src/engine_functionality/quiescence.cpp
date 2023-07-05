@@ -41,6 +41,7 @@ EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, Eva
 		sortMVVLVA(moveArr[depth], 0, moveCount-1, cs);
 	}
 
+	// Loop through moves
 	for (U8 i(0); i<moveCount; ++i) {
 		cs->move(moveArr[depth][i]);
 

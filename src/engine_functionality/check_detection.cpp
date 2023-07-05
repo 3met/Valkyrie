@@ -6,7 +6,7 @@
 #include "size_defs.hpp"
 
 // Check if a square is attacked "turn" represents the color of the attacker
-bool ChessEngine::isPosAttacked(ChessState* cs, bool turn, U8 pos) {
+bool ChessEngine::isPosAttacked(ChessState* cs, const bool turn, const U8 pos) {
 	// Check if attacked by knight
 	if ((NMoveDB[pos].board & cs->pieces[turn][KNIGHT].board) != 0) {
 		return true;
