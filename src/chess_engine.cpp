@@ -113,7 +113,9 @@ void ChessEngine::unload() {
 	
 	for (U8 i=0; i<64; ++i) {
 		delete [] bishopAttackTable[i];
+		bishopAttackTable[i] = nullptr;
 		delete [] rookAttackTable[i];
+		rookAttackTable[i] = nullptr;
 	}
 }
 

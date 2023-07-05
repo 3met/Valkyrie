@@ -27,7 +27,7 @@ Move ChessState::lastMove() {
 }
 
 // Returns the type of piece at the given position
-U8 ChessState::getPieceType(bool color, U8 pos) {
+U8 ChessState::getPieceType(const bool color, const U8 pos) {
 
 	for (U8 i(0); i<6; ++i) {
 		if (pieces[color][i].getPos(pos)) {
@@ -39,7 +39,7 @@ U8 ChessState::getPieceType(bool color, U8 pos) {
 }
 
 // Updates the all pieces bitboard for the passed color
-void ChessState::updateAllBitboard(bool color) {
+void ChessState::updateAllBitboard(const bool color) {
 	pieces[color][ALL_PIECES].board = pieces[color][PAWN].board;
 	pieces[color][ALL_PIECES].board |= pieces[color][KNIGHT].board;
 	pieces[color][ALL_PIECES].board |= pieces[color][BISHOP].board;
@@ -49,7 +49,7 @@ void ChessState::updateAllBitboard(bool color) {
 }
 
 // Converts chess notation to Move object (a7b8q ==> Move)
-Move ChessState::notationToMove(string notation) {
+Move ChessState::notationToMove(const string notation) {
 	U8 start(BaseMove::coordToPos(notation.substr(0, 2)));
 	U8 end(BaseMove::coordToPos(notation.substr(2, 2)));
 	U8 pieceType(getPieceType(turn, start));
@@ -95,7 +95,7 @@ Move ChessState::notationToMove(string notation) {
 }
 
 // Returns color and types of piece
-pair<bool, U8> ChessState::charToPiece(char piece) {
+pair<bool, U8> ChessState::charToPiece(const char piece) {
 	switch (piece) {
 		case 'P':
 			return make_pair(WHITE, PAWN);
