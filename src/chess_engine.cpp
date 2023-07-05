@@ -319,14 +319,14 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 
 	// Null Move Pruning.
 	// If not already in a null move search and not currently in check.
-	if (!this->inNullMoveSearch && depth > 2 && cs->zugzwangSafe()) {
+	if (!this->inNullMoveSearch && depth > 1 && cs->zugzwangSafe()) {
 
 		this->inNullMoveSearch = true;
 		cs->moveNull();
 
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 
-			U8 R = 2 + (depth / 5);
+			U8 R = 1 + (depth / 3);
 
 			score = -zwSearch(cs, depth-1-R, ply+1, -beta+1);
 
