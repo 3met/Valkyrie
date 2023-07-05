@@ -217,6 +217,34 @@ void ChessEngine::evalBishops(bool side) {
 		for (U8 i(0); i<pieceCount[side][BISHOP]; ++i) {
 			bishopEvalResult[side] += bishopBonus[bishopPosArr[side][i]];
 		}
+
+		// --- Small bonus for pinning or attacking enemy king ---
+		// Only applies from midgame
+		if (gameStage >= MID_GAME) {
+			// One bishops on side
+			if (pieceCount[side][BISHOP] == 1) {
+				// Check same diagonal
+				if (POSITIVE_DIAG[bishopPosArr[side][0]] == POSITIVE_DIAG[kingPos[!side]]
+					|| NEGATIVE_DIAG[bishopPosArr[side][0]] == NEGATIVE_DIAG[kingPos[!side]]) {
+
+					bishopEvalResult[side] += 10;
+				}
+
+			// Two bishops on side
+			} else if (pieceCount[side][BISHOP] == 2) {
+				// Check same diagonal
+				if (POSITIVE_DIAG[bishopPosArr[side][0]] == POSITIVE_DIAG[kingPos[!side]]
+					|| NEGATIVE_DIAG[bishopPosArr[side][0]] == NEGATIVE_DIAG[kingPos[!side]]) {
+
+					bishopEvalResult[side] += 10;
+				}
+				if (POSITIVE_DIAG[bishopPosArr[side][1]] == POSITIVE_DIAG[kingPos[!side]]
+					|| NEGATIVE_DIAG[bishopPosArr[side][1]] == NEGATIVE_DIAG[kingPos[!side]]) {
+
+					bishopEvalResult[side] += 10;
+				}
+			}
+		}
 	#endif
 }
 
@@ -229,6 +257,10 @@ void ChessEngine::evalRooks(bool side) {
 		// Adjust rook value based on number of pawns
 		// -12 for each pawn above 5, +12 for each below
 		rookEvalResult[side] += pieceCount[side][ROOK] * ((-12*pieceCount[side][PAWN]) + 60);
+	#endif
+
+	#ifdef USE_MATERIAL_PLACEMENT
+
 	#endif
 }
 
