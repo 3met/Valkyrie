@@ -4,7 +4,7 @@
 #include "chess_state.hpp"
 #include "size_defs.hpp"
 
-// Generates all psudo-legal pawn moves
+// Generates all pseudo-legal pawn moves
 void ChessEngine::genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	
 	// Set en passant square
@@ -127,7 +127,7 @@ void ChessEngine::genWhitePMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	}
 }
 
-// Generates all psudo-legal pawn moves
+// Generates all pseudo-legal pawn moves
 void ChessEngine::genBlackPMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	
 	// Set en passant square
@@ -251,7 +251,7 @@ void ChessEngine::genBlackPMoves(ChessState* cs, Move moves[218], U8* moveCount)
 	}
 }
 
-// Generates all psudo-legal pawn kill moves
+// Generates all pseudo-legal pawn kill moves
 void ChessEngine::genWhitePKillMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	
 	// Set en passant square
@@ -334,7 +334,7 @@ void ChessEngine::genWhitePKillMoves(ChessState* cs, Move moves[218], U8* moveCo
 	}
 }
 
-// Generates all psudo-legal pawn moves
+// Generates all pseudo-legal pawn moves
 void ChessEngine::genBlackPKillMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	
 	// Set en passant square
@@ -413,6 +413,61 @@ void ChessEngine::genBlackPKillMoves(ChessState* cs, Move moves[218], U8* moveCo
 				moves[*moveCount] = Move(posTargets[i]+9, posTargets[i], Move::CAPTURE, PAWN);
 				++*moveCount;
 			}
+		}
+	}
+}
+
+// Generates all pseudo-legal non-capture promotions for white
+void ChessEngine::genWhiteMovePromotion(ChessState* cs, Move moves[218], U8* moveCount) {
+
+	bufferBoard.board = ~(cs->pieces[WHITE][ALL_PIECES].board | cs->pieces[BLACK][ALL_PIECES].board);
+
+	// Get potential single move squares
+	moveBoard.board = (cs->pieces[WHITE][PAWN].board << 8);
+	// Remove occupied squares
+	moveBoard.board &= bufferBoard.board;
+	// Get end positions
+	targetCount = moveBoard.getPosArr(posTargets);
+	for (U8 i=0; i<targetCount; ++i) {
+		// Check pawn promotion
+		if (BOARD_RANK[posTargets[i]] == 7) {
+			// Add a moves for each possible promotion type
+			moves[*moveCount] = Move(posTargets[i]-8, posTargets[i], Move::QUEEN_PROMO, PAWN);
+			++*moveCount;
+			moves[*moveCount] = Move(posTargets[i]-8, posTargets[i], Move::KNIGHT_PROMO, PAWN);
+			++*moveCount;
+			moves[*moveCount] = Move(posTargets[i]-8, posTargets[i], Move::ROOK_PROMO, PAWN);
+			++*moveCount;
+			moves[*moveCount] = Move(posTargets[i]-8, posTargets[i], Move::BISHOP_PROMO, PAWN);
+			++*moveCount;
+		}
+	}
+}
+
+// Generates all pseudo-legal non-capture promotions for white
+void ChessEngine::genBlackMovePromotion(ChessState* cs, Move moves[218], U8* moveCount) {
+	// --- Generate non-kill moves ---
+	bufferBoard.board = ~(cs->pieces[WHITE][ALL_PIECES].board | cs->pieces[BLACK][ALL_PIECES].board);
+
+	// Get potential single move squares
+	moveBoard.board = (cs->pieces[BLACK][PAWN].board >> 8);
+	// Remove occupied squares
+	moveBoard.board &= bufferBoard.board;
+	// Get end positions
+	targetCount = moveBoard.getPosArr(posTargets);
+
+	for (U8 i=0; i<targetCount; ++i) {
+		// Check pawn promotion
+		if (BOARD_RANK[posTargets[i]] == 0) {
+			// Add a moves for each possible promotion type
+			moves[*moveCount] = Move(posTargets[i]+8, posTargets[i], Move::QUEEN_PROMO, PAWN);
+			++*moveCount;
+			moves[*moveCount] = Move(posTargets[i]+8, posTargets[i], Move::KNIGHT_PROMO, PAWN);
+			++*moveCount;
+			moves[*moveCount] = Move(posTargets[i]+8, posTargets[i], Move::ROOK_PROMO, PAWN);
+			++*moveCount;
+			moves[*moveCount] = Move(posTargets[i]+8, posTargets[i], Move::BISHOP_PROMO, PAWN);
+			++*moveCount;
 		}
 	}
 }

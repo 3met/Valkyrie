@@ -33,6 +33,7 @@ EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, Eva
 		alpha = score;
 	}
 
+	// ----- Process Kill Moves -----
 	// Generate and sort moves
 	U8 moveCount;		// Number of moves (in moveArr)
 	genAllKillMoves(cs, moveArr[depth], &moveCount);
@@ -61,7 +62,34 @@ EvalScore ChessEngine::quiescence(ChessState* cs, U8 depth, EvalScore alpha, Eva
 		cs->reverseMove();
 	}
 
-	// TODO: Add promotions?
+	// ----- Process Non-Kill Promotions Moves -----
+	// Generate and sort moves
+	genAllMovePromotion(cs, moveArr[depth], &moveCount);
+
+	// TODO: Sort (all) Queen Promotions to the front?
+
+	// Loop through moves
+	for (U8 i(0); i<moveCount; ++i) {
+		cs->move(moveArr[depth][i]);
+
+		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
+
+			score = -quiescence(cs, depth+1, -beta, -alpha);
+
+			if (score >= beta) {
+				cs->reverseMove();
+				return beta;
+			}
+			if (score > alpha) {
+				alpha = score;
+			}
+		}
+
+		cs->reverseMove();
+	}
+
+
+
 	// TODO: Add checks?
 
 	return alpha;

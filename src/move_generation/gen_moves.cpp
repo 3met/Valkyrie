@@ -4,7 +4,7 @@
 #include "chess_state.hpp"
 #include "size_defs.hpp"
 
-// Generates all psudo-legal moves
+// Generates all pseudo-legal moves
 void ChessEngine::genAllMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	*moveCount = 0;
 	if (cs->pieces[cs->turn][PAWN].board) {
@@ -29,7 +29,7 @@ void ChessEngine::genAllMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	genKMoves(cs, moves, moveCount);
 }
 
-// Generates all psudo-legal moves
+// Generates all pseudo-legal moves
 void ChessEngine::genAllKillMoves(ChessState* cs, Move moves[218], U8* moveCount) {
 	*moveCount = 0;
 	if (cs->pieces[cs->turn][PAWN].board) {
@@ -54,3 +54,14 @@ void ChessEngine::genAllKillMoves(ChessState* cs, Move moves[218], U8* moveCount
 	genKKillMoves(cs, moves, moveCount);
 }
 
+// Generates all pseudo-legal moves
+void ChessEngine::genAllMovePromotion(ChessState* cs, Move moves[218], U8* moveCount) {
+	*moveCount = 0;
+	if (cs->pieces[cs->turn][PAWN].board) {
+		if (cs->turn == WHITE) {
+			genWhiteMovePromotion(cs, moves, moveCount);
+		} else {
+			genBlackMovePromotion(cs, moves, moveCount);
+		}
+	}
+}

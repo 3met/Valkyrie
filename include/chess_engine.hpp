@@ -116,12 +116,15 @@ private:
 	void genAllMoves(ChessState* cs, Move moves[218], U8* moveCount);
 	void genWhitePKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
 	void genBlackPKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genWhiteMovePromotion(ChessState* cs, Move moves[218], U8* moveCount);
+	void genBlackMovePromotion(ChessState* cs, Move moves[218], U8* moveCount);
 	void genNKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
 	void genBKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
 	void genRKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
 	void genQKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
 	void genKKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
 	void genAllKillMoves(ChessState* cs, Move moves[218], U8* moveCount);
+	void genAllMovePromotion(ChessState* cs, Move moves[218], U8* moveCount);
 
 	// Search Helper Methods
 	void updateTimingVars();
