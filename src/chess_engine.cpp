@@ -191,6 +191,17 @@ void ChessEngine::updateTimingVars() {
 // Head of recursive negamax search for the best move
 pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	
+	// Check for draw by repetition or 50-moves
+	if (cs->halfmoveClock >= 8) {
+		// Check for three-move repetition
+		if (cs->isThreeRepetition()) {
+			return make_pair(Move::NULL_MOVE, EvalScore::DRAW);
+		// Check for draw by 50-move rule
+		} else if (cs->is50MoveDraw()) {
+			return make_pair(Move::NULL_MOVE, EvalScore::DRAW);
+		}
+	}
+
 	// Check if the calculation has already been made
 	TTEntry* hashEntry = transTable->getEntryPointer(&cs->bh);
 	if (hashEntry->bh == cs->bh && hashEntry->depth >= depth) {
@@ -203,6 +214,7 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	U8 moveCount;		// Number of moves (in moveArr)
 	genAllMoves(cs, moveArr[0], &moveCount);
 
+	// Sort moves depending on if a hash entry exists
 	if (hashEntry->bh == cs->bh) {
 		sortMain(moveArr[0], 0, moveCount-1, cs, 0, hashEntry->bestMove);
 	} else {
@@ -238,20 +250,8 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 			
-			// Check for draw by repetition or 50-moves
-			if (cs->halfmoveClock >= 8) {
-				// Check for three-move repetition
-				if (cs->isThreeRepetition()) {
-					score = EvalScore::DRAW;
-				// Check for draw by 50-move rule
-				} else if (cs->is50MoveDraw()) {
-					score = EvalScore::DRAW;
-				} else {
-					score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
-				}
-			} else {
-				score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
-			}
+			// Evaluate recursively
+			score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
 
 			if (score > alpha) {
 				alpha = score;
@@ -276,9 +276,13 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 		return make_pair(Move::NULL_MOVE, -EvalScore::MATE_IN_0);
 	}
 
+	// Store outcome of search hash table
 	hashEntry->setMoveData(&cs->bh, depth, alpha, hashEntry->EXACT_SCORE, moveArr[0][bestIndex]);
+
+	// Return the output
 	return make_pair(moveArr[0][bestIndex], alpha);
 }
+
 
 // Recursive negamax search for the best move
 EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore alpha, EvalScore beta) {
