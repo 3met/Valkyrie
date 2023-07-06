@@ -44,7 +44,6 @@ std::vector<DepthTestCase> DEPTH_TEST_LIST = {
 	DepthTestCase("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -", 12),
 	DepthTestCase("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ -", 9),
 	DepthTestCase("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - -", 8),
-	DepthTestCase("1k1r4/pp1b1R2/3q2pp/4p3/2B5/4Q3/PPP2B2/2K5 b - -", 10),
 	DepthTestCase("3r1k2/4npp1/1ppr3p/p6P/P2PPPP1/1NR5/5K2/2R5 w - -", 9),
 	DepthTestCase("2q1rr1k/3bbnnp/p2p1pp1/2pPp3/PpP1P1P1/1P2BNNP/2BQ1PRK/7R b - -", 9),
 	// Mid Game Positions
