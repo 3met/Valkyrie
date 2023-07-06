@@ -421,13 +421,14 @@ void ChessEngine::genBlackPKillMoves(ChessState* cs, Move moves[218], U8* moveCo
 void ChessEngine::genWhiteMovePromotion(ChessState* cs, Move moves[218], U8* moveCount) {
 
 	bufferBoard.board = ~(cs->pieces[WHITE][ALL_PIECES].board | cs->pieces[BLACK][ALL_PIECES].board);
-
+	
 	// Get potential single move squares
 	moveBoard.board = (cs->pieces[WHITE][PAWN].board << 8);
 	// Remove occupied squares
 	moveBoard.board &= bufferBoard.board;
 	// Get end positions
 	targetCount = moveBoard.getPosArr(posTargets);
+
 	for (U8 i=0; i<targetCount; ++i) {
 		// Check pawn promotion
 		if (BOARD_RANK[posTargets[i]] == 7) {
@@ -444,9 +445,9 @@ void ChessEngine::genWhiteMovePromotion(ChessState* cs, Move moves[218], U8* mov
 	}
 }
 
-// Generates all pseudo-legal non-capture promotions for white
+// Generates all pseudo-legal non-capture promotions for black
 void ChessEngine::genBlackMovePromotion(ChessState* cs, Move moves[218], U8* moveCount) {
-	// --- Generate non-kill moves ---
+	
 	bufferBoard.board = ~(cs->pieces[WHITE][ALL_PIECES].board | cs->pieces[BLACK][ALL_PIECES].board);
 
 	// Get potential single move squares

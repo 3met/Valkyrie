@@ -68,7 +68,7 @@ void ChessEngine::genKKillMoves(ChessState* cs, Move moves[218], U8* moveCount){
 	// Get attacking squares
 	killBoard.board &= cs->pieces[!cs->turn][6].board;
 	// Positions of all target squares
-	targetCount = moveBoard.popPosArr(posTargets);
+	targetCount = killBoard.popPosArr(posTargets);
 
 	// Add moves to array
 	for (U8 i(0); i<targetCount; ++i) {
