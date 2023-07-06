@@ -374,10 +374,21 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 		// Check if move is legal before preceding
 		if (!isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
 			
-			score = -negamaxSearch(cs, depth-1, ply+1, -beta, -alpha);
-
+			// There is at least one legal move
 			hasValidMove = true;
 
+			// Reduce depth for non-priority moves after sorting
+			U8 depthReduction;
+			if (i > 3 && depth >= 3) {
+				depthReduction = 1;
+			} else {
+				depthReduction = 0;
+			}
+
+			// Recursive Search
+			score = -negamaxSearch(cs, depth-1-depthReduction, ply+1, -beta, -alpha);
+
+			// Cutoff for beta
 			if (score >= beta) {
 				cs->reverseMove();
 				if (moveArr[ply][i].getFlags() == Move::QUIET) {
