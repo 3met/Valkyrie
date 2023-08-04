@@ -83,12 +83,15 @@ void UCI::inputGo(string input) {
 	} else {
 		m = engine.searchOnClock(this->cs, bTime, bInc);
 	}
-	this->outputInfo();
-
+	
 	// Discontinue output stream before printing the
 	// bestmove to avoid printing at the same time
 	continueStream = false;
 
+	// Output final info results
+	this->outputInfo();
+
+	// Print the best move
 	outputMutex.lock();
 	cout << "bestmove " << m << '\n';
 	outputMutex.unlock();
