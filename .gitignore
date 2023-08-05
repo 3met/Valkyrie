@@ -6,6 +6,9 @@ build
 # Ignore any releases
 releases
 
+# Ignore datasets
+training-positions
+
 # Prerequisites
 *.d
 
