@@ -22,6 +22,11 @@ PvTable::~PvTable() {
 	delete [] table;
 }
 
+// Returns the size of the PV table
+short PvTable::size() {
+	return this->triangleSize;
+}
+
 // Reset table to null moves
 void PvTable::clear() {
 	short j;

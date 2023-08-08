@@ -23,6 +23,7 @@ public:
 		return table[n];
 	}
 
+	short size();
 	void clear();
 	void copyNext(short target);
 };

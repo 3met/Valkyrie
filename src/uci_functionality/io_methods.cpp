@@ -44,6 +44,22 @@ void UCI::outputInfo() {
 		cout << " time " << (time / 1000)
 			 << " nps " << ((engine.nodesTotal * 1000000) / time);
 	}
+
+	// Print the PV if it exists
+	if (!engine.pvTable[0][0].isNull()) {
+		printf(" pv ");
+
+		// Loop through moves in the PV
+		for (short i(0); i<engine.pvTable.size(); ++i) {
+			// Quit if move to print is NULL_MOVE meaning end of PV
+			if (engine.pvTable[0][i].isNull()) {
+				break;
+			} else {
+				cout << engine.pvTable[0][i] << ' ';
+			}
+		}
+	}
+
 	printf("\n");
 	outputMutex.unlock();
 }
