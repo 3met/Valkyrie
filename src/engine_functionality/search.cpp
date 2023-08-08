@@ -60,6 +60,11 @@ Move ChessEngine::searchOnClock(ChessState cs, U64 timeLeft, U64 timeInc) {
 
 		// Break if no longer has search permission
 		if (!this->canSearch) {
+			// Use results from incomplete depth
+			if (!ratedMove.first.isNull()) {
+				moveList.push_back(ratedMove.first);
+				this->currScore = ratedMove.second;
+			}
 			break;
 		}
 
@@ -143,7 +148,13 @@ Move ChessEngine::searchSetTime(ChessState cs, U64 movetime) {
 		ratedMove = this->bestMove(&cs, i);
 
 		// Break if no longer has search permission
+		// Save the updated move only if it is not null
 		if (!this->canSearch) {
+			// Use results from incomplete depth
+			if (!ratedMove.first.isNull()) {
+				moveList.push_back(ratedMove.first);
+				this->currScore = ratedMove.second;
+			}
 			break;
 		}
 
@@ -191,12 +202,11 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 
 		// If search stopped due to lack of permissions
 		if (!this->canSearch) {
-			// Only update the score if a better moves was found
-			if (ratedMove.second > this->currScore) {
+			// Use results from incomplete depth
+			if (!ratedMove.first.isNull()) {
 				m = ratedMove.first;
 				this->currScore = ratedMove.second;
 			}
-
 			break;
 		}
 
@@ -236,7 +246,13 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 		this->uciDepth = i;
 
 		ratedMove = this->bestMove(&cs, i);
-		if (ratedMove.first.isNull()) {	// Look for null move
+	
+		if (!this->canSearch) {
+			// Use results from incomplete depth
+			if (!ratedMove.first.isNull()) {
+				m = ratedMove.first;
+				this->currScore = ratedMove.second;
+			}
 			break;
 		}
 

@@ -253,6 +253,18 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 				score = -negamaxSearch(cs, depth-1, 1, -beta, -alpha);
 			}
 
+			// Exit if no longer allowed to search
+			if (this->canSearch == false) {
+				cs->reverseMove();
+				// Return a nullmove if no moves have been searched
+				if (bestIndex == -1) {
+					return make_pair(Move::NULL_MOVE, alpha);
+				} else {
+					return make_pair(moveArr[0][bestIndex], alpha);
+				}
+			}
+
+			// Found new best score
 			if (score > alpha) {
 				alpha = score;
 				bestIndex = i;
@@ -387,6 +399,12 @@ EvalScore ChessEngine::negamaxSearch(ChessState* cs, U8 depth, U8 ply, EvalScore
 
 			// Recursive Search
 			score = -negamaxSearch(cs, depth-1-depthReduction, ply+1, -beta, -alpha);
+
+			// Check if time ran out during search
+			if (this->canSearch == false) {
+				cs->reverseMove();
+				return alpha;
+			}
 
 			// Cutoff for beta
 			if (score >= beta) {
