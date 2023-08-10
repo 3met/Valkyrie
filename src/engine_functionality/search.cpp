@@ -50,9 +50,9 @@ Move ChessEngine::searchOnClock(ChessState cs, U64 timeLeft, U64 timeInc) {
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
-	short i(1);
+
 	// Loop to increase depth until time is up
-	while (true) {
+	for (short i(1); i<this->MAX_SEARCH_DEPTH; ++i) {
 		// Set search iteration parameters
 		this->uciDepth = i;
 
@@ -76,14 +76,12 @@ Move ChessEngine::searchOnClock(ChessState cs, U64 timeLeft, U64 timeInc) {
 			break;
 		}
 
-		i += 1;
-
 		updateTimingVars();
 
 		// Break early if past 3 searches have the same result
 		// and we have already searched the minimum amount of time
 		if (passedMinTime && moveList.size() >= 3
-			&& moveList[i] == moveList[i-1] && moveList[i-1] == moveList[i-2]) {
+			&& moveList[i-1] == moveList[i-2] && moveList[i-2] == moveList[i-3]) {
 
 			break;
 		}
@@ -91,7 +89,7 @@ Move ChessEngine::searchOnClock(ChessState cs, U64 timeLeft, U64 timeInc) {
 		// Break early if past 2 searches have the same result
 		// and we have already searched the optimal amount of time
 		if (passedOptimalTime && moveList.size() >= 2
-			&& moveList[i] == moveList[i-1]) {
+			&& moveList[i-1] == moveList[i-2]) {
 		
 			break;
 		}
@@ -139,9 +137,9 @@ Move ChessEngine::searchSetTime(ChessState cs, U64 movetime) {
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
-	short i(1);
+
 	// Loop to increase depth until time is up
-	while (true) {
+	for (short i(1); i<this->MAX_SEARCH_DEPTH; ++i) {
 		// Set search iteration parameters
 		this->uciDepth = i;
 
@@ -165,8 +163,6 @@ Move ChessEngine::searchSetTime(ChessState cs, U64 movetime) {
 		if (ratedMove.first.isNull()) {
 			break;
 		}
-
-		i += 1;
 
 		updateTimingVars();
 
@@ -192,9 +188,14 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 
 	pair<Move, EvalScore> ratedMove;
 	Move m;
-	short i(1);
+
+	// Cap depth at the max allowed
+	if (depth > MAX_SEARCH_DEPTH) {
+		depth = MAX_SEARCH_DEPTH;
+	}
+
 	// Loop to increase depth until time is up
-	while (i <= depth) {
+	for (short i(1); i<=depth; ++i) {
 
 		this->uciDepth = i;
 
@@ -217,9 +218,6 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 		if (ratedMove.first.isNull()) {
 			break;
 		}
-
-
-		i += 1;
 	}
 
 	++nSearches;
@@ -239,9 +237,9 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 
 	pair<Move, EvalScore> ratedMove;
 	Move m;
-	short i(2);
+
 	// Loop to increase depth until time is up
-	while (true) {
+	for (short i(1); i<this->MAX_SEARCH_DEPTH; ++i) {
 
 		this->uciDepth = i;
 
@@ -258,8 +256,6 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 
 		m = ratedMove.first;
 		this->currScore = ratedMove.second;
-
-		i += 1;
 	}
 
 	++nSearches;
