@@ -42,11 +42,38 @@ Move ChessEngine::searchOnClock(ChessState cs, U64 timeLeft, U64 timeInc) {
 		return moves[distr(gen)];
 	}
 
+	// --- Special Case of 0 or 1 Legal Move ---
+	// Generate all moves
+	U8 moveCount;		// Number of moves (in moveArr)
+	U8 numLegalMove = 0;
+	U8 legalMoveIndex;
+	genAllMoves(&cs, moveBuffer, &moveCount);
+	// Find the number of legal moves
+	for (U8 i(0); i<moveCount; ++i) {
+		if (this->isLegalMove(moveBuffer[i], &cs)) {
+			++numLegalMove;
+			legalMoveIndex = i;
+			if (numLegalMove > 1) {
+				break;
+			}
+		}
+	}
+	// Return early for 0 or 1 moves
+	if (numLegalMove == 0) {
+		this->uciDepth = 0;
+		this->currScore = quiescence(&cs, 0, -EvalScore::INFINITE, EvalScore::INFINITE);
+		return Move::NULL_MOVE;
+	} else if (numLegalMove == 1) {
+		this->uciDepth = 1;
+		this->currScore = quiescence(&cs, 0, -EvalScore::INFINITE, EvalScore::INFINITE);
+		return moveBuffer[legalMoveIndex];
+	}
+
 	// Max time to choose move
-	this->minEndTime = this->startTime + chrono::microseconds(timeLeft/40);
+	this->minEndTime     = this->startTime + chrono::microseconds(timeLeft/40);
 	this->optimalEndTime = this->startTime + chrono::microseconds(min((timeLeft/30) + timeInc, timeLeft/6));
-	this->softEndTime = this->startTime + chrono::microseconds(min((timeLeft/20) + timeInc, timeLeft));
-	this->hardEndTime = this->startTime + chrono::microseconds(min((timeLeft/15) + timeInc, timeLeft));
+	this->softEndTime    = this->startTime + chrono::microseconds(min((timeLeft/20) + timeInc, timeLeft));
+	this->hardEndTime    = this->startTime + chrono::microseconds(min((timeLeft/15) + timeInc, timeLeft));
 
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
@@ -127,6 +154,33 @@ Move ChessEngine::searchSetTime(ChessState cs, U64 movetime) {
 		++nSearches;
 		uniform_int_distribution<> distr(0, moves.size()-1);
 		return moves[distr(gen)];
+	}
+
+	// --- Special Case of 0 or 1 Legal Move ---
+	// Generate all moves
+	U8 moveCount;		// Number of moves (in moveArr)
+	U8 numLegalMove = 0;
+	U8 legalMoveIndex;
+	genAllMoves(&cs, moveBuffer, &moveCount);
+	// Find the number of legal moves
+	for (U8 i(0); i<moveCount; ++i) {
+		if (this->isLegalMove(moveBuffer[i], &cs)) {
+			++numLegalMove;
+			legalMoveIndex = i;
+			if (numLegalMove > 1) {
+				break;
+			}
+		}
+	}
+	// Return early for 0 or 1 moves
+	if (numLegalMove == 0) {
+		this->uciDepth = 0;
+		this->currScore = quiescence(&cs, 0, -EvalScore::INFINITE, EvalScore::INFINITE);
+		return Move::NULL_MOVE;
+	} else if (numLegalMove == 1) {
+		this->uciDepth = 1;
+		this->currScore = quiescence(&cs, 0, -EvalScore::INFINITE, EvalScore::INFINITE);
+		return moveBuffer[legalMoveIndex];
 	}
 
 	// Timing variables to control the search

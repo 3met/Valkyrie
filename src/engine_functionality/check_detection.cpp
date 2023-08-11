@@ -69,3 +69,19 @@ bool ChessEngine::isPosAttacked(ChessState* cs, const bool turn, const U8 pos) {
 
 	return false;
 }
+
+
+// Returns whether a move is legal in a given position
+bool ChessEngine::isLegalMove(Move move, ChessState* cs) {
+	// Make the move
+	cs->move(move);
+
+	// Check if move is legal by seeing if king is safe afterwards
+	if (isPosAttacked(cs, cs->turn, cs->pieces[!cs->turn][KING].getFirstPos())) {
+		cs->reverseMove();
+		return false;
+	} else {
+		cs->reverseMove();
+		return true;
+	}
+}

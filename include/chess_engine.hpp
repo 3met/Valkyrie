@@ -61,9 +61,8 @@ private:
 	// Maximum depth the engine can search
 	static const short MAX_SEARCH_DEPTH = 100;
 
-	// Move Generation and Evaluation Variables
-	// In some methods, the only first index of these arrays are used
-	// to save the memory from declaring a new variable.
+	// Evaluation Variables
+	// Used to store piece square positions to use in evaluation 
 	U8 pawnPosArr[2][8];	// Piece positions by color
 	U8 knightPosArr[2][10];
 	U8 bishopPosArr[2][10];
@@ -71,13 +70,17 @@ private:
 	U8 queenPosArr[2][10];
 	U8 kingPos[2];
 	U8 pieceCount[2][5];	// The number of each piece type
+
+	// Move Generation Variables
 	Bitboard bufferBoard;	// Bitboard to use as a buffer
 	Bitboard moveBoard;		// Bitboard with all move target locations
 	Bitboard killBoard;		// Bitboard with all kill target locations
 	U8 posTargets[27];		// Target location positions
 	U8 targetCount;			// Number of target positions
-	Move moveArr[MAX_SEARCH_DEPTH][218];
-	bool inNullMoveSearch;
+
+	// Move Storage
+	Move moveArr[MAX_SEARCH_DEPTH][218];	// Array to store moves during a search
+	Move moveBuffer[218];					// A buffer to store moves for various uses
 
 	// Time management search variables
 	bool limitTime;		// Whether to limit time in search
@@ -88,6 +91,9 @@ private:
 	chrono::high_resolution_clock::time_point optimalEndTime;
 	chrono::high_resolution_clock::time_point softEndTime;
 	chrono::high_resolution_clock::time_point hardEndTime;
+
+	// Other search variables
+	bool inNullMoveSearch;
 
 	// Opening book database
 	inline static OpeningTable openingTable;
@@ -213,6 +219,7 @@ public:
 	static void load();
 	static void unload();
 	static bool isPosAttacked(ChessState* cs, bool turn, U8 pos);
+	static bool isLegalMove(Move move, ChessState* cs);
 	void clear();
 
 	// Debugging Methods
