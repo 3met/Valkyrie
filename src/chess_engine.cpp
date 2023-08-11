@@ -128,6 +128,7 @@ void ChessEngine::clear() {
 	nodesTotal = 0;
 	this->transTable->clear();
 	this->pvTable.clear();
+	lastSearchHalfmoveClock = 0;
 
 	for (short i(0); i<MAX_SEARCH_DEPTH; ++i) {
 		killerHeuristic[i][0] = Move::NULL_MOVE;

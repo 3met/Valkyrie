@@ -93,7 +93,8 @@ private:
 	chrono::high_resolution_clock::time_point hardEndTime;
 
 	// Other search variables
-	bool inNullMoveSearch;
+	bool inNullMoveSearch;				// Indicates if we are currently in a null move search
+	U16 lastSearchHalfmoveClock = 0;	// Stores the halfmoveClock from the previous search
 
 	// Opening book database
 	inline static OpeningTable openingTable;
@@ -157,6 +158,7 @@ private:
 
 	// Get + Set Methods
 	void addKillerMove(Move* m, U8* depth);
+	void setupPvTable(ChessState* cs);		// Sets up PV table for next search
 
 public:
 	ChessEngine();

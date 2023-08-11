@@ -23,9 +23,10 @@ public:
 		return table[n];
 	}
 
-	short size();
-	void clear();
-	void copyNext(short target);
+	U16 size();	// Returns the size of the PvTable
+	void clear();	// Clears data in PvTable to NULL_MOVE
+	void copyNext(U16 target);			// Copies from next row
+	void shiftForward(U16 shiftDist);	// Shift all moves forward by one
 };
 
 #endif

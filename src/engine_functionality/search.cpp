@@ -78,6 +78,8 @@ Move ChessEngine::searchOnClock(ChessState cs, U64 timeLeft, U64 timeInc) {
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
 
+	this->setupPvTable(&cs);
+
 	// Loop to increase depth until time is up
 	for (short i(1); i<this->MAX_SEARCH_DEPTH; ++i) {
 		// Set search iteration parameters
@@ -126,6 +128,7 @@ Move ChessEngine::searchOnClock(ChessState cs, U64 timeLeft, U64 timeInc) {
 		}	
 	}
 
+	this->lastSearchHalfmoveClock = cs.halfmoveClock;
 	++nSearches;
 	return *(moveList.end()-1);
 }
@@ -192,6 +195,8 @@ Move ChessEngine::searchSetTime(ChessState cs, U64 movetime) {
 	pair<Move, EvalScore> ratedMove;
 	std::vector<Move> moveList;
 
+	this->setupPvTable(&cs);
+
 	// Loop to increase depth until time is up
 	for (short i(1); i<this->MAX_SEARCH_DEPTH; ++i) {
 		// Set search iteration parameters
@@ -225,6 +230,7 @@ Move ChessEngine::searchSetTime(ChessState cs, U64 movetime) {
 		}	
 	}
 
+	this->lastSearchHalfmoveClock = cs.halfmoveClock;
 	++nSearches;
 	return *(moveList.end()-1);
 }
@@ -247,6 +253,8 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 	if (depth > MAX_SEARCH_DEPTH) {
 		depth = MAX_SEARCH_DEPTH;
 	}
+
+	this->setupPvTable(&cs);
 
 	// Loop to increase depth until time is up
 	for (short i(1); i<=depth; ++i) {
@@ -274,6 +282,7 @@ Move ChessEngine::searchDepth(ChessState cs, U8 depth) {
 		}
 	}
 
+	this->lastSearchHalfmoveClock = cs.halfmoveClock;
 	++nSearches;
 	return m;
 }
@@ -291,6 +300,8 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 
 	pair<Move, EvalScore> ratedMove;
 	Move m;
+
+	this->setupPvTable(&cs);
 
 	// Loop to increase depth until time is up
 	for (short i(1); i<this->MAX_SEARCH_DEPTH; ++i) {
@@ -312,6 +323,7 @@ Move ChessEngine::searchInfinite(ChessState cs) {
 		this->currScore = ratedMove.second;
 	}
 
+	this->lastSearchHalfmoveClock = cs.halfmoveClock;
 	++nSearches;
 	return m;
 }
