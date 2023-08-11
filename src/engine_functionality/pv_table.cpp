@@ -32,7 +32,7 @@ void PvTable::clear() {
 	short j;
 	for (short i(0); i<triangleSize; ++i) {
 		for (j=0; j<(triangleSize-i); ++j) {
-			table[i][j] = Move::NULL_MOVE;
+			table[i][j].setNull();
 		}
 	}
 }
@@ -55,7 +55,7 @@ void PvTable::shiftForward(U16 shiftDist) {
 		}
 		// Replace last "shiftDist" moves with a NULL_MOVE
 		for (U16 i(moveIndex-shiftDist); i<moveIndex; ++i) {
-			table[ply][i] = Move::NULL_MOVE;
+			table[ply][i].setNull();
 		}
 	}
 }

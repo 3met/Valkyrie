@@ -300,7 +300,7 @@ void ChessState::reverseMove() {
 // Updates boardHash with move.
 void ChessState::moveNull() {
 
-	moveHistory[moveNumber] = Move::NULL_MOVE;
+	moveHistory[moveNumber].setNull();
 
 	// Update en passant value
 	if (enPassantHistory[moveNumber-1] != -1) {

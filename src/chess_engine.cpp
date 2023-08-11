@@ -131,8 +131,8 @@ void ChessEngine::clear() {
 	lastSearchHalfmoveClock = 0;
 
 	for (short i(0); i<MAX_SEARCH_DEPTH; ++i) {
-		killerHeuristic[i][0] = Move::NULL_MOVE;
-		killerHeuristic[i][1] = Move::NULL_MOVE;
+		killerHeuristic[i][0].setNull();
+		killerHeuristic[i][1].setNull();
 	}
 }
 

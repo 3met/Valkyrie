@@ -14,7 +14,7 @@ void TTEntry::setNull() {
 	depth = 0;
 	score = EvalScore::NULL_SCORE;
 	scoreType = UNKNOWN_SCORE;
-	bestMove = BaseMove::NULL_MOVE;
+	bestMove.setNull();
 }
 
 // Stores data for a score
@@ -23,7 +23,7 @@ void TTEntry::setScoreData(const BoardHash* _bh, U8 _depth, EvalScore _score, U8
 	depth = _depth;
 	score = _score;
 	scoreType = _scoreType;
-	bestMove = BaseMove::NULL_MOVE;
+	bestMove.setNull();
 }
 
 // Stores data for a move

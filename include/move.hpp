@@ -81,6 +81,10 @@ public:
 		return (data & 0x8);
 	}
 
+	inline void setNull() {
+		data = 0;
+	}
+
 protected:
 	// Encodes move information into data.
 	// Assumes move information is correct.
@@ -136,6 +140,11 @@ public:
 
 	inline U8 getCapturedPiece() const {
 		return (extraData & 0x7);
+	}
+
+	inline void setNull() {
+		data = 0;
+		extraData = UNKNOWN_EXTRA_DATA;
 	}
 
 	Move toMove();
