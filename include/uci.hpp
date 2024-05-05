@@ -155,6 +155,7 @@ private:
 
 	// Engine options
 	int moveOverhead;		// Connection delay (ms)
+	bool verbose;
 
 	// Runtime Config
 	static const chrono::microseconds queueWaitTime;

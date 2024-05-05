@@ -13,11 +13,12 @@
 using namespace std;
 
 UCI::UCI() {
-	// Set UCI variables
+	// Set default UCI variables
 	int defaultHash = 64;
-	moveOverhead = 10;
+	int moveOverhead = 10;
 	int defaultThreads = 1;
 	bool defaultOwnBook = true;
+	bool defaultVerbose = true;
 
 	// Create UCI options
 	// Note: options match those in UCI::setOption()
@@ -26,12 +27,14 @@ UCI::UCI() {
 	options.push_back(new UciSpinOption("Move Overhead", moveOverhead, 0, 10000));
 	options.push_back(new UciSpinOption("Threads", defaultThreads, 1, 1));
 	options.push_back(new UciCheckOption("OwnBook", defaultOwnBook));
+	options.push_back(new UciCheckOption("Verbose", defaultVerbose));
 	options.push_back(new UciStringOption("UCI_EngineAbout", "Valkyrie, By Emet Behrendt"));
 
 	// Apply default settings
 	engine.transTable->resize(defaultHash * 1000000);
 	this->moveOverhead = moveOverhead;
 	engine.useOwnBook = defaultOwnBook;
+	this->verbose = defaultVerbose;
 };
 
 UCI::~UCI() {

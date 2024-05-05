@@ -67,34 +67,62 @@ void UCI::inputGo(string input) {
 
 	this->engine.canSearch = true;
 
-	// Output info stream
-	bool continueStream(true);
-	thread outputThread(&UCI::streamOutputInfo, this, &continueStream);
-
 	Move m;
-	if (infinite) {
-		m = engine.searchInfinite(this->cs);
-	} else if (depth != -1) {
-		m = engine.searchDepth(this->cs, depth);
-	} else if (moveTime != 0) {
-		m = engine.searchSetTime(this->cs, moveTime);
-	} else if (cs.turn == WHITE) {
-		m = engine.searchOnClock(this->cs, wTime, wInc);
+
+	// Output extra info when set to verbose
+	if (this->verbose) {
+
+		// Output info stream
+		bool continueStream(true);
+		
+		thread outputThread(&UCI::streamOutputInfo, this, &continueStream);
+
+		if (infinite) {
+			m = engine.searchInfinite(this->cs);
+		} else if (depth != -1) {
+			m = engine.searchDepth(this->cs, depth);
+		} else if (moveTime != 0) {
+			m = engine.searchSetTime(this->cs, moveTime);
+		} else if (cs.turn == WHITE) {
+			m = engine.searchOnClock(this->cs, wTime, wInc);
+		} else {
+			m = engine.searchOnClock(this->cs, bTime, bInc);
+		}
+		
+		// Discontinue output stream before printing the
+		// bestmove to avoid printing at the same time
+		continueStream = false;
+
+		// Output final info results
+		this->outputInfo();
+
+		// Print the best move
+		outputMutex.lock();
+		cout << "bestmove " << m << '\n';
+		outputMutex.unlock();
+
+		outputThread.join();
+
+	// No verbose process statistics
 	} else {
-		m = engine.searchOnClock(this->cs, bTime, bInc);
+		if (infinite) {
+			m = engine.searchInfinite(this->cs);
+		} else if (depth != -1) {
+			m = engine.searchDepth(this->cs, depth);
+		} else if (moveTime != 0) {
+			m = engine.searchSetTime(this->cs, moveTime);
+		} else if (cs.turn == WHITE) {
+			m = engine.searchOnClock(this->cs, wTime, wInc);
+		} else {
+			m = engine.searchOnClock(this->cs, bTime, bInc);
+		}
+
+		// Output final info results
+		this->outputInfo();
+
+		// Print the best move
+		outputMutex.lock();
+		cout << "bestmove " << m << '\n';
+		outputMutex.unlock();
 	}
-	
-	// Discontinue output stream before printing the
-	// bestmove to avoid printing at the same time
-	continueStream = false;
-
-	// Output final info results
-	this->outputInfo();
-
-	// Print the best move
-	outputMutex.lock();
-	cout << "bestmove " << m << '\n';
-	outputMutex.unlock();
-
-	outputThread.join();
 }

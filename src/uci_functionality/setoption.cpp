@@ -45,6 +45,12 @@ void UCI::inputSetOption(string input) {
 		} else {
 			engine.useOwnBook = false;
 		}
+	} else if (name == "Verbose") {
+		if (value == "true" || value == "True" || value == "TRUE") {
+			this->verbose = true;
+		} else {
+			this->verbose = false;
+		}
 	} else if (name == "UCI_EngineAbout") {
 
 	} else {
