@@ -196,7 +196,15 @@ pair<Move, EvalScore> ChessEngine::bestMove(ChessState* cs, U8 depth) {
 	TTEntry* hashEntry = transTable->getEntryPointer(&cs->bh);
 	if (hashEntry->bh == cs->bh && hashEntry->depth >= depth) {
 		if (hashEntry->scoreType == hashEntry->EXACT_SCORE) {
-			return make_pair(hashEntry->bestMove, hashEntry->score);
+			// If we have an exact match, ensure the match does not cause
+			// 3-move repetition draw
+			cs->move(hashEntry->bestMove);
+			bool isRepetition = cs->isThreeRepetition();
+			cs->reverseMove();
+
+			if (!isRepetition) {
+				return make_pair(hashEntry->bestMove, hashEntry->score);
+			}			
 		}
 	}
 
